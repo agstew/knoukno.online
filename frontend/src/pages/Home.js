@@ -57,7 +57,7 @@ export default function Home() {
     <div className="site-home">
       <section className="live-hero">
         <div className="live-hero-inner">
-          <p className="live-eyebrow">knoukno.org</p>
+          <p className="live-eyebrow">knoukno.online</p>
           <h1>Kno U Kno<br /><span>Know you know.</span></h1>
           <p className="live-hero-copy">
             We show you how to start a business — from the basics all the way to the finish.

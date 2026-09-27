@@ -23,9 +23,9 @@ export default function Nav() {
   return (
     <nav className="nav" aria-label="Main navigation">
       <div className="nav-inner">
-        <Link to="/" className="nav-brand" onClick={() => setMenuOpen(false)} aria-label="knoukno.org home">
+        <Link to="/" className="nav-brand" onClick={() => setMenuOpen(false)} aria-label="knoukno.online home">
           <span className="nav-mark" aria-hidden="true">K<span>.</span></span>
-          <span className="nav-wordmark">knoukno<span>.org</span></span>
+          <span className="nav-wordmark">knoukno<span>.online</span></span>
         </Link>
 
         <button type="button" className="nav-menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-controls="site-navigation-links" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
