@@ -7,7 +7,6 @@ export default function Price() {
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState("");
   const [message, setMessage] = useState("");
-  const [mockTier, setMockTier] = useState("");
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -16,13 +15,8 @@ export default function Price() {
     if (params.get("payment") === "cancelled") {
       setMessage("Payment was cancelled. You can try again below.");
     }
-    const mockCheckoutTier = params.get("mockCheckout");
-    if (mockCheckoutTier) {
-      setMockTier(mockCheckoutTier);
-      setMessage("Stripe is not configured here, so this page is in local test checkout mode. Complete the test payment below to continue.");
-    } else {
-      setMockTier("");
-    }
+    const orderId = params.get("paypal") === "return" ? params.get("token") : null;
+    if (orderId) capturePayPal(orderId);
     fetchPrices();
   }, [location.search]);
 
@@ -46,7 +40,7 @@ export default function Price() {
     const token = localStorage.getItem("token");
     setCheckoutLoading(tierId);
     try {
-      const res = await fetch("/api/payment/create-checkout-session", {
+      const res = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,33 +66,29 @@ export default function Price() {
     }
   };
 
-  const completeMockCheckout = async () => {
-    if (!mockTier) return;
+  const capturePayPal = async (orderId) => {
     const token = localStorage.getItem("token");
-    setCheckoutLoading(mockTier);
-
+    setLoading(true);
+    setMessage("Confirming your PayPal payment…");
     try {
-      const res = await fetch("/api/payment/mock-complete", {
+      const res = await fetch("/api/payment/capture", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ tier: mockTier }),
+        body: JSON.stringify({ orderId }),
       });
-
       const data = await res.json();
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
+      if (res.ok) {
         window.location.href = "/dashboard?payment=success";
         return;
       }
-
-      setMessage(data.message || "Could not complete the test payment.");
+      setMessage(data.message || "Could not confirm the payment.");
     } catch (err) {
       setMessage("Network error. Please try again.");
     } finally {
-      setCheckoutLoading("");
+      setLoading(false);
     }
   };
 
@@ -178,24 +168,6 @@ export default function Price() {
         </div>
       )}
 
-      {mockTier && (
-        <div
-          className="alert alert-info"
-          style={{ maxWidth: "600px", margin: "0 auto 1.5rem" }}
-        >
-          <strong>Test checkout:</strong> Stripe keys are not configured in this workspace. Use the button below to complete a local payment simulation for {mockTier}.
-          <div style={{ marginTop: "0.85rem" }}>
-            <button
-              className="btn btn-primary"
-              onClick={completeMockCheckout}
-              disabled={checkoutLoading === mockTier}
-            >
-              {checkoutLoading === mockTier ? "Completing…" : "Complete Test Payment"}
-            </button>
-          </div>
-        </div>
-      )}
-
       <div className="pricing-grid">
         {plans.map((plan, idx) => (
           <div
@@ -249,7 +221,7 @@ export default function Price() {
                 >
                   {checkoutLoading === plan.id
                     ? "Redirecting…"
-                    : checkoutAvailable ? `Buy ${plan.name} with Stripe` : 'Purchases unavailable'}
+                    : checkoutAvailable ? `Buy ${plan.name} with PayPal` : 'Purchases unavailable'}
                 </button>
               </div>
             )}
