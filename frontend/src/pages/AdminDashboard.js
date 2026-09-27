@@ -82,6 +82,21 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  const changePlan = async (userId, tier) => {
+    try {
+      const res = await API(`/api/admin/users/${userId}/plan`, token, { method: 'PUT', body: JSON.stringify({ tier }) });
+      if (res.ok) {
+        const updated = await res.json();
+        setUsers(prev => prev.map(u => (u._id === updated._id ? updated : u)));
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Could not change plan.');
+      }
+    } catch {
+      alert('Network error. Please try again.');
+    }
+  };
+
   const fetchQuestions = async (page = 1) => {
     setLoading(true);
     try {
@@ -259,7 +274,19 @@ export default function AdminDashboard() {
                     <tr key={u._id}>
                       <td>{u.name}</td>
                       <td style={{ fontSize: '0.85rem' }}>{u.email}</td>
-                      <td><span className={`badge badge-${u.tier}`}>{u.tier}</span></td>
+                      <td>
+                        <select
+                          className="form-control form-select"
+                          style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
+                          value={u.tier}
+                          onChange={(e) => changePlan(u._id, e.target.value)}
+                          aria-label={`Plan for ${u.email}`}
+                        >
+                          <option value="free">free</option>
+                          <option value="members">members</option>
+                          <option value="pro">pro</option>
+                        </select>
+                      </td>
                       <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
                       <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
                       <td>{u.averageGrade > 0 ? `${u.averageGrade.toFixed(2)} / 4.00` : '—'}</td>

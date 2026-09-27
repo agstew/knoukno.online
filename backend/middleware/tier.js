@@ -19,4 +19,16 @@ const checkTier = (requiredTier) => {
   };
 };
 
-module.exports = { checkTier, tierLimits };
+const isTrialExpired = (user) =>
+  user.role !== 'admin' && user.tier === 'free' && Boolean(user.tierExpiry) && new Date() > new Date(user.tierExpiry);
+
+const accessibleTiers = (user) => {
+  if (user.role === 'admin' || user.tier === 'pro') return ['free', 'members', 'pro'];
+  if (user.tier === 'members') return ['free', 'members'];
+  return ['free'];
+};
+
+const questionLimit = (user) =>
+  user.role === 'admin' ? Infinity : (tierLimits[user.tier] || tierLimits.free) + (user.bonusQuestions || 0);
+
+module.exports = { checkTier, tierLimits, isTrialExpired, accessibleTiers, questionLimit };

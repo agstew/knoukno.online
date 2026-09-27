@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Question = require('../models/Question');
 const { protect, adminOnly } = require('../middleware/auth');
-const { tierLimits } = require('../middleware/tier');
+const { isTrialExpired, accessibleTiers, questionLimit } = require('../middleware/tier');
+
+const TRIAL_EXPIRED = { message: 'Your free trial has expired. Please upgrade your plan to keep going.', code: 'TRIAL_EXPIRED' };
 
 // GET /api/questions/titles - public
 router.get('/titles', async (req, res) => {
@@ -18,19 +20,15 @@ router.get('/titles', async (req, res) => {
 router.get('/', protect, async (req, res) => {
   try {
     const user = req.user;
+    if (isTrialExpired(user)) return res.status(403).json(TRIAL_EXPIRED);
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 1;
     const businessTitle = req.query.businessTitle || '';
 
-    let tierFilter = ['free'];
-    if (user.tier === 'members') tierFilter = ['free', 'members'];
-    if (user.tier === 'pro') tierFilter = ['free', 'members', 'pro'];
-    if (user.role === 'admin') tierFilter = ['free', 'members', 'pro'];
-
-    const query = { isActive: true, tierAccess: { $in: tierFilter } };
+    const query = { isActive: true, tierAccess: { $in: accessibleTiers(user) } };
     if (businessTitle) query.businessTitle = businessTitle;
 
-    const maxQuestions = user.role === 'admin' ? 9999 : tierLimits[user.tier] || 5;
+    const maxQuestions = questionLimit(user);
 
     const total = await Question.countDocuments(query);
     const effectiveTotal = Math.min(total, maxQuestions);
@@ -62,6 +60,10 @@ router.get('/:id', protect, async (req, res) => {
   try {
     const question = await Question.findById(req.params.id);
     if (!question || !question.isActive) return res.status(404).json({ message: 'Question not found' });
+    if (isTrialExpired(req.user)) return res.status(403).json(TRIAL_EXPIRED);
+    if (!accessibleTiers(req.user).includes(question.tierAccess)) {
+      return res.status(403).json({ message: 'Upgrade your plan to access this question.' });
+    }
     res.json(question);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });

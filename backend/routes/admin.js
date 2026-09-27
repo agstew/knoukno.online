@@ -18,6 +18,22 @@ router.get('/users', async (req, res) => {
   }
 });
 
+// PUT /api/admin/users/:id/plan
+router.put('/users/:id/plan', async (req, res) => {
+  try {
+    const { tier } = req.body;
+    if (!['free', 'members', 'pro'].includes(tier)) return res.status(400).json({ message: 'Invalid plan' });
+    // Setting free restarts a 3-day trial; paid plans don't expire
+    const tierExpiry = tier === 'free' ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) : null;
+    const user = await User.findByIdAndUpdate(req.params.id, { tier, tierExpiry }, { new: true })
+      .select('-password -resetPasswordToken -resetPasswordExpires');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // GET /api/admin/answers
 router.get('/answers', async (req, res) => {
   try {

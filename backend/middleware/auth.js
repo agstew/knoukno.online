@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 const protect = async (req, res, next) => {
   let token;
@@ -8,12 +9,20 @@ const protect = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: 'Not authorized, no token' });
   }
+  let decoded;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
-    req.user = decoded;
-    next();
+    decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret');
   } catch (err) {
     return res.status(401).json({ message: 'Not authorized, token failed' });
+  }
+  try {
+    // Read plan and role from the DB so upgrades and admin changes apply immediately
+    const user = await User.findById(decoded.id).select('name email role tier tierExpiry bonusQuestions').lean();
+    if (!user) return res.status(401).json({ message: 'Account not found' });
+    req.user = { ...user, id: user._id.toString() };
+    next();
+  } catch (err) {
+    next(err);
   }
 };
 
