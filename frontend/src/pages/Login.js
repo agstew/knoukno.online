@@ -77,6 +77,9 @@ export default function Login() {
               autoComplete="current-password"
               required
             />
+            <p style={{ textAlign: 'right', margin: '0.4rem 0 0', fontSize: '0.9rem' }}>
+              <Link to="/forgot-password">Forgot password?</Link>
+            </p>
           </div>
           <button
             type="submit"

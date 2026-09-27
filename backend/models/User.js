@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   savedAnswers: [savedAnswerSchema],
   averageGrade: { type: Number, default: 0 },
-  averageRating: { type: Number, default: 0 }
+  averageRating: { type: Number, default: 0 },
+  // SHA-256 of the emailed token; the raw token is never stored
+  resetPasswordToken: { type: String, index: true },
+  resetPasswordExpires: { type: Date }
 });
 
 userSchema.pre('save', async function (next) {
