@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
@@ -90,11 +91,9 @@ export default function Register() {
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="password">Password</label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
-              className="form-control"
               value={form.password}
               onChange={handleChange}
               placeholder="At least 6 characters"
@@ -104,11 +103,10 @@ export default function Register() {
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="confirm">Confirm Password</label>
-            <input
+            <PasswordInput
+              label="confirm password"
               id="confirm"
               name="confirm"
-              type="password"
-              className="form-control"
               value={form.confirm}
               onChange={handleChange}
               placeholder="Repeat your password"

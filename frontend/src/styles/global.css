@@ -347,6 +347,25 @@ img {
   box-shadow: 0 0 0 3px rgba(168, 216, 234, 0.35);
 }
 
+.password-control { position: relative; }
+.password-control .form-control { padding-right: 3rem; }
+.visibility-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  transform: translateY(-50%);
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+}
+.visibility-toggle:focus-visible { outline: 2px solid var(--color-primary-dark); }
+
 textarea.form-control {
   min-height: 120px;
   resize: vertical;
