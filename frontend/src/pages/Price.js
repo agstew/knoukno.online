@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Price() {
   const [prices, setPrices] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState("");
   const [message, setMessage] = useState("");
   const { isAuthenticated } = useAuth();
@@ -21,14 +21,19 @@ export default function Price() {
   }, [location.search]);
 
   const fetchPrices = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/payment/prices");
       if (res.ok) {
         const data = await res.json();
         setPrices(data);
+      } else {
+        setMessage("Could not load plan availability. Please try again.");
       }
     } catch (err) {
-      // use defaults if API unavailable
+      setMessage("Network error loading plan availability.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,7 +162,12 @@ export default function Price() {
       <p className="subtitle">
         Pay once. Access forever. No subscriptions, no renewals.
       </p>
-      {!checkoutAvailable && !loading && <p className="subtitle" role="status">Paid checkout is currently unavailable. You can still start free.</p>}
+      {loading && <p className="subtitle" role="status">Checking PayPal availability…</p>}
+      {!checkoutAvailable && !loading && (
+        <p className="subtitle" role="status">
+          PayPal checkout is not configured yet. You can still start free.
+        </p>
+      )}
 
       {message && (
         <div
