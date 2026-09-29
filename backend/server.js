@@ -23,7 +23,18 @@ if (process.env.NODE_ENV === 'production' && (!process.env.MONGO_URI || !process
 }
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000', credentials: true }));
+const allowedOrigins = new Set([
+  ...(process.env.CLIENT_URLS || '').split(','),
+  process.env.CLIENT_URL || 'http://localhost:3000'
+].map(origin => origin.trim()).filter(Boolean));
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error('Origin is not allowed by CORS'));
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 

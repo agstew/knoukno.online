@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState, useEffect } from 'react';
+import { apiFetch } from '../api/client';
 
 const AuthContext = createContext(null);
 
@@ -20,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       const decoded = parseJwt(token);
       if (decoded && decoded.exp * 1000 > Date.now()) {
-        fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
+        apiFetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
           .then(async (res) => {
             if (!res.ok) throw new Error('Invalid session');
             const account = await res.json();
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (!token) return null;
     const decoded = parseJwt(token);
-    const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
+    const res = await apiFetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) {
       logout();
       return null;

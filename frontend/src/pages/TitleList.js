@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiFetch } from '../api/client';
 
 export default function TitleList() {
   const [titles, setTitles] = useState([]);
@@ -9,7 +10,7 @@ export default function TitleList() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch('/api/questions/titles', { signal: controller.signal })
+    apiFetch('/api/questions/titles', { signal: controller.signal })
       .then(async (res) => {
         if (!res.ok) throw new Error('Could not load titles.');
         return res.json();

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../api/client';
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -8,7 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/content/landing', { signal: controller.signal })
+    apiFetch('/api/content/landing', { signal: controller.signal })
       .then((response) => {
         if (!response.ok) throw new Error('Landing content unavailable');
         return response.json();

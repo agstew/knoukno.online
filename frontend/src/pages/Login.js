@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PasswordInput from '../components/PasswordInput';
+import { apiFetch } from '../api/client';
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -25,7 +26,7 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await apiFetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)

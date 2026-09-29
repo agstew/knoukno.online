@@ -4,6 +4,8 @@ COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend/public ./public
 COPY frontend/src ./src
+ARG REACT_APP_API_URL=https://www.knoukno.net
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN npm run build
 
 FROM node:24-bookworm-slim

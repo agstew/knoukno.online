@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../api/client';
 
 function getPageRange(current, total) {
   const pages = new Set([1, total, current, current - 1, current + 1]);
@@ -15,7 +16,7 @@ function getPageRange(current, total) {
 }
 
 const API = (path, token, opts = {}) =>
-  fetch(path, {
+  apiFetch(path, {
     ...opts,
     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...opts.headers }
   });

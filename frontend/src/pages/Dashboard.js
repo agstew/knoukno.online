@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Questions from './Questions';
 import { GradePanel, GRADE_OPTIONS } from '../components/Grade.jsx';
 import { AveragePanel } from '../components/Average.jsx';
+import { apiFetch } from '../api/client';
 
 const gradeDivisorsForTier = (tier) => {
   if (tier === 'members') return [50, 150];
@@ -310,7 +311,7 @@ function RatePanel({
 }
 
 const API = (path, token, opts = {}) =>
-  fetch(path, {
+  apiFetch(path, {
     ...opts,
     headers: {
       Authorization: `Bearer ${token}`,

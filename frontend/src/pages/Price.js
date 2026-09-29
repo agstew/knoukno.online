@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { apiFetch } from "../api/client";
 
 export default function Price() {
   const [prices, setPrices] = useState([]);
@@ -36,7 +37,7 @@ export default function Price() {
   const fetchPrices = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/payment/prices");
+      const res = await apiFetch("/api/payment/prices");
       if (res.ok) {
         const data = await res.json();
         setPrices(data);
@@ -58,7 +59,7 @@ export default function Price() {
     const token = localStorage.getItem("token");
     setCheckoutLoading(tierId);
     try {
-      const res = await fetch("/api/payment/create-order", {
+      const res = await apiFetch("/api/payment/create-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +95,7 @@ export default function Price() {
     setLoading(true);
     setMessage("Confirming your PayPal payment…");
     try {
-      const res = await fetch("/api/payment/capture", {
+      const res = await apiFetch("/api/payment/capture", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

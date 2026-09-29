@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PasswordInput from '../components/PasswordInput';
+import { apiFetch } from '../api/client';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
@@ -33,7 +34,7 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await apiFetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
