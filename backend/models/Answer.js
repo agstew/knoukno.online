@@ -8,7 +8,10 @@ const answerSchema = new mongoose.Schema({
   rating: { type: Number, min: 1, max: 5 },
   savedAt: { type: Date, default: Date.now },
   businessTitle: { type: String },
+  clientTitle: { type: String, default: '', trim: true },
   isSaved: { type: Boolean, default: false }
 });
+
+answerSchema.index({ userId: 1, questionId: 1, clientTitle: 1 });
 
 module.exports = mongoose.model('Answer', answerSchema);

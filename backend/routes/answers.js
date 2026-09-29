@@ -5,13 +5,16 @@ const Question = require('../models/Question');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
+const clientTitleFrom = (body) => typeof body.clientTitle === 'string' ? body.clientTitle.trim() : '';
+
 // POST /api/answers/save
 router.post('/save', protect, async (req, res) => {
   try {
     const { questionId, answerText } = req.body;
+    const clientTitle = clientTitleFrom(req.body);
     if (!questionId) return res.status(400).json({ message: 'questionId is required' });
     const question = await Question.findById(questionId);
-    let answer = await Answer.findOne({ userId: req.user.id, questionId });
+    let answer = await Answer.findOne({ userId: req.user.id, questionId, clientTitle });
     if (answer) {
       answer.answerText = answerText;
       answer.isSaved = true;
@@ -24,6 +27,7 @@ router.post('/save', protect, async (req, res) => {
         questionId,
         answerText,
         isSaved: true,
+        clientTitle,
         businessTitle: question ? question.businessTitle : ''
       });
     }
@@ -38,10 +42,11 @@ router.post('/save', protect, async (req, res) => {
 router.post('/grade', protect, async (req, res) => {
   try {
     const { questionId, grade } = req.body;
+    const clientTitle = clientTitleFrom(req.body);
     if (!questionId) return res.status(400).json({ message: 'questionId is required' });
     if (grade < 0 || grade > 100) return res.status(400).json({ message: 'Grade must be 0-100' });
     const question = await Question.findById(questionId);
-    let answer = await Answer.findOne({ userId: req.user.id, questionId });
+    let answer = await Answer.findOne({ userId: req.user.id, questionId, clientTitle });
     if (answer) {
       answer.grade = grade;
       if (question) answer.businessTitle = question.businessTitle;
@@ -51,6 +56,7 @@ router.post('/grade', protect, async (req, res) => {
         userId: req.user.id,
         questionId,
         grade,
+        clientTitle,
         businessTitle: question ? question.businessTitle : ''
       });
     }
@@ -64,10 +70,11 @@ router.post('/grade', protect, async (req, res) => {
 router.post('/rate', protect, async (req, res) => {
   try {
     const { questionId, rating } = req.body;
+    const clientTitle = clientTitleFrom(req.body);
     if (!questionId) return res.status(400).json({ message: 'questionId is required' });
     if (rating < 1 || rating > 5) return res.status(400).json({ message: 'Rating must be 1-5' });
     const question = await Question.findById(questionId);
-    let answer = await Answer.findOne({ userId: req.user.id, questionId });
+    let answer = await Answer.findOne({ userId: req.user.id, questionId, clientTitle });
     if (answer) {
       answer.rating = rating;
       if (question) answer.businessTitle = question.businessTitle;
@@ -77,6 +84,7 @@ router.post('/rate', protect, async (req, res) => {
         userId: req.user.id,
         questionId,
         rating,
+        clientTitle,
         businessTitle: question ? question.businessTitle : ''
       });
     }

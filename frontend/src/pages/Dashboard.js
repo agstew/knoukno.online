@@ -423,7 +423,15 @@ export default function Dashboard() {
       }
 
       const data = await res.json();
-      const nextAnswers = (Array.isArray(data) ? data : []).reduce((acc, item) => {
+      const relevantAnswers = (Array.isArray(data) ? data : []).filter((item) => {
+        if (clientTitle) return item.clientTitle === clientTitle;
+        if (activeTitle) {
+          const questionTitle = typeof item.questionId === 'object' ? item.questionId?.businessTitle : '';
+          return item.businessTitle === activeTitle || questionTitle === activeTitle;
+        }
+        return !item.clientTitle;
+      });
+      const nextAnswers = relevantAnswers.reduce((acc, item) => {
         const questionId = item?.questionId?._id || item?.questionId;
         if (questionId) {
           acc[questionId] = item;
@@ -433,7 +441,7 @@ export default function Dashboard() {
 
       setAnswersByQuestionId(nextAnswers);
     } catch {}
-  }, [token]);
+  }, [token, activeTitle, clientTitle]);
 
   useEffect(() => {
     if (token) {
@@ -461,8 +469,8 @@ export default function Dashboard() {
 
     try {
       const params = new URLSearchParams({ page: String(nextPage), limit: String(QUESTIONS_PER_PAGE) });
-      if (selectedTitle) {
-        params.set('businessTitle', selectedTitle);
+      if (activeTitle) {
+        params.set('businessTitle', activeTitle);
       }
 
       const res = await API(`/api/questions?${params.toString()}`, token);
@@ -487,7 +495,7 @@ export default function Dashboard() {
     } finally {
       setLoadingQ(false);
     }
-  }, [token, selectedTitle]);
+  }, [token, activeTitle]);
 
   useEffect(() => {
     if (token) {
@@ -560,6 +568,7 @@ export default function Dashboard() {
           prev[selectedQuestionId]?.businessTitle ||
           question?.businessTitle ||
           '',
+        clientTitle: selectedTitle || '',
         answerText,
         isSaved: prev[selectedQuestionId]?.isSaved || Boolean(answerText?.trim())
       }
@@ -600,7 +609,7 @@ export default function Dashboard() {
     try {
       const res = await API('/api/answers/save', token, {
         method: 'POST',
-        body: JSON.stringify({ questionId: selectedQuestionId, answerText })
+        body: JSON.stringify({ questionId: selectedQuestionId, answerText, clientTitle: selectedTitle })
       });
 
       const data = await res.json().catch(() => ({}));
@@ -709,13 +718,14 @@ export default function Dashboard() {
   const displayedAnswers = Object.values(answersByQuestionId)
     .filter((item) => {
       if (!item) return false;
-      if (!selectedTitle) return hasSavedAnswerData(item);
+      if (clientTitle) return item.clientTitle === clientTitle && hasSavedAnswerData(item);
+      if (!activeTitle) return hasSavedAnswerData(item);
 
       const questionBusinessTitle = item.questionId && typeof item.questionId === 'object'
         ? item.questionId.businessTitle
         : '';
 
-      return (item.businessTitle === selectedTitle || questionBusinessTitle === selectedTitle) &&
+      return (item.businessTitle === activeTitle || questionBusinessTitle === activeTitle) &&
         hasSavedAnswerData(item);
     })
     .sort((left, right) => {
@@ -751,7 +761,7 @@ export default function Dashboard() {
     try {
       const res = await API('/api/answers/grade', token, {
         method: 'POST',
-        body: JSON.stringify({ questionId, grade: selectedOption.points })
+        body: JSON.stringify({ questionId, grade: selectedOption.points, clientTitle: selectedTitle })
       });
 
       const data = await res.json().catch(() => ({}));
@@ -793,7 +803,7 @@ export default function Dashboard() {
     try {
       const res = await API('/api/answers/rate', token, {
         method: 'POST',
-        body: JSON.stringify({ questionId, rating })
+        body: JSON.stringify({ questionId, rating, clientTitle: selectedTitle })
       });
 
       const data = await res.json().catch(() => ({}));
