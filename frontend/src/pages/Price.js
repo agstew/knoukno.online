@@ -82,9 +82,11 @@ export default function Price() {
         setMessage(
           data.message || "Could not start checkout. Please try again."
         );
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } catch (err) {
       setMessage("Network error. Please try again.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setCheckoutLoading("");
     }
