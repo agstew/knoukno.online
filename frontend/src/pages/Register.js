@@ -56,8 +56,9 @@ export default function Register() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h2>Create Your Account</h2>
-        <p className="auth-subtitle">Start your 3-day free trial — no credit card required</p>
+        <p className="auth-eyebrow">Everyone has to register</p>
+        <h2>Three days free. Five questions. No card.</h2>
+        <p className="auth-subtitle">Register, name your business, and start with the law that gets you open.</p>
 
         {error && <div className="alert alert-danger">{error}</div>}
 
@@ -121,12 +122,12 @@ export default function Register() {
             disabled={loading}
             style={{ marginTop: '0.5rem' }}
           >
-            {loading ? 'Creating account…' : 'Create Account'}
+              {loading ? 'Creating your account…' : 'Register free'}
           </button>
         </form>
 
         <p className="auth-footer">
-          Already have an account? <Link to="/login">Log in</Link>
+          Already registered? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

@@ -29,9 +29,9 @@ export default function Nav() {
   return (
     <nav className="nav" aria-label="Main navigation">
       <div className="nav-inner">
-        <Link to="/" className="nav-brand" onClick={() => setMenuOpen(false)} aria-label="knoukno.online home">
-          <span className="nav-mark" aria-hidden="true">K<span>.</span></span>
-          <span className="nav-wordmark">knoukno<span>.online</span></span>
+        <Link to={isAuthenticated ? '/list' : '/'} className="nav-brand" onClick={() => setMenuOpen(false)} aria-label="Kno U Kno home">
+          <img className="nav-logo" src="/img/logo-mark.svg" alt="" width="36" height="36" />
+          <span className="nav-wordmark">Kno U <span>Kno</span></span>
         </Link>
 
         <button type="button" className="nav-menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-controls="site-navigation-links" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>

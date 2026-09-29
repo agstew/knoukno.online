@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Nav from './components/Nav';
+import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
@@ -46,6 +48,8 @@ function App() {
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         </Routes>
       </main>
+      <Footer />
+      <CookieConsent />
     </div>
   );
 }

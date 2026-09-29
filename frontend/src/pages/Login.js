@@ -48,15 +48,15 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h2>Welcome Back</h2>
-        <p className="auth-subtitle">Log in to your Kno U Kno account</p>
+        <h2>Login</h2>
+        <p className="auth-subtitle">Welcome back. Pick up where you left off.</p>
 
         {location.state?.message && <div className="alert alert-info">{location.state.message}</div>}
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label" htmlFor="email">Email Address</label>
+            <label className="form-label" htmlFor="email">Email</label>
             <input
               id="email"
               name="email"
@@ -90,12 +90,13 @@ export default function Login() {
             disabled={loading}
             style={{ marginTop: '0.5rem' }}
           >
-            {loading ? 'Logging in…' : 'Log In'}
+              {loading ? 'Signing in…' : 'Login'}
           </button>
         </form>
 
         <p className="auth-footer">
-          Don't have an account? <Link to="/register">Sign up free</Link>
+          <Link to="/forgot-password">Forgot my password</Link>
+          <Link to="/register">Register</Link>
         </p>
       </div>
     </div>
