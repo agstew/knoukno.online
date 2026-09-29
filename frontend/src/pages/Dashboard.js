@@ -191,7 +191,7 @@ function RatePanel({
   return (
     <section className="question-card" id="rate-panel">
       <div className="question-meta">
-        <span className="question-number">Rate</span>
+        <span className="question-number">Rated</span>
         <h2 className="question-title">Answer List</h2>
       </div>
 
@@ -377,6 +377,8 @@ export default function Dashboard() {
   const [gradeFeedback, setGradeFeedback] = useState('');
   const [rateFeedback, setRateFeedback] = useState('');
   const [answersByQuestionId, setAnswersByQuestionId] = useState({});
+  const [loadingAnswers, setLoadingAnswers] = useState(true);
+  const [answersError, setAnswersError] = useState('');
   const [answerText, setAnswerText] = useState('');
   const [savingAnswer, setSavingAnswer] = useState(false);
   const [savingGradeId, setSavingGradeId] = useState(null);
@@ -416,11 +418,11 @@ export default function Dashboard() {
   }, [token]);
 
   const fetchSavedAnswers = useCallback(async () => {
+    setLoadingAnswers(true);
+    setAnswersError('');
     try {
       const res = await API('/api/answers/my', token);
-      if (!res.ok) {
-        return;
-      }
+      if (!res.ok) throw new Error('Could not load saved answers.');
 
       const data = await res.json();
       const relevantAnswers = (Array.isArray(data) ? data : []).filter((item) => {
@@ -440,7 +442,11 @@ export default function Dashboard() {
       }, {});
 
       setAnswersByQuestionId(nextAnswers);
-    } catch {}
+    } catch {
+      setAnswersError('Could not load saved answers. Please try again.');
+    } finally {
+      setLoadingAnswers(false);
+    }
   }, [token, activeTitle, clientTitle]);
 
   useEffect(() => {
@@ -834,8 +840,11 @@ export default function Dashboard() {
     }
   };
 
+  const printableAnswers = displayedAnswers.filter((item) => item.answerText?.trim());
+
   const printAnswers = () => {
-    if (displayedAnswers.length === 0) {
+    if (loadingAnswers || answersError) return;
+    if (printableAnswers.length === 0) {
       setRateFeedback('No saved answers to print.');
       return;
     }
@@ -845,23 +854,18 @@ export default function Dashboard() {
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;');
 
-    const answerMarkup = displayedAnswers.map((item, index) => {
-      const questionData = item.questionId && typeof item.questionId === 'object' ? item.questionId : null;
-      const questionNumberLabel = questionData?.questionNumber
-        ? `Question ${questionData.questionNumber}`
-        : `Answer ${index + 1}`;
+    const answerMarkup = printableAnswers.map((item, index) => {
+      const answerLabel = `Answer ${index + 1}`;
       const answerTextValue = (item.answerText?.trim() || 'No saved answer text yet.')
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('\n', '<br />');
-      const ratingValue = item.rating != null ? `${item.rating} / 5` : 'Not rated';
 
       return `
         <li>
-          <h2>${questionNumberLabel}</h2>
+          <h2>${answerLabel}</h2>
           <p class="answer-line">${answerTextValue}</p>
-          <p class="grade-line"><strong>Grade:</strong> ${ratingValue}</p>
         </li>
       `;
     }).join('');
@@ -879,7 +883,6 @@ export default function Dashboard() {
             li { margin-bottom: 28px; }
             h2 { font-size: 18px; margin: 0 0 8px; }
             .answer-line { margin: 0 0 8px; }
-            .grade-line { margin: 0; color: #444; }
           </style>
         </head>
         <body>
@@ -970,7 +973,26 @@ export default function Dashboard() {
 
       <TierBanner tier={account?.tier || tier} tierExpiry={account?.tierExpiry || tierExpiry} isAdmin={isAdmin} />
 
-      {focus === 'grade' ? (
+      {focus === 'print' ? (
+        <section className="question-card" id="print-panel">
+          <h2>Print</h2>
+          <p>Print all saved answers for {selectedTitle || 'your workspace'}.</p>
+          {loadingAnswers ? <p role="status">Loading saved answers...</p> : answersError ? (
+            <div role="alert">
+              <p>{answersError}</p>
+              <button type="button" className="btn btn-secondary" onClick={fetchSavedAnswers}>Try Again</button>
+            </div>
+          ) : printableAnswers.length === 0 ? <p>Save an answer to print it here.</p> : (
+            <>
+              <button type="button" className="btn btn-primary" onClick={printAnswers}>Print All Answers</button>
+              <ol>{printableAnswers.map((answer, index) => (
+                <li key={answer._id || index} style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>{answer.answerText}</li>
+              ))}</ol>
+            </>
+          )}
+          {rateFeedback && <p role="status">{rateFeedback}</p>}
+        </section>
+      ) : focus === 'grade' ? (
         <GradePanel
           answers={displayedAnswers}
           divisor={selectedDivisor}

@@ -199,7 +199,7 @@ export default function Price() {
         "Print page access",
         "Save page access",
         "Grade page access",
-        "Rate page access",
+        "Rated page access",
         "Average page access",
       ],
     },
@@ -217,7 +217,7 @@ export default function Price() {
         "Print page access",
         "Save page access",
         "Grade page access",
-        "Rate page access",
+        "Rated page access",
         "Average page access",
       ],
     },
@@ -320,7 +320,7 @@ export default function Price() {
               <td>✓</td>
             </tr>
             <tr>
-              <td>Rate</td>
+              <td>Rated</td>
               <td>—</td>
               <td>✓</td>
               <td>✓</td>

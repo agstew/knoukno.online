@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Menu, X } from 'lucide-react';
 
 export default function Nav() {
-  const { isAuthenticated, isAdmin, logout } = useAuth();
+  const { isAuthenticated, isAdmin, tier, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,15 +17,26 @@ export default function Nav() {
 
   const isActive = (path) => location.pathname === path ? 'nav-link active' : 'nav-link';
 
-  const activeBusinessTitle = localStorage.getItem('kk_active_business_title') || '';
-  const workspaceQuery = activeBusinessTitle ? `?${new URLSearchParams({ clientTitle: activeBusinessTitle }).toString()}` : '';
-  const workspacePath = `/questions${workspaceQuery}`;
+  const currentParams = new URLSearchParams(location.search);
+  const workspaceParams = new URLSearchParams();
+  if (currentParams.get('clientTitle')) {
+    workspaceParams.set('clientTitle', currentParams.get('clientTitle'));
+  } else if (currentParams.get('title')) {
+    workspaceParams.set('title', currentParams.get('title'));
+  } else {
+    const activeBusinessTitle = localStorage.getItem('kk_active_business_title');
+    if (activeBusinessTitle) workspaceParams.set('clientTitle', activeBusinessTitle);
+  }
+  const workspaceLink = (focus = '') => {
+    const params = new URLSearchParams(workspaceParams);
+    if (focus) params.set('focus', focus);
+    return `/questions${params.size ? `?${params.toString()}` : ''}`;
+  };
+  const hasAdvancedTools = isAdmin || tier === 'members' || tier === 'pro';
   const backendActive = (name) => {
     if (name === 'title') return location.pathname === '/list';
     if (!['/dashboard', '/title', '/questions'].includes(location.pathname)) return false;
-    if (name === 'example') return location.hash === '#example-section';
-    if (name === 'answers') return location.hash === '#answers-section';
-    return name === 'questions' && !['#example-section', '#answers-section'].includes(location.hash);
+    return name === (currentParams.get('focus') || 'questions');
   };
   const backendClass = (name) => backendActive(name) ? 'nav-link active' : 'nav-link';
 
@@ -44,9 +55,13 @@ export default function Nav() {
           {isAuthenticated ? (
             <>
               <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
-              <Link to={workspacePath} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
-              <Link to={`${workspacePath}#example-section`} className={backendClass('example')} onClick={() => setMenuOpen(false)}>Example</Link>
-              <Link to={`${workspacePath}#answers-section`} className={backendClass('answers')} onClick={() => setMenuOpen(false)}>Answers</Link>
+              <Link to={workspaceLink()} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Question</Link>
+              <Link to={workspaceLink('print')} className={backendClass('print')} onClick={() => setMenuOpen(false)}>Print</Link>
+              {hasAdvancedTools && <>
+                <Link to={workspaceLink('grade')} className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
+                <Link to={workspaceLink('rate')} className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
+                <Link to={workspaceLink('average')} className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
+              </>}
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}
