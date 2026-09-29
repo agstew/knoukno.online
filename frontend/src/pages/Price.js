@@ -7,7 +7,8 @@ export default function Price() {
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState("");
   const [message, setMessage] = useState("");
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, tier: tokenTier, isAdmin } = useAuth();
+  const [currentTier, setCurrentTier] = useState(tokenTier);
   const location = useLocation();
 
   useEffect(() => {
@@ -19,6 +20,19 @@ export default function Price() {
     if (orderId) capturePayPal(orderId);
     fetchPrices();
   }, [location.search]);
+
+  useEffect(() => {
+    setCurrentTier(tokenTier);
+    if (!isAuthenticated) return;
+
+    const token = localStorage.getItem("token");
+    fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((account) => {
+        if (account?.tier) setCurrentTier(account.tier);
+      })
+      .catch(() => {});
+  }, [isAuthenticated, tokenTier]);
 
   const fetchPrices = async () => {
     setLoading(true);
@@ -102,6 +116,49 @@ export default function Price() {
     return acc;
   }, {});
   const checkoutAvailable = prices.some((plan) => plan.checkoutAvailable);
+  const tierRank = { free: 0, members: 1, pro: 2 };
+
+  const planAction = (plan) => {
+    if (!isAuthenticated) {
+      return plan.id === "free" ? (
+        <Link to="/register" className="btn btn-primary btn-block">
+          Start Free Trial
+        </Link>
+      ) : (
+        <Link to="/register" className="btn btn-primary btn-block">
+          Register to Buy
+        </Link>
+      );
+    }
+
+    if (isAdmin) {
+      return <button className="btn btn-secondary btn-block" disabled>Admin Access</button>;
+    }
+
+    if (plan.id === currentTier) {
+      return <button className="btn btn-secondary btn-block" disabled>Current Plan</button>;
+    }
+
+    if (tierRank[plan.id] < tierRank[currentTier]) {
+      return <button className="btn btn-secondary btn-block" disabled>Included in Your Plan</button>;
+    }
+
+    if (plan.id === "free") {
+      return <button className="btn btn-secondary btn-block" disabled>Free Trial Used</button>;
+    }
+
+    return (
+      <button
+        className="btn btn-primary btn-block"
+        onClick={() => handleCheckout(plan.id)}
+        disabled={checkoutLoading === plan.id || !checkoutAvailable}
+      >
+        {checkoutLoading === plan.id
+          ? "Redirecting…"
+          : checkoutAvailable ? `Buy ${plan.name} with PayPal` : "Purchases unavailable"}
+      </button>
+    );
+  };
 
   const plans = [
     {
@@ -205,25 +262,7 @@ export default function Price() {
               ))}
             </ul>
 
-            {plan.id === "free" ? (
-              <div className="pricing-action">
-                <Link to="/register" className="btn btn-primary btn-block">
-                  Start Free Trial
-                </Link>
-              </div>
-            ) : (
-              <div className="pricing-action">
-                <button
-                  className="btn btn-primary btn-block"
-                  onClick={() => handleCheckout(plan.id)}
-                  disabled={checkoutLoading === plan.id || !checkoutAvailable}
-                >
-                  {checkoutLoading === plan.id
-                    ? "Redirecting…"
-                    : checkoutAvailable ? `Buy ${plan.name} with PayPal` : 'Purchases unavailable'}
-                </button>
-              </div>
-            )}
+            <div className="pricing-action">{planAction(plan)}</div>
           </div>
         ))}
       </div>
