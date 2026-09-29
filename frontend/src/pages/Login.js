@@ -64,7 +64,6 @@ export default function Login() {
               className="form-control"
               value={form.email}
               onChange={handleChange}
-              placeholder="you@example.com"
               autoComplete="email"
               required
             />
@@ -76,13 +75,9 @@ export default function Login() {
               name="password"
               value={form.password}
               onChange={handleChange}
-              placeholder="Your password"
               autoComplete="current-password"
               required
             />
-            <p style={{ textAlign: 'right', margin: '0.4rem 0 0', fontSize: '0.9rem' }}>
-              <Link to="/forgot-password">Forgot password?</Link>
-            </p>
           </div>
           <button
             type="submit"

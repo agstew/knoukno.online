@@ -54,11 +54,15 @@ export default function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
+    <div className="auth-page auth-page-register">
+      <section className="auth-register-intro">
         <p className="auth-eyebrow">Everyone has to register</p>
-        <h2>Three days free. Five questions. No card.</h2>
-        <p className="auth-subtitle">Register, name your business, and start with the law that gets you open.</p>
+        <h1>Three days free. Five questions. No card.</h1>
+        <p>Register, name your business, and start with the law that gets you open.</p>
+        <img src="/img/section-start.svg" alt="A founder planning a new business" />
+      </section>
+      <div className="auth-card">
+        <h2>Register</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}
 

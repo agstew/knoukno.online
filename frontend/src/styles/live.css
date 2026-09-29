@@ -38,6 +38,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .auth-eyebrow { display: inline-block; margin-bottom: 0.8rem; border-bottom: 3px solid #ffd700; color: #1e90ff; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
 .auth-footer { display: flex; justify-content: space-between; gap: 1rem; }
 .auth-footer a { color: #1e90ff; text-decoration: none; }
+.auth-page-register { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 466px); gap: clamp(2rem, 7vw, 6rem); width: 100%; padding-right: max(1.5rem, calc((100vw - 1110px) / 2)); padding-left: max(1.5rem, calc((100vw - 1110px) / 2)); }
+.auth-register-intro { align-self: center; max-width: 34rem; }
+.auth-register-intro h1 { margin-bottom: 1rem; color: #0b0b0b; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.12; }
+.auth-register-intro > p:not(.auth-eyebrow) { margin-bottom: 1.5rem; color: #626971; font-size: 1.1rem; line-height: 1.65; }
+.auth-register-intro img { width: 100%; max-height: 300px; object-fit: contain; border: 1px solid #0b0b0b14; border-radius: 12px; background: #eef3f9; }
 .pricing-section { padding-top: 72px; padding-bottom: 88px; }
 .pricing-section h2, .auth-card h2 { font-family: 'Manrope', sans-serif; }
 .pricing-card { border: 1px solid var(--color-border); }
@@ -205,6 +210,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .nav .nav-link.btn-nav { margin-top: 8px; text-align: center; }
   .auth-page { min-height: auto; padding: 3rem 1rem; }
   .auth-card { padding: 2rem 1.4rem; }
+  .auth-page-register { grid-template-columns: 1fr; }
+  .auth-register-intro { max-width: none; }
   .kk-footer-inner { grid-template-columns: 1fr 1fr; }
   .kk-footer-brand { grid-column: 1 / -1; }
   .kk-footer-bottom, .kk-cookie-inner { flex-direction: column; align-items: flex-start; }
