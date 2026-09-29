@@ -3,84 +3,109 @@ import { Link } from "react-router-dom";
 const PLANS = [
   {
     key: "free",
-    label: "Free",
+    icon: "\u2728",
+    label: "Free Tier",
     price: "$0",
-    period: null,
-    tagline: "Try the first stage, on us.",
-    features: ["5 questions", "3-day trial", "1 business", "No card required"],
+    original: null,
+    discount: null,
+    detail: "5 questions \u2022 3-day access",
+    features: ["5 questions", "Save page access", "Print page access"],
+    cta: "Start Free Trial",
   },
   {
     key: "member",
-    label: "Member",
-    price: "$39",
-    period: "/ month",
-    tagline: "For working through a full plan.",
+    icon: "\u2B50",
+    label: "Members Tier",
+    price: "$39.00",
+    original: "$49.00",
+    discount: "20% off (Save $10.00)",
+    detail: "50 questions \u2022 one-time access",
     features: [
-      "50 questions / month",
-      "All 4 stages: Law, Location, Hiring, People",
-      "Grade, rank, and print",
-      "Cancel any time",
+      "50 questions",
+      "Print page access",
+      "Save page access",
+      "Grade page access",
+      "Rated page access",
+      "Average page access",
     ],
+    cta: "Buy Members Tier",
     featured: true,
   },
   {
     key: "pro",
-    label: "Pro",
-    price: "$436",
-    period: "/ year",
-    tagline: "Best value for the full year.",
+    icon: "\u{1F680}",
+    label: "Pro Tier",
+    price: "$436.00",
+    original: "$675.00",
+    discount: "35% off (Save $235.00)",
+    detail: "75 questions \u2022 one-time access",
     features: [
-      "75 questions / year",
-      "Everything in Member",
-      "Priority email support",
-      "About 27% cheaper than monthly",
+      "75 questions",
+      "Print page access",
+      "Save page access",
+      "Grade page access",
+      "Rated page access",
+      "Average page access",
     ],
+    cta: "Buy Pro Tier",
   },
-  {
-    key: "bonus",
-    label: "Bonus",
-    price: "$100",
-    period: "one-time",
-    tagline: "Need more room? Add it once.",
-    features: ["+100 questions", "Stacks on any plan", "Never expires", "Buy as many times as you need"],
-  },
+];
+
+const COMPARE_ROWS = [
+  ["Questions", "5", "50", "75"],
+  ["Access period", "3 days", "Lifetime", "Lifetime"],
+  ["Save answers", "\u2713", "\u2713", "\u2713"],
+  ["Print", "\u2713", "\u2713", "\u2713"],
+  ["Grade", "\u2014", "\u2713", "\u2713"],
+  ["Rated", "\u2014", "\u2713", "\u2713"],
+  ["Average", "\u2014", "\u2713", "\u2713"],
+  ["Bonus: 100 questions for $100", "\u2014", "Add-on", "Add-on"],
 ];
 
 const FAQS = [
   {
-    q: "Can I switch plans later?",
-    a: "Yes. Upgrade, downgrade, or add a Bonus block whenever your business needs more questions.",
+    q: "Is this a subscription?",
+    a: "No. Kno U Kno uses one-time pricing. Pay once and access your questions forever.",
   },
   {
-    q: "What counts as a question?",
-    a: "Each time you ask KnoUKno for the next question in a stage, it uses one from your quota - regardless of how long your answer is.",
+    q: "What happens after the free trial?",
+    a: "After 3 days, free trial access expires. Your account remains and you can upgrade to continue.",
   },
   {
-    q: "Is there a refund policy?",
-    a: "Email hello@knoukno.online within 7 days of a paid purchase and we'll make it right.",
+    q: "Can I get a refund?",
+    a: "We offer a 7-day money-back guarantee if you are not satisfied. Contact us with your purchase email.",
+  },
+  {
+    q: "How do I access my questions?",
+    a: "Once registered and logged in, go to your Dashboard. Questions unlock based on your plan immediately after payment.",
   },
 ];
 
 export default function Price() {
   return (
     <div>
-      <section className="hero" style={{ paddingBottom: 20 }}>
-        <span className="eyebrow">Simple pricing</span>
-        <h1>Pick a plan and start writing.</h1>
-        <p>
-          Every plan gives you the same four stages and the same grading and ranking tools. The
-          only difference is how many questions you can ask.
-        </p>
+      <section className="hero hero-light">
+        <h1>Simple, One-Time Pricing</h1>
+        <p>Pay once. Access forever. No subscriptions, no renewals.</p>
+        <div className="trust-row">
+          <span>&#128179; One-time payment</span>
+          <span>&#8635; 7-day refund guarantee</span>
+          <span>&#128737; Secure checkout</span>
+        </div>
       </section>
+
       <div className="price-grid container">
         {PLANS.map((p) => (
           <div className={`price-card ${p.featured ? "featured" : ""}`} key={p.key}>
             {p.featured && <span className="price-badge">Most popular</span>}
+            <div className="price-icon">{p.icon}</div>
             <h3>{p.label}</h3>
             <div className="amount">
-              {p.price} {p.period && <span>{p.period}</span>}
+              {p.price}
+              {p.original && <span className="original-price">{p.original}</span>}
             </div>
-            <div className="plan-tagline">{p.tagline}</div>
+            {p.discount && <div className="discount-badge">{p.discount}</div>}
+            <div className="plan-tagline">{p.detail}</div>
             <ul>
               {p.features.map((f) => (
                 <li key={f}>{f}</li>
@@ -90,15 +115,39 @@ export default function Price() {
               to="/register"
               className={`btn ${p.featured ? "btn-primary" : "btn-outline"} btn-block`}
             >
-              {p.key === "free" ? "Start free" : "Buy Now"}
+              {p.cta}
             </Link>
           </div>
         ))}
       </div>
 
+      <section className="section-tight container">
+        <div className="compare-table">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Free</th>
+                <th>Members</th>
+                <th>Pro</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE_ROWS.map((row) => (
+                <tr key={row[0]}>
+                  {row.map((cell, i) => (
+                    <td key={i}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="section">
         <div className="section-header">
-          <h2>Pricing questions</h2>
+          <h2>Frequently Asked Questions</h2>
         </div>
         <div className="faq-list">
           {FAQS.map((f) => (
