@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Price() {
@@ -7,9 +7,10 @@ export default function Price() {
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState("");
   const [message, setMessage] = useState("");
-  const { isAuthenticated, tier: tokenTier, isAdmin } = useAuth();
+  const { isAuthenticated, tier: tokenTier, isAdmin, logout, refreshUser } = useAuth();
   const [currentTier, setCurrentTier] = useState(tokenTier);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -25,14 +26,12 @@ export default function Price() {
     setCurrentTier(tokenTier);
     if (!isAuthenticated) return;
 
-    const token = localStorage.getItem("token");
-    fetch("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => (res.ok ? res.json() : null))
+    refreshUser()
       .then((account) => {
         if (account?.tier) setCurrentTier(account.tier);
       })
       .catch(() => {});
-  }, [isAuthenticated, tokenTier]);
+  }, [isAuthenticated, tokenTier, refreshUser]);
 
   const fetchPrices = async () => {
     setLoading(true);
@@ -68,6 +67,11 @@ export default function Price() {
         body: JSON.stringify({ tier: tierId }),
       });
       const data = await res.json();
+      if (res.status === 401) {
+        logout();
+        navigate("/login", { replace: true, state: { message: "Your session expired. Please log in again to continue to PayPal." } });
+        return;
+      }
       if (res.ok && data.url) {
         if (data.message) {
           setMessage(data.message);
@@ -99,6 +103,11 @@ export default function Price() {
         body: JSON.stringify({ orderId }),
       });
       const data = await res.json();
+      if (res.status === 401) {
+        logout();
+        navigate("/login", { replace: true, state: { message: "Your session expired. Please log in again to finish your payment." } });
+        return;
+      }
       if (res.ok) {
         window.location.href = "/dashboard?payment=success";
         return;
