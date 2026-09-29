@@ -186,14 +186,7 @@ export default function Price() {
           >
             {idx === 1 && <div className="pricing-badge">Most Popular</div>}
             <h3>{plan.name}</h3>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: "0.5rem",
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="pricing-price-row">
               <span className="pricing-price">{plan.display}</span>
               {plan.original && (
                 <>
@@ -202,13 +195,7 @@ export default function Price() {
                 </>
               )}
             </div>
-            <p
-              style={{
-                fontSize: "0.82rem",
-                color: "var(--color-text-light)",
-                marginTop: "0.4rem",
-              }}
-            >
+            <p className="pricing-summary">
               {plan.id === "free" ? `${plan.questions} questions` : plan.questionSummary} • {plan.durationText}
             </p>
 
@@ -219,11 +206,13 @@ export default function Price() {
             </ul>
 
             {plan.id === "free" ? (
-              <Link to="/register" className="btn btn-primary btn-block">
-                Start Free Trial
-              </Link>
+              <div className="pricing-action">
+                <Link to="/register" className="btn btn-primary btn-block">
+                  Start Free Trial
+                </Link>
+              </div>
             ) : (
-              <div style={{ display: 'grid', gap: '0.55rem' }}>
+              <div className="pricing-action">
                 <button
                   className="btn btn-primary btn-block"
                   onClick={() => handleCheckout(plan.id)}
