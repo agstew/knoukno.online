@@ -37,7 +37,7 @@ export default function Footer() {
             <li>Pro — 75 questions, $436</li>
             <li className="text-gold">Bonus — 100 extra questions, $100</li>
           </ul>
-          <Link className="btn btn-gold btn-sm" to="/price">Buy Now</Link>
+          <Link className="btn btn-gold btn-sm btn-block" to="/price">Buy Now</Link>
         </section>
       </div>
       <div className="kk-footer-bottom">
