@@ -22,7 +22,13 @@ if (process.env.NODE_ENV === 'production' && (!process.env.MONGO_URI || !process
   throw new Error('Production requires MONGO_URI and a JWT_SECRET of at least 32 characters.');
 }
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      connectSrc: ["'self'", 'https://www.knoukno.net']
+    }
+  }
+}));
 const allowedOrigins = new Set([
   ...(process.env.CLIENT_URLS || '').split(','),
   process.env.CLIENT_URL || 'http://localhost:3000'
