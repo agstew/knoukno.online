@@ -161,7 +161,7 @@ export default function Price() {
         </Link>
       ) : (
         <Link to="/register" className="btn btn-primary btn-block">
-          Register to Buy
+          Buy {plan.name} with PayPal
         </Link>
       );
     }
