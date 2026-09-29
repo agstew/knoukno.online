@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Menu, X } from 'lucide-react';
 
 export default function Nav() {
-  const { isAuthenticated, isAdmin, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout, tier } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,6 +24,7 @@ export default function Nav() {
     return ['/dashboard', '/title'].includes(location.pathname) && focus === name;
   };
   const backendClass = (name) => backendActive(name) ? 'nav-link active' : 'nav-link';
+  const hasAdvancedTools = isAdmin || tier === 'members' || tier === 'pro';
 
   return (
     <nav className="nav" aria-label="Main navigation">
@@ -41,9 +42,13 @@ export default function Nav() {
             <>
               <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
               <Link to="/dashboard?tab=questions" className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
-              <Link to="/dashboard?tab=questions&focus=grade" className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
-              <Link to="/dashboard?tab=questions&focus=rate" className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
-              <Link to="/dashboard?focus=average" className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
+              {hasAdvancedTools && (
+                <>
+                  <Link to="/dashboard?tab=questions&focus=grade" className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
+                  <Link to="/dashboard?tab=questions&focus=rate" className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
+                  <Link to="/dashboard?focus=average" className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
+                </>
+              )}
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}

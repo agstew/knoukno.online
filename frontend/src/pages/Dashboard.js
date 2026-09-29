@@ -449,10 +449,10 @@ export default function Dashboard() {
       searchParams.get('clientTitle')
     );
 
-    if ((isAdmin || tier === 'members' || tier === 'pro') && !hasExplicitDashboardTarget) {
+    if (!hasExplicitDashboardTarget) {
       navigate('/list', { replace: true });
     }
-  }, [tier, isAdmin, location.search, navigate]);
+  }, [location.search, navigate]);
 
   const fetchQuestion = useCallback(async (nextPage = 1) => {
     setLoadingQ(true);

@@ -19,15 +19,6 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
-const AdvancedRoute = ({ children }) => {
-  const { isAuthenticated, isAdmin, tier, authLoading } = useAuth();
-  if (authLoading) return <div className="spinner-wrap"><div className="spinner"></div></div>;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return isAdmin || tier === 'members' || tier === 'pro'
-    ? children
-    : <Navigate to="/price" replace />;
-};
-
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin, authLoading } = useAuth();
   if (authLoading) return <div className="spinner-wrap"><div className="spinner"></div></div>;
@@ -51,7 +42,7 @@ function App() {
           <Route path="/price" element={<Price />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/title" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/list" element={<AdvancedRoute><TitleList /></AdvancedRoute>} />
+          <Route path="/list" element={<ProtectedRoute><TitleList /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         </Routes>
       </main>
