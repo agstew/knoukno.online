@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Menu, X } from 'lucide-react';
 
 export default function Nav() {
-  const { isAuthenticated, isAdmin, user, logout, tier } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,8 +17,13 @@ export default function Nav() {
 
   const isActive = (path) => location.pathname === path ? 'nav-link active' : 'nav-link';
 
-  const tierLabel = tier === 'pro' ? 'Pro' : tier === 'members' ? 'Members' : 'Free';
-  const tierClass = tier === 'pro' ? 'pro' : tier === 'members' ? 'members' : '';
+  const focus = new URLSearchParams(location.search).get('focus') || '';
+  const backendActive = (name) => {
+    if (name === 'title') return location.pathname === '/list';
+    if (name === 'questions') return ['/dashboard', '/title'].includes(location.pathname) && !focus;
+    return ['/dashboard', '/title'].includes(location.pathname) && focus === name;
+  };
+  const backendClass = (name) => backendActive(name) ? 'nav-link active' : 'nav-link';
 
   return (
     <nav className="nav" aria-label="Main navigation">
@@ -32,18 +37,13 @@ export default function Nav() {
           {menuOpen ? <X size={25} aria-hidden="true" /> : <Menu size={25} aria-hidden="true" />}
         </button>
         <div id="site-navigation-links" className={`nav-links${menuOpen ? ' nav-links-open' : ''}`}>
-          <Link to="/" className={isActive('/')} onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/about" className={isActive('/about')} onClick={() => setMenuOpen(false)}>About</Link>
-          <Link to="/price" className={isActive('/price')} onClick={() => setMenuOpen(false)}>Price</Link>
-
           {isAuthenticated ? (
             <>
-              <Link to="/dashboard" className={isActive('/dashboard')} onClick={() => setMenuOpen(false)}>
-                Dashboard
-                {tierClass && (
-                  <span className={`nav-tier-badge ${tierClass}`}>{tierLabel}</span>
-                )}
-              </Link>
+              <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
+              <Link to="/dashboard?tab=questions" className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
+              <Link to="/dashboard?tab=questions&focus=grade" className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
+              <Link to="/dashboard?tab=questions&focus=rate" className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
+              <Link to="/dashboard?focus=average" className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}
@@ -56,8 +56,10 @@ export default function Nav() {
             </>
           ) : (
             <>
+              <Link to="/" className={isActive('/')} onClick={() => setMenuOpen(false)}>Home</Link>
+              <Link to="/about" className={isActive('/about')} onClick={() => setMenuOpen(false)}>About</Link>
+              <Link to="/price" className={isActive('/price')} onClick={() => setMenuOpen(false)}>Price</Link>
               <Link to="/login" className={isActive('/login')} onClick={() => setMenuOpen(false)}>Login</Link>
-              <Link to="/register" className="nav-link btn-nav" onClick={() => setMenuOpen(false)}>Start free</Link>
             </>
           )}
         </div>

@@ -2,11 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Questions from './Questions';
-import TitleButton from '../components/title.jsx';
-import DashboardButton from '../components/dashboard.jsx';
-import GradeButton, { GradePanel, GRADE_OPTIONS } from '../components/Grade.jsx';
-import RateButton from '../components/Rate.jsx';
-import AverageButton, { AveragePanel } from '../components/Average.jsx';
+import { GradePanel, GRADE_OPTIONS } from '../components/Grade.jsx';
+import { AveragePanel } from '../components/Average.jsx';
 
 const gradeDivisorsForTier = (tier) => {
   if (tier === 'members') return [50, 150];
@@ -702,6 +699,12 @@ export default function Dashboard() {
     }
   }, [activeTier, selectedDivisor]);
 
+  useEffect(() => {
+    if (!hasAdvancedTools && ['grade', 'rate', 'average'].includes(focus)) {
+      navigate('/price', { replace: true });
+    }
+  }, [focus, hasAdvancedTools, navigate]);
+
   const displayedAnswers = Object.values(answersByQuestionId)
     .filter((item) => {
       if (!item) return false;
@@ -955,40 +958,6 @@ export default function Dashboard() {
       )}
 
       <TierBanner tier={account?.tier || tier} tierExpiry={account?.tierExpiry || tierExpiry} isAdmin={isAdmin} />
-
-      <div className="tab-nav">
-        {hasAdvancedTools && <TitleButton onClick={() => navigate('/list')} />}
-        <DashboardButton
-          active={focus !== 'grade' && focus !== 'rate' && focus !== 'average'}
-          to={selectedTitle
-            ? `/title?${new URLSearchParams({ title: selectedTitle, tab: 'questions' }).toString()}`
-            : '/dashboard?tab=questions'}
-        />
-        {hasAdvancedTools && (
-          <GradeButton
-            active={focus === 'grade'}
-            to={selectedTitle
-              ? `/title?${new URLSearchParams({ title: selectedTitle, tab: 'questions', focus: 'grade' }).toString()}`
-              : '/dashboard?tab=questions&focus=grade'}
-          />
-        )}
-        {hasAdvancedTools && (
-          <RateButton
-            active={focus === 'rate'}
-            to={selectedTitle
-              ? `/title?${new URLSearchParams({ title: selectedTitle, tab: 'questions', focus: 'rate' }).toString()}`
-              : '/dashboard?tab=questions&focus=rate'}
-          />
-        )}
-        {hasAdvancedTools && (
-          <AverageButton
-            active={focus === 'average'}
-            to={selectedTitle
-              ? `/title?${new URLSearchParams({ title: selectedTitle, tab: 'questions', focus: 'average' }).toString()}`
-              : '/dashboard?focus=average'}
-          />
-        )}
-      </div>
 
       {focus === 'grade' ? (
         <GradePanel

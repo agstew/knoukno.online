@@ -13,6 +13,7 @@ function parseJwt(token) {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -28,10 +29,14 @@ export const AuthProvider = ({ children }) => {
           .catch(() => {
             localStorage.removeItem('token');
             setUser(null);
-          });
+          })
+          .finally(() => setAuthLoading(false));
       } else {
         localStorage.removeItem('token');
+        setAuthLoading(false);
       }
+    } else {
+      setAuthLoading(false);
     }
   }, []);
 
@@ -39,11 +44,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', token);
     const decoded = parseJwt(token);
     setUser(decoded);
+    setAuthLoading(false);
   };
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     setUser(null);
+    setAuthLoading(false);
   }, []);
 
   const refreshUser = useCallback(async () => {
@@ -66,6 +73,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     refreshUser,
+    authLoading,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     tier: user?.tier || 'free',
