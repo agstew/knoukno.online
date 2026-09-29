@@ -1133,19 +1133,121 @@ tbody tr:hover {
 }
 
 .pricing-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.88rem;
   color: var(--color-text);
   padding: 0.3rem 0;
-  padding-left: 1.3rem;
-  position: relative;
 }
 
-.pricing-features li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
+.pricing-check {
+  flex-shrink: 0;
   color: var(--color-success);
+}
+
+.pricing-trustbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem 1.5rem;
+  margin: 1rem auto 2rem;
+  max-width: 720px;
+}
+
+.pricing-trustbar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.pricing-trustbar svg {
+  color: var(--color-secondary-dark);
+}
+
+.pricing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-secondary-dark);
+  margin-bottom: 0.75rem;
+}
+
+.pricing-card.featured .pricing-icon {
+  background: var(--color-secondary);
+  color: var(--color-white);
+}
+
+.pricing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.pricing-faq {
+  max-width: 680px;
+  margin: 3.5rem auto 0;
+}
+
+.pricing-faq > h3 {
+  font-size: 1.3rem;
   font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.faq-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.faq-item.open {
+  border-color: var(--color-secondary);
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.9rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-dark);
+  text-align: left;
+}
+
+.faq-chevron {
+  flex-shrink: 0;
+  transition: var(--transition);
+  color: var(--color-text-light);
+}
+
+.faq-item.open .faq-chevron {
+  transform: rotate(180deg);
+  color: var(--color-secondary-dark);
+}
+
+.faq-answer {
+  padding: 0 1.1rem 1.1rem;
+  color: var(--color-text-light);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 /* ---------- Business Titles ---------- */

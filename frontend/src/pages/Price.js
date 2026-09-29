@@ -1,13 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Check, Sparkles, Crown, Rocket, ShieldCheck, RotateCcw, CreditCard, ChevronDown } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { apiFetch } from "../api/client";
+
+const PLAN_ICONS = { free: Sparkles, members: Crown, pro: Rocket };
+
+const FAQS = [
+  {
+    q: "Is this a subscription?",
+    a: "No. Kno U Kno uses one-time pricing. Pay once and access your questions forever.",
+  },
+  {
+    q: "What happens after the free trial?",
+    a: "After 3 days, free trial access expires. Your account remains and you can upgrade to continue.",
+  },
+  {
+    q: "Can I get a refund?",
+    a: "We offer a 7-day money-back guarantee if you are not satisfied. Contact us with your purchase email.",
+  },
+  {
+    q: "How do I access my questions?",
+    a: "Once registered and logged in, go to your Dashboard. Questions unlock based on your plan immediately after payment.",
+  },
+];
 
 export default function Price() {
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState("");
   const [message, setMessage] = useState("");
+  const [openFaq, setOpenFaq] = useState(0);
   const { isAuthenticated, tier: tokenTier, isAdmin, logout, refreshUser } = useAuth();
   const [currentTier, setCurrentTier] = useState(tokenTier);
   const location = useLocation();
@@ -231,6 +254,13 @@ export default function Price() {
       <p className="subtitle">
         Pay once. Access forever. No subscriptions, no renewals.
       </p>
+
+      <div className="pricing-trustbar">
+        <span><CreditCard size={16} /> One-time payment</span>
+        <span><RotateCcw size={16} /> 7-day refund guarantee</span>
+        <span><ShieldCheck size={16} /> Secure checkout via PayPal</span>
+      </div>
+
       {loading && <p className="subtitle" role="status">Checking PayPal availability…</p>}
       {!checkoutAvailable && !loading && (
         <p className="subtitle" role="status">
@@ -248,98 +278,65 @@ export default function Price() {
       )}
 
       <div className="pricing-grid">
-        {plans.map((plan, idx) => (
-          <div
-            key={plan.id}
-            className={`pricing-card${idx === 1 ? " featured" : ""}`}
-          >
-            {idx === 1 && <div className="pricing-badge">Most Popular</div>}
-            <h3>{plan.name}</h3>
-            <div className="pricing-price-row">
-              <span className="pricing-price">{plan.display}</span>
-              {plan.original && (
-                <>
-                  <span className="pricing-original">{plan.original}</span>
-                  <span className="pricing-discount">{plan.discount}</span>
-                </>
+        {plans.map((plan, idx) => {
+          const PlanIcon = PLAN_ICONS[plan.id];
+          return (
+            <div
+              key={plan.id}
+              className={`pricing-card${idx === 1 ? " featured" : ""}`}
+            >
+              {idx === 1 && (
+                <div className="pricing-badge">
+                  <Crown size={13} /> Most Popular
+                </div>
               )}
+              <div className="pricing-icon"><PlanIcon size={22} /></div>
+              <h3>{plan.name}</h3>
+              <div className="pricing-price-row">
+                <span className="pricing-price">{plan.display}</span>
+                {plan.original && (
+                  <>
+                    <span className="pricing-original">{plan.original}</span>
+                    <span className="pricing-discount">{plan.discount}</span>
+                  </>
+                )}
+              </div>
+              <p className="pricing-summary">
+                {plan.id === "free" ? `${plan.questions} questions` : plan.questionSummary} • {plan.durationText}
+              </p>
+
+              <ul className="pricing-features">
+                {plan.features.map((f) => (
+                  <li key={f}><Check size={15} className="pricing-check" /> {f}</li>
+                ))}
+              </ul>
+
+              <div className="pricing-action">{planAction(plan)}</div>
             </div>
-            <p className="pricing-summary">
-              {plan.id === "free" ? `${plan.questions} questions` : plan.questionSummary} • {plan.durationText}
-            </p>
-
-            <ul className="pricing-features">
-              {plan.features.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
-
-            <div className="pricing-action">{planAction(plan)}</div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* FAQ */}
-      <div
-        style={{ marginTop: "3rem", maxWidth: "680px", margin: "3rem auto 0" }}
-      >
-        <h3
-          style={{
-            fontSize: "1.3rem",
-            fontWeight: 700,
-            color: "var(--color-dark)",
-            marginBottom: "1.5rem",
-            textAlign: "center",
-          }}
-        >
-          Frequently Asked Questions
-        </h3>
-        {[
-          {
-            q: "Is this a subscription?",
-            a: "No. Kno U Kno uses one-time pricing. Pay once and access your questions forever.",
-          },
-          {
-            q: "What happens after the free trial?",
-            a: "After 3 days, free trial access expires. Your account remains and you can upgrade to continue.",
-          },
-          {
-            q: "Can I get a refund?",
-            a: "We offer a 7-day money-back guarantee if you are not satisfied. Contact us with your purchase email.",
-          },
-          {
-            q: "How do I access my questions?",
-            a: "Once registered and logged in, go to your Dashboard. Questions unlock based on your plan immediately after payment.",
-          },
-        ].map((faq) => (
-          <div
-            key={faq.q}
-            style={{
-              marginBottom: "1.25rem",
-              borderBottom: "1px solid var(--color-border)",
-              paddingBottom: "1.25rem",
-            }}
-          >
-            <p
-              style={{
-                fontWeight: 700,
-                color: "var(--color-dark)",
-                marginBottom: "0.35rem",
-              }}
-            >
-              {faq.q}
-            </p>
-            <p
-              style={{
-                color: "var(--color-text-light)",
-                fontSize: "0.92rem",
-                lineHeight: 1.6,
-              }}
-            >
-              {faq.a}
-            </p>
-          </div>
-        ))}
+      <div className="pricing-faq">
+        <h3>Frequently Asked Questions</h3>
+        {FAQS.map((faq, idx) => {
+          const isOpen = openFaq === idx;
+          return (
+            <div key={faq.q} className={`faq-item${isOpen ? " open" : ""}`}>
+              <button
+                type="button"
+                className="faq-question"
+                onClick={() => setOpenFaq(isOpen ? -1 : idx)}
+                aria-expanded={isOpen}
+              >
+                <span>{faq.q}</span>
+                <ChevronDown size={18} className="faq-chevron" />
+              </button>
+              {isOpen && <p className="faq-answer">{faq.a}</p>}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
