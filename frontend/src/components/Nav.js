@@ -57,11 +57,19 @@ export default function Nav() {
               <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
               <Link to={workspaceLink()} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Question</Link>
               <Link to={workspaceLink('print')} className={backendClass('print')} onClick={() => setMenuOpen(false)}>Print</Link>
-              {hasAdvancedTools && <>
-                <Link to={workspaceLink('grade')} className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
-                <Link to={workspaceLink('rate')} className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
-                <Link to={workspaceLink('average')} className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
-              </>}
+              {hasAdvancedTools ? (
+                <>
+                  <Link to={workspaceLink('grade')} className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
+                  <Link to={workspaceLink('rate')} className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
+                  <Link to={workspaceLink('average')} className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
+                </>
+              ) : (
+                <>
+                  <span className="nav-link disabled" aria-disabled="true">Grade</span>
+                  <span className="nav-link disabled" aria-disabled="true">Rated</span>
+                  <span className="nav-link disabled" aria-disabled="true">Average</span>
+                </>
+              )}
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}
