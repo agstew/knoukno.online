@@ -30,21 +30,45 @@ export default function Dashboard() {
     }
   }
 
+  const used = user?.questionsUsed ?? 0;
+  const quota = user?.questionsQuota ?? 0;
+  const percentUsed = quota > 0 ? Math.min((used / quota) * 100, 100) : 0;
+
   return (
     <div className="dashboard container">
-      <h1>Your businesses</h1>
+      <div className="dashboard-header">
+        <div>
+          <h1>Your businesses</h1>
+          <p className="muted">Name a business, then work through Law, Location, Hiring, and People.</p>
+        </div>
+      </div>
+
       {user && (
-        <p style={{ color: "var(--gray)" }}>
-          Plan: <strong>{user.plan}</strong> - {user.questionsUsed}/{user.questionsQuota} questions used
-        </p>
+        <div className="plan-meter">
+          <div className="plan-meter-top">
+            <span>
+              Plan: <strong>{user.plan}</strong>
+            </span>
+            <span>
+              {used} / {quota} questions used
+            </span>
+          </div>
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${percentUsed}%` }} />
+          </div>
+          {used >= quota && (
+            <p style={{ margin: "10px 0 0", fontSize: 13.5 }}>
+              You're out of questions on this plan. <Link to="/price">Upgrade or add a bonus block.</Link>
+            </p>
+          )}
+        </div>
       )}
 
-      <form onSubmit={handleCreate} style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+      <form onSubmit={handleCreate} className="create-business-form">
         <input
-          placeholder="Name your business"
+          placeholder="Name your business, e.g. Riverside Coffee Co."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ flex: 1, padding: "10px 12px", border: "1px solid #d1d5db", borderRadius: 8 }}
         />
         <button className="btn btn-primary" type="submit">
           Create
@@ -53,16 +77,21 @@ export default function Dashboard() {
       {error && <p className="error-text">{error}</p>}
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="loading-text">Loading your businesses...</p>
       ) : businesses.length === 0 ? (
-        <p>No businesses yet. Name one above to answer your first question.</p>
+        <div className="empty-state">
+          <div className="empty-icon">📋</div>
+          <p>
+            <strong>No businesses yet.</strong> Name one above to answer your first question.
+          </p>
+        </div>
       ) : (
         <div className="business-list">
           {businesses.map((b) => (
             <div className="business-item" key={b._id}>
-              <span>{b.title}</span>
+              <span className="biz-title">{b.title}</span>
               <Link to={`/business/${b._id}`} className="btn btn-outline">
-                Open
+                Open →
               </Link>
             </div>
           ))}

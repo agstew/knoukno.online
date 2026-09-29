@@ -3,28 +3,54 @@ import { useParams } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 
-const STAGES = ["law", "location", "hiring", "people"];
+const STAGES = [
+  {
+    key: "law",
+    label: "Law",
+    description: "Choose the entity, register the name, and find out which licences and permits you need.",
+  },
+  {
+    key: "location",
+    label: "Location",
+    description: "Defend the rent against the revenue you expect, the zoning, and your backup plan.",
+  },
+  {
+    key: "hiring",
+    label: "Hiring",
+    description: "Decide what your first hire needs to cover and how you'll know within 30 days if it worked.",
+  },
+  {
+    key: "people",
+    label: "People",
+    description: "Describe who your customers are, what problem brings them in, and what makes them return.",
+  },
+];
 const GRADES = ["A", "B", "C", "D", "F"];
 
 export default function BusinessStage() {
   const { id: businessId } = useParams();
   const { token, user, setUser } = useAuth();
+  const [business, setBusiness] = useState(null);
   const [stage, setStage] = useState("law");
   const [questions, setQuestions] = useState([]);
   const [answersByQuestion, setAnswersByQuestion] = useState({});
   const [drafts, setDrafts] = useState({});
+  const [savedIds, setSavedIds] = useState({});
   const [average, setAverage] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [asking, setAsking] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const [qData, aData] = await Promise.all([
+      const [bData, qData, aData] = await Promise.all([
+        business ? Promise.resolve({ business }) : api.getBusiness(token, businessId),
         api.listQuestions(token, businessId, stage),
         api.listAnswers(token, businessId),
       ]);
+      setBusiness(bData.business);
       setQuestions(qData.questions);
       const byQ = {};
       aData.answers.forEach((a) => {
@@ -37,6 +63,7 @@ export default function BusinessStage() {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, businessId, stage]);
 
   useEffect(() => {
@@ -45,12 +72,15 @@ export default function BusinessStage() {
 
   async function handleNextQuestion() {
     setError("");
+    setAsking(true);
     try {
       const data = await api.nextQuestion(token, businessId, stage);
       setQuestions((prev) => [...prev, data.question]);
       setUser(data.user);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setAsking(false);
     }
   }
 
@@ -60,20 +90,26 @@ export default function BusinessStage() {
     try {
       const data = await api.saveAnswer(token, questionId, text);
       setAnswersByQuestion((prev) => ({ ...prev, [questionId]: data.answer }));
+      setSavedIds((prev) => ({ ...prev, [questionId]: true }));
+      setTimeout(() => setSavedIds((prev) => ({ ...prev, [questionId]: false })), 2000);
     } catch (err) {
       setError(err.message);
     }
   }
 
+  function updateAnswerInState(answer) {
+    setAnswersByQuestion((prev) => {
+      const next = { ...prev };
+      const qid = Object.keys(next).find((k) => next[k]._id === answer._id);
+      if (qid) next[qid] = answer;
+      return next;
+    });
+  }
+
   async function handleGrade(answerId, grade) {
     try {
       const data = await api.gradeAnswer(token, answerId, grade);
-      setAnswersByQuestion((prev) => {
-        const next = { ...prev };
-        const qid = Object.keys(next).find((k) => next[k]._id === answerId);
-        if (qid) next[qid] = data.answer;
-        return next;
-      });
+      updateAnswerInState(data.answer);
     } catch (err) {
       setError(err.message);
     }
@@ -82,12 +118,7 @@ export default function BusinessStage() {
   async function handleRank(answerId, rank) {
     try {
       const data = await api.rankAnswer(token, answerId, Number(rank));
-      setAnswersByQuestion((prev) => {
-        const next = { ...prev };
-        const qid = Object.keys(next).find((k) => next[k]._id === answerId);
-        if (qid) next[qid] = data.answer;
-        return next;
-      });
+      updateAnswerInState(data.answer);
     } catch (err) {
       setError(err.message);
     }
@@ -97,40 +128,62 @@ export default function BusinessStage() {
     () => (user ? Math.max(user.questionsQuota - user.questionsUsed, 0) : 0),
     [user]
   );
+  const currentStage = STAGES.find((s) => s.key === stage);
+  const answeredCount = questions.filter((q) => answersByQuestion[q._id]?.text).length;
 
   return (
     <div className="dashboard container">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Business plan</h1>
+      <div className="dashboard-header">
+        <div>
+          <h1>{business?.title || "Business plan"}</h1>
+          <p className="muted">
+            {answeredCount} of {questions.length} questions answered in {currentStage?.label}
+          </p>
+        </div>
         <button className="btn btn-outline no-print" onClick={() => window.print()}>
-          Print
+          🖨 Print plan
         </button>
       </div>
 
       <div className="stage-tabs">
         {STAGES.map((s) => (
           <button
-            key={s}
-            className={`stage-tab ${stage === s ? "active" : ""}`}
-            onClick={() => setStage(s)}
+            key={s.key}
+            className={`stage-tab ${stage === s.key ? "active" : ""}`}
+            onClick={() => setStage(s.key)}
           >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
+            {s.label}
           </button>
         ))}
       </div>
+      <p className="stage-description">{currentStage?.description}</p>
 
-      {average !== null && <p>Average grade points: {average.toFixed(2)} / 4.00</p>}
-      <p className="no-print">Questions remaining on your plan: {quotaRemaining}</p>
+      {average !== null && (
+        <p>
+          Average grade points: <strong>{average.toFixed(2)} / 4.00</strong>
+        </p>
+      )}
+      <p className="muted no-print">Questions remaining on your plan: {quotaRemaining}</p>
       {error && <p className="error-text">{error}</p>}
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="loading-text">Loading your questions...</p>
       ) : (
         <>
-          {questions.map((q) => {
+          {questions.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-icon">✍️</div>
+              <p>
+                <strong>No questions yet for {currentStage?.label}.</strong> Ask the first one below.
+              </p>
+            </div>
+          )}
+
+          {questions.map((q, i) => {
             const answer = answersByQuestion[q._id];
             return (
               <div className="question-card" key={q._id}>
+                <span className="question-index">Question {i + 1}</span>
                 <p className="question-text">{q.text}</p>
                 <textarea
                   rows={4}
@@ -142,6 +195,7 @@ export default function BusinessStage() {
                   <button className="btn btn-outline" onClick={() => handleSaveAnswer(q._id)}>
                     Save answer
                   </button>
+                  {savedIds[q._id] && <span className="save-indicator">Saved ✓</span>}
                   {answer && (
                     <>
                       <select
@@ -168,12 +222,21 @@ export default function BusinessStage() {
                     </>
                   )}
                 </div>
+                {answer?.grade && (
+                  <span className={`grade-badge ${answer.grade}`} style={{ marginTop: 10 }}>
+                    {answer.grade}
+                  </span>
+                )}
               </div>
             );
           })}
 
-          <button className="btn btn-primary no-print" onClick={handleNextQuestion} disabled={quotaRemaining <= 0}>
-            Ask the next question
+          <button
+            className="btn btn-primary no-print"
+            onClick={handleNextQuestion}
+            disabled={quotaRemaining <= 0 || asking}
+          >
+            {asking ? "Asking..." : "Ask the next question"}
           </button>
         </>
       )}

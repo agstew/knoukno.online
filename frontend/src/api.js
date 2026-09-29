@@ -24,6 +24,7 @@ export const api = {
 
   listBusinesses: (token) => request("/businesses", { token }),
   createBusiness: (token, title) => request("/businesses", { method: "POST", body: { title }, token }),
+  getBusiness: (token, id) => request(`/businesses/${id}`, { token }),
 
   listQuestions: (token, businessId, stage) =>
     request(`/questions?businessId=${businessId}&stage=${stage}`, { token }),
