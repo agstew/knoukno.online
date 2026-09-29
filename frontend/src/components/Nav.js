@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Menu, X } from 'lucide-react';
 
 export default function Nav() {
-  const { isAuthenticated, isAdmin, logout, tier } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,14 +17,14 @@ export default function Nav() {
 
   const isActive = (path) => location.pathname === path ? 'nav-link active' : 'nav-link';
 
-  const focus = new URLSearchParams(location.search).get('focus') || '';
+  const activeBusinessTitle = localStorage.getItem('kk_active_business_title') || '';
+  const workspaceQuery = activeBusinessTitle ? `?${new URLSearchParams({ clientTitle: activeBusinessTitle }).toString()}` : '';
   const backendActive = (name) => {
     if (name === 'title') return location.pathname === '/list';
-    if (name === 'questions') return ['/dashboard', '/title'].includes(location.pathname) && !focus;
-    return ['/dashboard', '/title'].includes(location.pathname) && focus === name;
+    if (name === 'questions') return ['/dashboard', '/title', '/questions'].includes(location.pathname);
+    return location.pathname === `/${name}`;
   };
   const backendClass = (name) => backendActive(name) ? 'nav-link active' : 'nav-link';
-  const hasAdvancedTools = isAdmin || tier === 'members' || tier === 'pro';
 
   return (
     <nav className="nav" aria-label="Main navigation">
@@ -41,14 +41,9 @@ export default function Nav() {
           {isAuthenticated ? (
             <>
               <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
-              <Link to="/dashboard?tab=questions" className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
-              {hasAdvancedTools && (
-                <>
-                  <Link to="/dashboard?tab=questions&focus=grade" className={backendClass('grade')} onClick={() => setMenuOpen(false)}>Grade</Link>
-                  <Link to="/dashboard?tab=questions&focus=rate" className={backendClass('rate')} onClick={() => setMenuOpen(false)}>Rated</Link>
-                  <Link to="/dashboard?focus=average" className={backendClass('average')} onClick={() => setMenuOpen(false)}>Average</Link>
-                </>
-              )}
+              <Link to={`/questions${workspaceQuery}`} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
+              <Link to={`/example${workspaceQuery}`} className={backendClass('example')} onClick={() => setMenuOpen(false)}>Example</Link>
+              <Link to={`/answers${workspaceQuery}`} className={backendClass('answers')} onClick={() => setMenuOpen(false)}>Answers</Link>
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}

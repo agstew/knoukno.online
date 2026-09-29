@@ -72,6 +72,7 @@ export default function TitleList() {
   };
 
   const open = (title) => {
+    localStorage.setItem('kk_active_business_title', title.businessTitle);
     navigate(`/dashboard?${new URLSearchParams({ clientTitle: title.businessTitle, tab: 'questions' }).toString()}`);
   };
 
