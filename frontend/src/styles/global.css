@@ -228,13 +228,13 @@ img {
 }
 
 .nav-tier-badge.pro {
-  background: #ffeaa7;
-  color: #d68910;
+  background: #0b0b0b;
+  color: #ffffff;
 }
 
 .nav-tier-badge.members {
-  background: #d5f5e3;
-  color: #1e8449;
+  background: #1e90ff;
+  color: #ffffff;
 }
 
 /* ---------- Buttons ---------- */
@@ -454,16 +454,16 @@ textarea.form-control {
   color: #1a5276;
 }
 .badge-members {
-  background: #d5f5e3;
-  color: #1e8449;
+  background: #e8f3ff;
+  color: #0874d1;
 }
 .badge-pro {
-  background: #fef9e7;
-  color: #9a7d0a;
+  background: #0b0b0b;
+  color: #ffffff;
 }
 .badge-admin {
-  background: #fde8e8;
-  color: #922b21;
+  background: #0b0b0b;
+  color: #ffffff;
 }
 
 /* ---------- Tables ---------- */
@@ -1292,7 +1292,7 @@ tbody tr:hover {
   margin-bottom: 3rem;
   padding: 2rem;
   border: 1px solid rgba(11, 11, 11, 0.08);
-  border-top: 5px solid #ffd700;
+  border-top: 5px solid #1e90ff;
   border-radius: 12px;
   background: var(--color-white);
   box-shadow: var(--shadow);
