@@ -94,7 +94,6 @@ Copy `backend/.env.example` to `backend/.env` for local development. Never commi
 | `JWT_SECRET` | Secret used to sign login tokens; production requires at least 32 characters |
 | `JWT_EXPIRE` | Login token lifetime, such as `7d` |
 | `CLIENT_URL` | Public frontend origin and payment return URL |
-| `CLIENT_URLS` | Comma-separated browser origins allowed by CORS |
 | `PAYPAL_ENV` | `sandbox` for testing or `live` for real payments |
 | `PAYPAL_CLIENT_ID` | PayPal application client ID |
 | `PAYPAL_CLIENT_SECRET` | PayPal application secret |
@@ -145,7 +144,7 @@ Administrators can open `/admin` to manage plans and platform content. Setting a
 
 ## Production Deployment
 
-The root `Dockerfile` builds the React application with `https://www.knoukno.net` as its production API origin, installs production backend dependencies, copies the frontend build into `backend/public`, and starts Express. The public frontend runs on `knoukno.online`; API traffic is sent to `www.knoukno.net`.
+The root `Dockerfile` builds the React application, installs production backend dependencies, copies the frontend build into `backend/public`, and starts Express. The frontend and `/api` are served together from `knoukno.online`.
 
 On Railway:
 

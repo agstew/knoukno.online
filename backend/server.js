@@ -22,25 +22,8 @@ if (process.env.NODE_ENV === 'production' && (!process.env.MONGO_URI || !process
   throw new Error('Production requires MONGO_URI and a JWT_SECRET of at least 32 characters.');
 }
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      connectSrc: ["'self'", 'https://www.knoukno.net']
-    }
-  }
-}));
-const allowedOrigins = new Set([
-  ...(process.env.CLIENT_URLS || '').split(','),
-  process.env.CLIENT_URL || 'http://localhost:3000'
-].map(origin => origin.trim()).filter(Boolean));
-
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
-    return callback(new Error('Origin is not allowed by CORS'));
-  },
-  credentials: true
-}));
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000', credentials: true }));
 
 app.use(express.json());
 

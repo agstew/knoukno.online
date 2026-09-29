@@ -1,6 +1,4 @@
-const configuredOrigin = (process.env.REACT_APP_API_URL || '').replace(/\/$/, '');
-
-export const API_ORIGIN = configuredOrigin;
+export const API_ORIGIN = '';
 
 export const apiUrl = (path) => {
   if (/^https?:\/\//i.test(path)) return path;
