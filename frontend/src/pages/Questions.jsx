@@ -108,8 +108,14 @@ export default function Questions({
             <div className="question-title">Client Prompt</div>
             <p className="question-text">{currentQuestion.questionText}</p>
 
-            <div className="answer-section">
-              <label htmlFor="answer-textarea">Client Response</label>
+            <section id="example-section" className="question-example question-workspace-section">
+              <h3>Example</h3>
+              <p>{currentQuestion.example || 'No example has been added for this question yet.'}</p>
+              <small>This is only an example. The answer still comes from you.</small>
+            </section>
+
+            <section id="answers-section" className="answer-section question-workspace-section">
+              <label htmlFor="answer-textarea">Answers</label>
               <p className="answer-help">Write the client's decision, evidence, tradeoffs, and stop-or-pivot trigger here. Save stores this page in MongoDB.</p>
               <textarea
                 id="answer-textarea"
@@ -119,7 +125,7 @@ export default function Questions({
                 onChange={(event) => onAnswerChange?.(event.target.value)}
                 placeholder="Write the client's decision-quality answer here: choice, rejected option, proof, risk controls, and trigger to change direction"
               />
-            </div>
+            </section>
 
             <div className="question-actions">
               <button type="button" className="btn btn-secondary" onClick={onPrevQuestion} disabled={!canGoPrev}>
@@ -133,12 +139,6 @@ export default function Questions({
               </button>
             </div>
 
-            {currentQuestion.example && (
-              <div className="question-example">
-                <strong>Benchmark Guidance</strong>
-                {currentQuestion.example}
-              </div>
-            )}
           </div>
         ) : null}
       </div>

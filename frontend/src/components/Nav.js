@@ -19,10 +19,13 @@ export default function Nav() {
 
   const activeBusinessTitle = localStorage.getItem('kk_active_business_title') || '';
   const workspaceQuery = activeBusinessTitle ? `?${new URLSearchParams({ clientTitle: activeBusinessTitle }).toString()}` : '';
+  const workspacePath = `/questions${workspaceQuery}`;
   const backendActive = (name) => {
     if (name === 'title') return location.pathname === '/list';
-    if (name === 'questions') return ['/dashboard', '/title', '/questions'].includes(location.pathname);
-    return location.pathname === `/${name}`;
+    if (!['/dashboard', '/title', '/questions'].includes(location.pathname)) return false;
+    if (name === 'example') return location.hash === '#example-section';
+    if (name === 'answers') return location.hash === '#answers-section';
+    return name === 'questions' && !['#example-section', '#answers-section'].includes(location.hash);
   };
   const backendClass = (name) => backendActive(name) ? 'nav-link active' : 'nav-link';
 
@@ -41,9 +44,9 @@ export default function Nav() {
           {isAuthenticated ? (
             <>
               <Link to="/list" className={backendClass('title')} onClick={() => setMenuOpen(false)}>Title</Link>
-              <Link to={`/questions${workspaceQuery}`} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
-              <Link to={`/example${workspaceQuery}`} className={backendClass('example')} onClick={() => setMenuOpen(false)}>Example</Link>
-              <Link to={`/answers${workspaceQuery}`} className={backendClass('answers')} onClick={() => setMenuOpen(false)}>Answers</Link>
+              <Link to={workspacePath} className={backendClass('questions')} onClick={() => setMenuOpen(false)}>Questions</Link>
+              <Link to={`${workspacePath}#example-section`} className={backendClass('example')} onClick={() => setMenuOpen(false)}>Example</Link>
+              <Link to={`${workspacePath}#answers-section`} className={backendClass('answers')} onClick={() => setMenuOpen(false)}>Answers</Link>
               {isAdmin && (
                 <Link to="/admin" className={isActive('/admin')} onClick={() => setMenuOpen(false)}>Admin</Link>
               )}

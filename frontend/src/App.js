@@ -14,8 +14,6 @@ import Price from './pages/Price';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import TitleList from './pages/TitleList';
-import ExamplePage from './pages/ExamplePage';
-import AnswersPage from './pages/AnswersPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, authLoading } = useAuth();
@@ -48,8 +46,6 @@ function App() {
           <Route path="/questions" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/title" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/list" element={<ProtectedRoute><TitleList /></ProtectedRoute>} />
-          <Route path="/example" element={<ProtectedRoute><ExamplePage /></ProtectedRoute>} />
-          <Route path="/answers" element={<ProtectedRoute><AnswersPage /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         </Routes>
       </main>
