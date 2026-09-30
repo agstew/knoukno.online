@@ -387,6 +387,10 @@ export default function Dashboard() {
   const [titles, setTitles] = useState(null);
   const QUESTIONS_PER_PAGE = 1;
 
+  const titleNotFound = Boolean(
+    clientTitle && titles != null && !titles.some((item) => item.businessTitle === clientTitle)
+  );
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('payment') === 'success') {
@@ -438,10 +442,6 @@ export default function Dashboard() {
       fetchTitles();
     }
   }, [token]);
-
-  const titleNotFound = Boolean(
-    clientTitle && titles != null && !titles.some((item) => item.businessTitle === clientTitle)
-  );
 
   const fetchSavedAnswers = useCallback(async () => {
     setLoadingAnswers(true);
