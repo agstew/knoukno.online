@@ -388,7 +388,9 @@ export default function Price() {
       )}
 
       <div className="pricing-grid">
-        {plans.map((plan, idx) => {
+        {plans
+          .filter((plan) => plan.id !== "bonus" || currentTier === "members" || currentTier === "pro")
+          .map((plan, idx) => {
           const PlanIcon = PLAN_ICONS[plan.id];
           return (
             <div
