@@ -55,6 +55,7 @@ export default function AdminDashboard() {
   const [applications, setApplications] = useState([]);
   const [apPage, setAPPage] = useState(1);
   const [apTotalPages, setAPTotalPages] = useState(1);
+  const [viewingApplication, setViewingApplication] = useState(null);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
@@ -640,6 +641,21 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Application Message Viewer Modal */}
+      {viewingApplication && (
+        <div className="modal-overlay" onClick={() => setViewingApplication(null)}>
+          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Message from {viewingApplication.name}</h3>
+              <button type="button" className="modal-close" aria-label="Close" onClick={() => setViewingApplication(null)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <p style={{ whiteSpace: 'pre-wrap' }}>{viewingApplication.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Questions Tab */}
       {tab === 'questions' && (
         <div>
@@ -842,7 +858,11 @@ export default function AdminDashboard() {
                         <td style={{ fontSize: '0.85rem' }}>{a.email}</td>
                         <td style={{ fontSize: '0.85rem' }}>{a.phone || '—'}</td>
                         <td>{a.position}</td>
-                        <td style={{ fontSize: '0.82rem', color: 'var(--color-text-light)', maxWidth: '220px' }}>
+                        <td
+                          style={{ fontSize: '0.82rem', color: 'var(--color-text-light)', maxWidth: '220px', cursor: a.message ? 'pointer' : 'default' }}
+                          onClick={() => a.message && setViewingApplication(a)}
+                          title={a.message ? 'Click to read full message' : ''}
+                        >
                           {a.message ? a.message.substring(0, 80) + '…' : <em>No message</em>}
                         </td>
                         <td>
