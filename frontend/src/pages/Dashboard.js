@@ -314,7 +314,7 @@ const API = (path, token, opts = {}) =>
     }
   });
 
-function TierBanner({ tier, tierExpiry, isAdmin }) {
+function TierBanner({ tier, tierExpiry, isAdmin, bonusQuestions }) {
   const tierLabel = tier === 'pro' ? 'Pro' : tier === 'members' ? 'Members' : 'Free';
   const expiryDate = tierExpiry ? new Date(tierExpiry) : null;
   const daysLeft = expiryDate ? Math.ceil((expiryDate - Date.now()) / 86400000) : null;
@@ -326,6 +326,9 @@ function TierBanner({ tier, tierExpiry, isAdmin }) {
     <div className="tier-banner">
       <div className="tier-info">
         <strong>Plan: {tierLabel}</strong>
+        {bonusQuestions > 0 && (
+          <span style={{ marginLeft: '0.75rem' }}> · +{bonusQuestions} bonus questions</span>
+        )}
         {tier === 'free' && daysLeft !== null && !isExpired && (
           <span style={{ marginLeft: '0.75rem', color: daysLeft <= 1 ? 'var(--color-danger)' : 'inherit' }}>
             {' '}
@@ -990,7 +993,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <TierBanner tier={account?.tier || tier} tierExpiry={account?.tierExpiry || tierExpiry} isAdmin={isAdmin} />
+      <TierBanner tier={account?.tier || tier} tierExpiry={account?.tierExpiry || tierExpiry} isAdmin={isAdmin} bonusQuestions={account?.bonusQuestions || 0} />
 
       {titleNotFound ? (
         <section className="question-card">
