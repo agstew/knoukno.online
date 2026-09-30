@@ -56,6 +56,7 @@ export default function AdminDashboard() {
   const [apPage, setAPPage] = useState(1);
   const [apTotalPages, setAPTotalPages] = useState(1);
   const [viewingApplication, setViewingApplication] = useState(null);
+  const [statusDrafts, setStatusDrafts] = useState({});
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
@@ -299,7 +300,12 @@ export default function AdminDashboard() {
       if (res.ok) {
         const updated = await res.json();
         setApplications(prev => prev.map(a => (a._id === updated._id ? updated : a)));
-        flash(`Status updated to "${status}".`, 'success');
+        setStatusDrafts(prev => {
+          const next = { ...prev };
+          delete next[id];
+          return next;
+        });
+        flash(`Status updated to "${status}".`);
       } else {
         const data = await res.json();
         flash(data.message || 'Could not update status.', 'danger');
@@ -867,19 +873,29 @@ export default function AdminDashboard() {
                           {a.message ? a.message.substring(0, 80) + '…' : <em>No message</em>}
                         </td>
                         <td>
-                          <select
-                            className="form-control form-select"
-                            style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
-                            value={a.status}
-                            onChange={(e) => changeApplicationStatus(a._id, e.target.value)}
-                            aria-label={`Status for ${a.email}`}
-                          >
-                            <option value="new">new</option>
-                            <option value="reviewed">reviewed</option>
-                            <option value="contacted">contacted</option>
-                            <option value="rejected">rejected</option>
-                            <option value="hired">hired</option>
-                          </select>
+                          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                            <select
+                              className="form-control form-select"
+                              style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
+                              value={statusDrafts[a._id] ?? a.status}
+                              onChange={(e) => setStatusDrafts(prev => ({ ...prev, [a._id]: e.target.value }))}
+                              aria-label={`Status for ${a.email}`}
+                            >
+                              <option value="new">new</option>
+                              <option value="reviewed">reviewed</option>
+                              <option value="contacted">contacted</option>
+                              <option value="rejected">rejected</option>
+                              <option value="hired">hired</option>
+                            </select>
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-sm"
+                              disabled={(statusDrafts[a._id] ?? a.status) === a.status}
+                              onClick={() => changeApplicationStatus(a._id, statusDrafts[a._id] ?? a.status)}
+                            >
+                              Save
+                            </button>
+                          </div>
                         </td>
                         <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)', whiteSpace: 'nowrap' }}>
                           {new Date(a.submittedAt).toLocaleDateString()}
