@@ -37,6 +37,8 @@ const gradeLabel = (grade) => {
   return `${pointsToLetter(points)} (${points})`;
 };
 
+const ALL_USERS_ID = '__all__';
+
 export default function AdminDashboard() {
   const { user } = useAuth();
   const token = localStorage.getItem('token');
@@ -133,7 +135,7 @@ export default function AdminDashboard() {
     }
     setEmailPanelUserId(userId);
     setEmailForm({ subject: '', message: '' });
-    if (!emailHistory[userId]) {
+    if (userId !== ALL_USERS_ID && !emailHistory[userId]) {
       try {
         const res = await API(`/api/admin/users/${userId}/messages`, token);
         if (res.ok) {
@@ -151,12 +153,15 @@ export default function AdminDashboard() {
     }
     setSendingEmail(true);
     try {
-      const res = await API(`/api/admin/users/${userId}/messages`, token, { method: 'POST', body: JSON.stringify(emailForm) });
+      const path = userId === ALL_USERS_ID ? '/api/admin/users/broadcast' : `/api/admin/users/${userId}/messages`;
+      const res = await API(path, token, { method: 'POST', body: JSON.stringify(emailForm) });
       const data = await res.json();
       if (res.ok) {
-        flash('Email sent.');
+        flash(userId === ALL_USERS_ID ? data.message : 'Email sent.');
         setEmailForm({ subject: '', message: '' });
-        setEmailHistory(prev => ({ ...prev, [userId]: [data.record, ...(prev[userId] || [])] }));
+        if (userId !== ALL_USERS_ID) {
+          setEmailHistory(prev => ({ ...prev, [userId]: [data.record, ...(prev[userId] || [])] }));
+        }
       } else {
         flash(data.message || 'Could not send email.', 'danger');
         if (data.record) setEmailHistory(prev => ({ ...prev, [userId]: [data.record, ...(prev[userId] || [])] }));
@@ -322,6 +327,9 @@ export default function AdminDashboard() {
       {/* Users Tab */}
       {tab === 'users' && (
         <div>
+          <div style={{ marginBottom: '1rem' }}>
+            <button type="button" className="btn btn-primary btn-sm" onClick={() => toggleEmailPanel(ALL_USERS_ID)}>Email All Users</button>
+          </div>
           {loading ? (
             <div className="spinner-wrap"><div className="spinner"></div></div>
           ) : (
@@ -379,12 +387,13 @@ export default function AdminDashboard() {
 
       {/* Email Modal */}
       {emailPanelUserId && (() => {
-        const emailUser = users.find(u => u._id === emailPanelUserId);
+        const isBroadcast = emailPanelUserId === ALL_USERS_ID;
+        const emailUser = isBroadcast ? null : users.find(u => u._id === emailPanelUserId);
         return (
           <div className="modal-overlay" onClick={() => setEmailPanelUserId(null)}>
             <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h3>Email {emailUser?.email}</h3>
+                <h3>{isBroadcast ? 'Email All Users' : `Email ${emailUser?.email}`}</h3>
                 <button type="button" className="modal-close" aria-label="Close" onClick={() => setEmailPanelUserId(null)}>&times;</button>
               </div>
               <div className="modal-body">
@@ -404,28 +413,32 @@ export default function AdminDashboard() {
                     rows={5}
                     value={emailForm.message}
                     onChange={(e) => setEmailForm(prev => ({ ...prev, message: e.target.value }))}
-                    placeholder={`Write a message to ${emailUser?.email}\u2026`}
+                    placeholder={isBroadcast ? `Write a message to all ${users.length} users\u2026` : `Write a message to ${emailUser?.email}\u2026`}
                   />
                 </div>
                 <button type="button" className="btn btn-primary btn-sm" disabled={sendingEmail} onClick={() => sendEmailToUser(emailPanelUserId)}>
-                  {sendingEmail ? 'Sending\u2026' : 'Send Email'}
+                  {sendingEmail ? 'Sending\u2026' : isBroadcast ? `Send to All ${users.length} Users` : 'Send Email'}
                 </button>
 
-                <h4 style={{ marginTop: '1rem', fontSize: '0.9rem' }}>Sent history</h4>
-                {!emailHistory[emailPanelUserId] || emailHistory[emailPanelUserId].length === 0 ? (
-                  <p style={{ color: 'var(--color-muted)', fontSize: '0.85rem' }}>No emails sent yet.</p>
-                ) : (
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {emailHistory[emailPanelUserId].map((m) => (
-                      <li key={m._id} style={{ borderTop: '1px solid var(--color-border)', padding: '0.5rem 0', fontSize: '0.85rem' }}>
-                        <strong>{m.subject}</strong>{' '}
-                        <span className={`badge badge-${m.status === 'sent' ? 'active' : 'danger'}`}>{m.status}</span>
-                        <div style={{ color: 'var(--color-muted)' }}>{new Date(m.sentAt).toLocaleString()}</div>
-                        <div style={{ whiteSpace: 'pre-wrap' }}>{m.message}</div>
-                        {m.error && <div style={{ color: 'var(--color-danger, #c0392b)' }}>{m.error}</div>}
-                      </li>
-                    ))}
-                  </ul>
+                {!isBroadcast && (
+                  <>
+                    <h4 style={{ marginTop: '1rem', fontSize: '0.9rem' }}>Sent history</h4>
+                    {!emailHistory[emailPanelUserId] || emailHistory[emailPanelUserId].length === 0 ? (
+                      <p style={{ color: 'var(--color-muted)', fontSize: '0.85rem' }}>No emails sent yet.</p>
+                    ) : (
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        {emailHistory[emailPanelUserId].map((m) => (
+                          <li key={m._id} style={{ borderTop: '1px solid var(--color-border)', padding: '0.5rem 0', fontSize: '0.85rem' }}>
+                            <strong>{m.subject}</strong>{' '}
+                            <span className={`badge badge-${m.status === 'sent' ? 'active' : 'danger'}`}>{m.status}</span>
+                            <div style={{ color: 'var(--color-muted)' }}>{new Date(m.sentAt).toLocaleString()}</div>
+                            <div style={{ whiteSpace: 'pre-wrap' }}>{m.message}</div>
+                            {m.error && <div style={{ color: 'var(--color-danger, #c0392b)' }}>{m.error}</div>}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
                 )}
               </div>
             </div>

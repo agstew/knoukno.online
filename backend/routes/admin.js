@@ -76,6 +76,41 @@ router.post('/users/:id/messages', async (req, res) => {
   }
 });
 
+// POST /api/admin/users/broadcast
+router.post('/users/broadcast', async (req, res) => {
+  try {
+    const { subject, message } = req.body;
+    if (!subject?.trim() || !message?.trim()) {
+      return res.status(400).json({ message: 'Subject and message are required.' });
+    }
+    if (!mailer.isConfigured()) {
+      return res.status(502).json({ message: 'Email is not configured on the server.' });
+    }
+
+    const users = await User.find().select('_id email');
+    let sent = 0;
+    let failed = 0;
+
+    for (const user of users) {
+      let status = 'sent';
+      let error;
+      try {
+        await mailer.sendMail({ to: user.email, subject, text: message });
+        sent += 1;
+      } catch (sendErr) {
+        status = 'failed';
+        error = sendErr.message;
+        failed += 1;
+      }
+      await AdminMessage.create({ userId: user._id, toEmail: user.email, subject, message, status, error });
+    }
+
+    res.status(201).json({ message: `Sent to ${sent} of ${users.length} users.`, sent, failed, total: users.length });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // DELETE /api/admin/users/:id
 router.delete('/users/:id', async (req, res) => {
   try {
