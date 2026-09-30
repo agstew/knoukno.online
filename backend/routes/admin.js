@@ -37,6 +37,22 @@ router.put('/users/:id/plan', async (req, res) => {
   }
 });
 
+// PUT /api/admin/users/:id/bonus
+router.put('/users/:id/bonus', async (req, res) => {
+  try {
+    const bonusQuestions = Number(req.body.bonusQuestions);
+    if (!Number.isFinite(bonusQuestions) || bonusQuestions < 0) {
+      return res.status(400).json({ message: 'Bonus questions must be a non-negative number.' });
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, { bonusQuestions }, { new: true })
+      .select('-password -resetPasswordToken -resetPasswordExpires');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // GET /api/admin/users/:id/messages
 router.get('/users/:id/messages', async (req, res) => {
   try {

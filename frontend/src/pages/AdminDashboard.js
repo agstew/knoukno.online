@@ -112,6 +112,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const changeBonus = async (userId, bonusQuestions) => {
+    try {
+      const res = await API(`/api/admin/users/${userId}/bonus`, token, { method: 'PUT', body: JSON.stringify({ bonusQuestions }) });
+      if (res.ok) {
+        const updated = await res.json();
+        setUsers(prev => prev.map(u => (u._id === updated._id ? updated : u)));
+        flash('Bonus questions updated.');
+      } else {
+        const data = await res.json();
+        flash(data.message || 'Could not update bonus questions.', 'danger');
+      }
+    } catch {
+      flash('Network error updating bonus questions.', 'danger');
+    }
+  };
+
   const deleteUser = async (userId, email) => {
     if (!window.confirm(`Delete ${email} and all their saved answers and businesses? This cannot be undone.`)) return;
     try {
@@ -340,6 +356,7 @@ export default function AdminDashboard() {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Plan</th>
+                    <th>Bonus</th>
                     <th>Role</th>
                     <th>Joined</th>
                     <th>Avg Grade</th>
@@ -349,7 +366,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
-                    <tr><td colSpan={8} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
+                    <tr><td colSpan={9} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
                   ) : users.map(u => (
                     <tr key={u._id}>
                       <td>{u.name}</td>
@@ -366,6 +383,23 @@ export default function AdminDashboard() {
                           <option value="members">members</option>
                           <option value="pro">pro</option>
                         </select>
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          className="form-control"
+                          style={{ width: '5.5rem', padding: '0.3rem 0.5rem' }}
+                          defaultValue={u.bonusQuestions || 0}
+                          aria-label={`Bonus questions for ${u.email}`}
+                          onBlur={(e) => {
+                            const value = Number(e.target.value);
+                            if (value !== (u.bonusQuestions || 0)) changeBonus(u._id, value);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') e.target.blur();
+                          }}
+                        />
                       </td>
                       <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
                       <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
