@@ -1109,13 +1109,13 @@ tbody tr:hover {
 }
 
 .pricing-original {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--color-muted);
   text-decoration: line-through;
 }
 
 .pricing-discount {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--color-success);
   margin-left: 0.4rem;
