@@ -9,6 +9,15 @@ export const GRADE_OPTIONS = [
   { letter: 'F', points: 0 }
 ];
 
+// Points are earned on the 0-100 scale above; thresholds are the midpoints between those values.
+export const pointsToLetter = (points) => {
+  if (points >= 92.5) return 'A';
+  if (points >= 77.5) return 'B';
+  if (points >= 62.5) return 'C';
+  if (points >= 27.5) return 'D';
+  return 'F';
+};
+
 export default function GradeButton({ active, to }) {
   return <Link className={`tab-btn${active ? ' active' : ''}`} aria-current={active ? 'page' : undefined} to={to}>Grade</Link>;
 }
@@ -16,6 +25,7 @@ export default function GradeButton({ active, to }) {
 export function GradePanel({ answers, divisor, divisorOptions, onDivisorChange, onGradeChange, savingGradeId, gradeFeedback, selectedTitle }) {
   const graded = answers.filter((answer) => Number.isFinite(Number(answer.grade)) && answer.grade != null);
   const total = graded.reduce((sum, answer) => sum + Number(answer.grade), 0);
+  const average = graded.length ? total / graded.length : null;
 
   return (
     <section className="question-card" id="grade-panel">
@@ -28,7 +38,7 @@ export function GradePanel({ answers, divisor, divisorOptions, onDivisorChange, 
         <select id="grade-divisor" className="input" value={divisor} onChange={(event) => onDivisorChange(Number(event.target.value))}>
           {divisorOptions.map((option) => <option value={option} key={option}>{option}</option>)}
         </select>
-        <strong>{total} / {divisor * 100} points</strong>
+        <strong>{average == null ? 'Not graded yet' : `${pointsToLetter(average)} average (${graded.length} of ${divisor} graded)`}</strong>
       </div>
       {gradeFeedback && <p className="answer-help" role="status">{gradeFeedback}</p>}
       {answers.length === 0 ? <p className="answer-help">Save an answer first to grade it.</p> : (
