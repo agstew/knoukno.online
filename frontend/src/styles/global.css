@@ -1023,7 +1023,7 @@ tbody tr:hover {
 
 .pricing-section h2 {
   text-align: center;
-  font-size: 1.9rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-dark);
   margin-bottom: 0.5rem;
@@ -1079,14 +1079,14 @@ tbody tr:hover {
 }
 
 .pricing-card h3 {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--color-dark);
   margin-bottom: 0.5rem;
 }
 
 .pricing-price {
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: var(--color-secondary-dark);
   line-height: 1;
