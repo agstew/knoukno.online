@@ -384,6 +384,7 @@ export default function Dashboard() {
   const [savingGradeId, setSavingGradeId] = useState(null);
   const [savingRateId, setSavingRateId] = useState(null);
   const [saveTrace, setSaveTrace] = useState(null);
+  const [titles, setTitles] = useState(null);
   const QUESTIONS_PER_PAGE = 1;
 
   useEffect(() => {
@@ -394,13 +395,18 @@ export default function Dashboard() {
   }, [location.search]);
 
   useEffect(() => {
+    if (titleNotFound) {
+      document.title = 'Business not found | KNO U KNO';
+      return;
+    }
+
     if (selectedTitle) {
       document.title = `${selectedTitle} | KNO U KNO`;
       return;
     }
 
     document.title = 'Dashboard | KNO U KNO';
-  }, [selectedTitle]);
+  }, [selectedTitle, titleNotFound]);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -416,6 +422,26 @@ export default function Dashboard() {
       fetchAccount();
     }
   }, [token]);
+
+  useEffect(() => {
+    const fetchTitles = async () => {
+      try {
+        const res = await API('/api/titles', token);
+        if (res.ok) {
+          const data = await res.json();
+          setTitles(data.titles || []);
+        }
+      } catch {}
+    };
+
+    if (token) {
+      fetchTitles();
+    }
+  }, [token]);
+
+  const titleNotFound = Boolean(
+    clientTitle && titles != null && !titles.some((item) => item.businessTitle === clientTitle)
+  );
 
   const fetchSavedAnswers = useCallback(async () => {
     setLoadingAnswers(true);
@@ -973,7 +999,13 @@ export default function Dashboard() {
 
       <TierBanner tier={account?.tier || tier} tierExpiry={account?.tierExpiry || tierExpiry} isAdmin={isAdmin} />
 
-      {focus === 'print' ? (
+      {titleNotFound ? (
+        <section className="question-card">
+          <h2>Business title not found</h2>
+          <p>"{clientTitle}" no longer exists on your account. Pick a business from your list to continue.</p>
+          <Link to="/list" className="btn btn-primary">Go to your business titles</Link>
+        </section>
+      ) : focus === 'print' ? (
         <section className="question-card" id="print-panel">
           <h2>Print</h2>
           <p>Print all saved answers for {selectedTitle || 'your workspace'}.</p>
