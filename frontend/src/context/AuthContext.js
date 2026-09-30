@@ -21,17 +21,24 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       const decoded = parseJwt(token);
       if (decoded && decoded.exp * 1000 > Date.now()) {
+        // Show the user as logged in immediately from the token we already trust,
+        // then refresh with the full account in the background.
+        setUser(decoded);
+        setAuthLoading(false);
         apiFetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } })
           .then(async (res) => {
-            if (!res.ok) throw new Error('Invalid session');
+            if (res.status === 401 || res.status === 403) {
+              localStorage.removeItem('token');
+              setUser(null);
+              return;
+            }
+            if (!res.ok) return; // transient/server error - keep the existing session
             const account = await res.json();
             setUser({ ...decoded, ...account, id: account._id || decoded.id });
           })
           .catch(() => {
-            localStorage.removeItem('token');
-            setUser(null);
-          })
-          .finally(() => setAuthLoading(false));
+            // Network error - keep the optimistic session, don't force a logout.
+          });
       } else {
         localStorage.removeItem('token');
         setAuthLoading(false);
@@ -58,15 +65,20 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (!token) return null;
     const decoded = parseJwt(token);
-    const res = await apiFetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) {
-      logout();
-      return null;
+    try {
+      const res = await apiFetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
+      if (res.status === 401 || res.status === 403) {
+        logout();
+        return null;
+      }
+      if (!res.ok) return decoded; // transient/server error - don't log out
+      const account = await res.json();
+      const nextUser = { ...decoded, ...account, id: account._id || decoded?.id };
+      setUser(nextUser);
+      return nextUser;
+    } catch {
+      return decoded; // network error - keep the existing session
     }
-    const account = await res.json();
-    const nextUser = { ...decoded, ...account, id: account._id || decoded?.id };
-    setUser(nextUser);
-    return nextUser;
   }, [logout]);
 
   const value = {
