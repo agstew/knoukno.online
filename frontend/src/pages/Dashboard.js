@@ -6,12 +6,6 @@ import { GradePanel, GRADE_OPTIONS } from '../components/Grade.jsx';
 import { AveragePanel } from '../components/Average.jsx';
 import { apiFetch } from '../api/client';
 
-const gradeDivisorsForTier = (tier) => {
-  if (tier === 'members') return [50, 150];
-  if (tier === 'pro') return [75];
-  return [5];
-};
-
 const hasSavedAnswerData = (item) => (
   Boolean(item?.answerText?.trim()) ||
   item?.grade != null ||
@@ -731,15 +725,14 @@ export default function Dashboard() {
   );
   const maxQ = isAdmin ? totalQ : ((tierLimits[activeTier] || 5) + bonusLimit);
   const hasAdvancedTools = isAdmin || activeTier === 'members' || activeTier === 'pro';
-  const divisorOptions = gradeDivisorsForTier(activeTier);
+  const divisorOptions = totalQ > 0 ? [totalQ] : [1];
   const [selectedDivisor, setSelectedDivisor] = useState(divisorOptions[divisorOptions.length - 1]);
 
   useEffect(() => {
-    const nextOptions = gradeDivisorsForTier(activeTier);
-    if (!nextOptions.includes(selectedDivisor)) {
-      setSelectedDivisor(nextOptions[nextOptions.length - 1]);
+    if (!divisorOptions.includes(selectedDivisor)) {
+      setSelectedDivisor(divisorOptions[divisorOptions.length - 1]);
     }
-  }, [activeTier, selectedDivisor]);
+  }, [divisorOptions, selectedDivisor]);
 
   useEffect(() => {
     if (!hasAdvancedTools && ['grade', 'rate', 'average'].includes(focus)) {
