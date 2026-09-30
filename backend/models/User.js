@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
   tierExpiry: { type: Date },
   bonusQuestions: { type: Number, default: 0 },
   stripeCustomerId: { type: String },
+  subscriptionId: { type: String },
+  // none: never subscribed. active: paying and renewing. cancelled: user or PayPal
+  // ended future renewals, access continues until tierExpiry. expired: access ended.
+  subscriptionStatus: { type: String, enum: ['none', 'active', 'cancelled', 'expired'], default: 'none' },
   createdAt: { type: Date, default: Date.now },
   savedAnswers: [savedAnswerSchema],
   averageGrade: { type: Number, default: 0 },

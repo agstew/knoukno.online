@@ -9,7 +9,7 @@ const PLAN_ICONS = { free: Sparkles, members: Crown, pro: Rocket, bonus: Gift };
 const FAQS = [
   {
     q: "Is this a subscription?",
-    a: "No. Kno U Kno uses one-time pricing. Pay once and access your questions forever.",
+    a: "Yes. Members bills $39 every month and Pro bills $436 every year through PayPal. Cancel any time and keep access until the period you already paid for ends.",
   },
   {
     q: "What happens after the free trial?",
@@ -33,6 +33,7 @@ export default function Price() {
   const [openFaq, setOpenFaq] = useState(0);
   const { isAuthenticated, tier: tokenTier, isAdmin, logout, refreshUser } = useAuth();
   const [currentTier, setCurrentTier] = useState(tokenTier);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -43,6 +44,8 @@ export default function Price() {
     }
     const orderId = params.get("paypal") === "return" ? params.get("token") : null;
     if (orderId) capturePayPal(orderId);
+    const subscriptionId = params.get("paypal") === "subscribe-return" ? params.get("subscription_id") : null;
+    if (subscriptionId) activateSubscription(subscriptionId);
     fetchPrices();
   }, [location.search]);
 
@@ -53,6 +56,7 @@ export default function Price() {
     refreshUser()
       .then((account) => {
         if (account?.tier) setCurrentTier(account.tier);
+        if (account?.subscriptionStatus) setSubscriptionStatus(account.subscriptionStatus);
       })
       .catch(() => {});
   }, [isAuthenticated, tokenTier, refreshUser]);
@@ -82,7 +86,8 @@ export default function Price() {
     const token = localStorage.getItem("token");
     setCheckoutLoading(tierId);
     try {
-      const res = await apiFetch("/api/payment/create-order", {
+      const endpoint = tierId === "bonus" ? "/api/payment/create-order" : "/api/payment/create-subscription";
+      const res = await apiFetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,6 +115,57 @@ export default function Price() {
     } catch (err) {
       setMessage("Network error. Please try again.");
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setCheckoutLoading("");
+    }
+  };
+
+  const activateSubscription = async (subscriptionId) => {
+    const token = localStorage.getItem("token");
+    setLoading(true);
+    setMessage("Confirming your subscription\u2026");
+    try {
+      const res = await apiFetch("/api/payment/activate-subscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ subscriptionId }),
+      });
+      const data = await res.json();
+      if (res.status === 401) {
+        logout();
+        navigate("/login", { replace: true, state: { message: "Your session expired. Please log in again to finish your subscription." } });
+        return;
+      }
+      if (res.ok) {
+        window.location.href = "/dashboard?payment=success";
+        return;
+      }
+      setMessage(data.message || "Could not confirm the subscription.");
+    } catch (err) {
+      setMessage("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!window.confirm("Cancel your subscription? You'll keep access until the current billing period ends.")) return;
+    const token = localStorage.getItem("token");
+    setCheckoutLoading("cancel");
+    try {
+      const res = await apiFetch("/api/payment/cancel-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setMessage(data.message || (res.ok ? "Your subscription was cancelled." : "Could not cancel your subscription."));
+      if (res.ok) setSubscriptionStatus("cancelled");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setMessage("Network error. Please try again.");
     } finally {
       setCheckoutLoading("");
     }
@@ -191,7 +247,26 @@ export default function Price() {
     }
 
     if (plan.id === currentTier) {
-      return <button className="btn btn-secondary btn-block" disabled>Current Plan</button>;
+      return (
+        <div style={{ display: "grid", gap: "0.5rem" }}>
+          <button className="btn btn-secondary btn-block" disabled>Current Plan</button>
+          {subscriptionStatus === "active" && (
+            <button
+              className="btn btn-link"
+              onClick={handleCancelSubscription}
+              disabled={checkoutLoading === "cancel"}
+              style={{ fontSize: "0.78rem" }}
+            >
+              {checkoutLoading === "cancel" ? "Cancelling\u2026" : "Cancel subscription"}
+            </button>
+          )}
+          {subscriptionStatus === "cancelled" && (
+            <span style={{ fontSize: "0.72rem", color: "var(--color-text-light)", textAlign: "center" }}>
+              Cancelled - access continues until your period ends
+            </span>
+          )}
+        </div>
+      );
     }
 
     if (tierRank[plan.id] < tierRank[currentTier]) {
@@ -238,7 +313,7 @@ export default function Price() {
       discount: "20% off (Save $10.00)",
       questions: paidPlansById.members?.questions || 50,
       questionSummary: "50 questions",
-      durationText: "one-time access",
+      durationText: "billed monthly",
       features: [
         "50 questions",
         "Print page access",
@@ -256,7 +331,7 @@ export default function Price() {
       discount: "35% off (Save $235.00)",
       questions: paidPlansById.pro?.questions || 75,
       questionSummary: "75 questions",
-      durationText: "one-time access",
+      durationText: "billed yearly",
       features: [
         "75 questions",
         "Print page access",
@@ -285,13 +360,13 @@ export default function Price() {
 
   return (
     <div className="pricing-section">
-      <h2>Simple, One-Time Pricing</h2>
+      <h2>Simple, Straightforward Pricing</h2>
       <p className="subtitle">
-        Pay once. Access forever. No subscriptions, no renewals.
+        Members bills monthly, Pro bills yearly. Cancel any time.
       </p>
 
       <div className="pricing-trustbar">
-        <span><CreditCard size={16} /> One-time payment</span>
+        <span><CreditCard size={16} /> Cancel any time</span>
         <span><RotateCcw size={16} /> 7-day refund guarantee</span>
         <span><ShieldCheck size={16} /> Secure checkout via PayPal</span>
       </div>

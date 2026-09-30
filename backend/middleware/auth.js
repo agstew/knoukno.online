@@ -17,8 +17,18 @@ const protect = async (req, res, next) => {
   }
   try {
     // Read plan and role from the DB so upgrades and admin changes apply immediately
-    const user = await User.findById(decoded.id).select('name email role tier tierExpiry bonusQuestions').lean();
+    const user = await User.findById(decoded.id)
+      .select('name email role tier tierExpiry bonusQuestions subscriptionId subscriptionStatus')
+      .lean();
     if (!user) return res.status(401).json({ message: 'Account not found' });
+
+    // Lazily downgrade once a cancelled/non-renewing subscription's paid period has ended.
+    if (user.tier !== 'free' && user.tierExpiry && user.tierExpiry < new Date() && user.subscriptionStatus !== 'active') {
+      await User.findByIdAndUpdate(user._id, { tier: 'free', subscriptionStatus: 'expired' });
+      user.tier = 'free';
+      user.subscriptionStatus = 'expired';
+    }
+
     req.user = { ...user, id: user._id.toString() };
     next();
   } catch (err) {
