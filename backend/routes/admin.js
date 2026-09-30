@@ -6,6 +6,7 @@ const Answer = require('../models/Answer');
 const Business = require('../models/Business');
 const UserBusiness = require('../models/UserBusiness');
 const AdminMessage = require('../models/AdminMessage');
+const ScheduledEmail = require('../models/ScheduledEmail');
 const mailer = require('../utils/mailer');
 const { protect, adminOnly } = require('../middleware/auth');
 
@@ -122,6 +123,50 @@ router.post('/users/broadcast', async (req, res) => {
     }
 
     res.status(201).json({ message: `Sent to ${sent} of ${users.length} users.`, sent, failed, total: users.length });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/admin/scheduled-emails
+router.get('/scheduled-emails', async (req, res) => {
+  try {
+    const scheduledEmails = await ScheduledEmail.find().sort({ sendAt: -1 });
+    res.json({ scheduledEmails });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// POST /api/admin/scheduled-emails
+router.post('/scheduled-emails', async (req, res) => {
+  try {
+    const { subject, message, sendAt } = req.body;
+    if (!subject?.trim() || !message?.trim() || !sendAt) {
+      return res.status(400).json({ message: 'Subject, message, and send time are required.' });
+    }
+    const sendDate = new Date(sendAt);
+    if (Number.isNaN(sendDate.getTime()) || sendDate <= new Date()) {
+      return res.status(400).json({ message: 'Send time must be in the future.' });
+    }
+    const scheduledEmail = await ScheduledEmail.create({ subject, message, sendAt: sendDate });
+    res.status(201).json({ message: 'Email scheduled.', scheduledEmail });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// DELETE /api/admin/scheduled-emails/:id
+router.delete('/scheduled-emails/:id', async (req, res) => {
+  try {
+    const scheduledEmail = await ScheduledEmail.findById(req.params.id);
+    if (!scheduledEmail) return res.status(404).json({ message: 'Not found' });
+    if (scheduledEmail.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending scheduled emails can be cancelled.' });
+    }
+    scheduledEmail.status = 'cancelled';
+    await scheduledEmail.save();
+    res.json({ message: 'Scheduled email cancelled.', scheduledEmail });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

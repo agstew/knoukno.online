@@ -66,6 +66,12 @@ export default function AdminDashboard() {
   const [emailHistory, setEmailHistory] = useState({});
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // Scheduled emails
+  const [scheduledEmails, setScheduledEmails] = useState([]);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleForm, setScheduleForm] = useState({ subject: '', message: '', sendAt: '' });
+  const [schedulingEmail, setSchedulingEmail] = useState(false);
+
   const flash = (text, type = 'success') => {
     setMsg(text);
     setMsgType(type);
@@ -74,7 +80,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (tab === 'stats') fetchStats();
-    if (tab === 'users') fetchUsers();
+    if (tab === 'users') { fetchUsers(); fetchScheduledEmails(); }
     if (tab === 'questions') fetchQuestions(qPage);
     if (tab === 'answers') fetchAnswers(aPage);
   }, [tab]);
@@ -186,6 +192,58 @@ export default function AdminDashboard() {
       flash('Network error sending email.', 'danger');
     }
     setSendingEmail(false);
+  };
+
+  const fetchScheduledEmails = async () => {
+    try {
+      const res = await API('/api/admin/scheduled-emails', token);
+      if (res.ok) {
+        const data = await res.json();
+        setScheduledEmails(data.scheduledEmails || []);
+      }
+    } catch {}
+  };
+
+  const createScheduledEmail = async () => {
+    if (!scheduleForm.subject.trim() || !scheduleForm.message.trim() || !scheduleForm.sendAt) {
+      flash('Subject, message, and send time are required.', 'danger');
+      return;
+    }
+    setSchedulingEmail(true);
+    try {
+      const res = await API('/api/admin/scheduled-emails', token, {
+        method: 'POST',
+        body: JSON.stringify({ ...scheduleForm, sendAt: new Date(scheduleForm.sendAt).toISOString() })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        flash('Email scheduled.');
+        setScheduleForm({ subject: '', message: '', sendAt: '' });
+        setShowScheduleModal(false);
+        setScheduledEmails(prev => [data.scheduledEmail, ...prev]);
+      } else {
+        flash(data.message || 'Could not schedule email.', 'danger');
+      }
+    } catch {
+      flash('Network error scheduling email.', 'danger');
+    }
+    setSchedulingEmail(false);
+  };
+
+  const cancelScheduledEmail = async (id) => {
+    if (!window.confirm('Cancel this scheduled email?')) return;
+    try {
+      const res = await API(`/api/admin/scheduled-emails/${id}`, token, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) {
+        setScheduledEmails(prev => prev.map(s => (s._id === id ? data.scheduledEmail : s)));
+        flash('Scheduled email cancelled.');
+      } else {
+        flash(data.message || 'Could not cancel.', 'danger');
+      }
+    } catch {
+      flash('Network error cancelling scheduled email.', 'danger');
+    }
   };
 
   const fetchQuestions = async (page = 1) => {
@@ -343,9 +401,33 @@ export default function AdminDashboard() {
       {/* Users Tab */}
       {tab === 'users' && (
         <div>
-          <div style={{ marginBottom: '1rem' }}>
+          <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
             <button type="button" className="btn btn-primary btn-sm" onClick={() => toggleEmailPanel(ALL_USERS_ID)}>Email All Users</button>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowScheduleModal(true)}>Schedule Email</button>
           </div>
+
+          {scheduledEmails.length > 0 && (
+            <div className="card" style={{ marginBottom: '1rem', padding: '1rem' }}>
+              <h4 style={{ marginTop: 0, fontSize: '0.9rem' }}>Scheduled Emails</h4>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {scheduledEmails.map((s) => (
+                  <li key={s._id} style={{ borderTop: '1px solid var(--color-border)', padding: '0.5rem 0', fontSize: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                    <div>
+                      <strong>{s.subject}</strong>{' '}
+                      <span className={`badge badge-${s.status === 'sent' ? 'active' : s.status === 'pending' ? 'members' : 'danger'}`}>{s.status}</span>
+                      <div style={{ color: 'var(--color-muted)' }}>
+                        {s.status === 'pending' ? `Sends at ${new Date(s.sendAt).toLocaleString()}` : `Processed ${new Date(s.processedAt).toLocaleString()} \u2014 ${s.sentCount}/${s.totalRecipients} sent`}
+                      </div>
+                    </div>
+                    {s.status === 'pending' && (
+                      <button type="button" className="btn btn-danger btn-sm" onClick={() => cancelScheduledEmail(s._id)}>Cancel</button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {loading ? (
             <div className="spinner-wrap"><div className="spinner"></div></div>
           ) : (
@@ -479,6 +561,51 @@ export default function AdminDashboard() {
           </div>
         );
       })()}
+
+      {/* Schedule Email Modal */}
+      {showScheduleModal && (
+        <div className="modal-overlay" onClick={() => setShowScheduleModal(false)}>
+          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Schedule Email to All Users</h3>
+              <button type="button" className="modal-close" aria-label="Close" onClick={() => setShowScheduleModal(false)}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Subject</label>
+                <input
+                  className="form-control"
+                  value={scheduleForm.subject}
+                  onChange={(e) => setScheduleForm(prev => ({ ...prev, subject: e.target.value }))}
+                  placeholder="Subject"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Message</label>
+                <textarea
+                  className="form-control"
+                  rows={5}
+                  value={scheduleForm.message}
+                  onChange={(e) => setScheduleForm(prev => ({ ...prev, message: e.target.value }))}
+                  placeholder="Write the message to send to all users&hellip;"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Send at</label>
+                <input
+                  type="datetime-local"
+                  className="form-control"
+                  value={scheduleForm.sendAt}
+                  onChange={(e) => setScheduleForm(prev => ({ ...prev, sendAt: e.target.value }))}
+                />
+              </div>
+              <button type="button" className="btn btn-primary btn-sm" disabled={schedulingEmail} onClick={createScheduledEmail}>
+                {schedulingEmail ? 'Scheduling\u2026' : 'Schedule Email'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Questions Tab */}
       {tab === 'questions' && (

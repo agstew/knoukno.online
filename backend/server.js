@@ -15,6 +15,7 @@ const paymentRoutes = require('./routes/payment');
 const contentRoutes = require('./routes/content');
 const titleRoutes = require('./routes/titles');
 const { seedContent } = require('./seed');
+const { processDueScheduledEmails } = require('./utils/scheduledEmailRunner');
 
 const app = express();
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
@@ -41,6 +42,9 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/knoukno')
     await seedContent();
     databaseReady = true;
     console.log('MongoDB connected');
+    setInterval(() => {
+      processDueScheduledEmails().catch((err) => console.error('Scheduled email error:', err));
+    }, 60 * 1000);
   })
   .catch(err => console.error('MongoDB error:', err));
 
