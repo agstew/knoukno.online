@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Check, Sparkles, Crown, Rocket, ShieldCheck, RotateCcw, CreditCard, ChevronDown } from "lucide-react";
+import { Check, Sparkles, Crown, Rocket, Gift, ShieldCheck, RotateCcw, CreditCard, ChevronDown } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { apiFetch } from "../api/client";
 
-const PLAN_ICONS = { free: Sparkles, members: Crown, pro: Rocket };
+const PLAN_ICONS = { free: Sparkles, members: Crown, pro: Rocket, bonus: Gift };
 
 const FAQS = [
   {
@@ -155,19 +155,39 @@ export default function Price() {
 
   const planAction = (plan) => {
     if (!isAuthenticated) {
-      return plan.id === "free" ? (
+      if (plan.id === "free") {
+        return (
+          <Link to="/register" className="btn btn-primary btn-block">
+            Start Free Trial
+          </Link>
+        );
+      }
+      return (
         <Link to="/register" className="btn btn-primary btn-block">
-          Start Free Trial
-        </Link>
-      ) : (
-        <Link to="/register" className="btn btn-primary btn-block">
-          Buy {plan.name} with PayPal
+          {plan.id === "bonus" ? "Add Bonus Questions" : `Buy ${plan.name} with PayPal`}
         </Link>
       );
     }
 
     if (isAdmin) {
       return <button className="btn btn-secondary btn-block" disabled>Admin Access</button>;
+    }
+
+    if (plan.id === "bonus") {
+      if (currentTier === "free") {
+        return <button className="btn btn-secondary btn-block" disabled>Upgrade to Members or Pro first</button>;
+      }
+      return (
+        <button
+          className="btn btn-primary btn-block"
+          onClick={() => handleCheckout("bonus")}
+          disabled={checkoutLoading === "bonus" || !checkoutAvailable}
+        >
+          {checkoutLoading === "bonus"
+            ? "Redirecting…"
+            : checkoutAvailable ? "Add Bonus Questions" : "Purchases unavailable"}
+        </button>
+      );
     }
 
     if (plan.id === currentTier) {
@@ -244,6 +264,21 @@ export default function Price() {
         "Grade page access",
         "Rated page access",
         "Average page access",
+      ],
+    },
+    {
+      id: "bonus",
+      name: "Bonus Questions",
+      display: paidPlansById.bonus?.display || "$100.00",
+      original: null,
+      discount: null,
+      questions: paidPlansById.bonus?.questions || 100,
+      questionSummary: "+100 questions",
+      durationText: "one-time add-on",
+      features: [
+        "+100 questions",
+        "Stacks on Members or Pro",
+        "Never expires",
       ],
     },
   ];
