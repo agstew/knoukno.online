@@ -299,6 +299,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         const updated = await res.json();
         setApplications(prev => prev.map(a => (a._id === updated._id ? updated : a)));
+        flash(`Status updated to "${status}".`, 'success');
       } else {
         const data = await res.json();
         flash(data.message || 'Could not update status.', 'danger');
