@@ -58,14 +58,15 @@ const paypal = async (path, options = {}) => {
 };
 
 const clientUrl = () => process.env.CLIENT_URL || 'http://localhost:3000';
+const publicPlan = ({ envPlanId, ...rest }) => rest;
 
 // GET /api/payment/prices
 router.get('/prices', (req, res) => {
   const members = PLANS.find((p) => p.id === 'members');
   const pro = PLANS.find((p) => p.id === 'pro');
   res.json([
-    { ...members, checkoutAvailable: subscriptionsConfigured() },
-    { ...pro, checkoutAvailable: subscriptionsConfigured() },
+    { ...publicPlan(members), checkoutAvailable: subscriptionsConfigured() },
+    { ...publicPlan(pro), checkoutAvailable: subscriptionsConfigured() },
     { ...BONUS_PRICE, checkoutAvailable: paypalConfigured() }
   ]);
 });
