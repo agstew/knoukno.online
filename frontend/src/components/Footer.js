@@ -33,7 +33,7 @@ export default function Footer() {
           <h2>Plans</h2>
           <ul>
             <li>Free — 5 questions, 3 days, $0</li>
-            <li>Members — 16 questions, $39</li>
+            <li>Members — 50 questions, $39</li>
             <li>Pro — 25 questions, $436</li>
             <li className="text-gold">Bonus — 100 extra questions, $100</li>
           </ul>
