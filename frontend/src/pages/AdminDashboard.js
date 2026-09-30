@@ -201,7 +201,7 @@ export default function AdminDashboard() {
 
       {/* Tab Nav */}
       <div className="tab-nav">
-        {['stats', 'users', 'questions'].map(t => (
+        {['stats', 'users', 'questions', 'answers'].map(t => (
           <button
             key={t}
             className={`tab-btn${tab === t ? ' active' : ''}`}
