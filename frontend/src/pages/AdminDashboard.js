@@ -58,6 +58,12 @@ export default function AdminDashboard() {
   const [qForm, setQForm] = useState({ businessTitle: '', questionText: '', example: '', category: 'money', tierAccess: 'free', questionNumber: '' });
   const [editingQ, setEditingQ] = useState(null);
 
+  // Email-to-client panel
+  const [emailPanelUserId, setEmailPanelUserId] = useState(null);
+  const [emailForm, setEmailForm] = useState({ subject: '', message: '' });
+  const [emailHistory, setEmailHistory] = useState({});
+  const [sendingEmail, setSendingEmail] = useState(false);
+
   const flash = (text, type = 'success') => {
     setMsg(text);
     setMsgType(type);
@@ -102,6 +108,47 @@ export default function AdminDashboard() {
     } catch {
       alert('Network error. Please try again.');
     }
+  };
+
+  const toggleEmailPanel = async (userId) => {
+    if (emailPanelUserId === userId) {
+      setEmailPanelUserId(null);
+      return;
+    }
+    setEmailPanelUserId(userId);
+    setEmailForm({ subject: '', message: '' });
+    if (!emailHistory[userId]) {
+      try {
+        const res = await API(`/api/admin/users/${userId}/messages`, token);
+        if (res.ok) {
+          const data = await res.json();
+          setEmailHistory(prev => ({ ...prev, [userId]: data.messages || [] }));
+        }
+      } catch {}
+    }
+  };
+
+  const sendEmailToUser = async (userId) => {
+    if (!emailForm.subject.trim() || !emailForm.message.trim()) {
+      flash('Subject and message are required.', 'danger');
+      return;
+    }
+    setSendingEmail(true);
+    try {
+      const res = await API(`/api/admin/users/${userId}/messages`, token, { method: 'POST', body: JSON.stringify(emailForm) });
+      const data = await res.json();
+      if (res.ok) {
+        flash('Email sent.');
+        setEmailForm({ subject: '', message: '' });
+        setEmailHistory(prev => ({ ...prev, [userId]: [data.record, ...(prev[userId] || [])] }));
+      } else {
+        flash(data.message || 'Could not send email.', 'danger');
+        if (data.record) setEmailHistory(prev => ({ ...prev, [userId]: [data.record, ...(prev[userId] || [])] }));
+      }
+    } catch {
+      flash('Network error sending email.', 'danger');
+    }
+    setSendingEmail(false);
   };
 
   const fetchQuestions = async (page = 1) => {
@@ -272,32 +319,87 @@ export default function AdminDashboard() {
                     <th>Role</th>
                     <th>Joined</th>
                     <th>Avg Grade</th>
+                    <th>Email Client</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
-                    <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
+                    <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
                   ) : users.map(u => (
-                    <tr key={u._id}>
-                      <td>{u.name}</td>
-                      <td style={{ fontSize: '0.85rem' }}>{u.email}</td>
-                      <td>
-                        <select
-                          className="form-control form-select"
-                          style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
-                          value={u.tier}
-                          onChange={(e) => changePlan(u._id, e.target.value)}
-                          aria-label={`Plan for ${u.email}`}
-                        >
-                          <option value="free">free</option>
-                          <option value="members">members</option>
-                          <option value="pro">pro</option>
-                        </select>
-                      </td>
-                      <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
-                      <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
-                      <td>{u.averageGrade > 0 ? `${pointsToLetter(u.averageGrade)} (${u.averageGrade.toFixed(2)})` : '—'}</td>
-                    </tr>
+                    <React.Fragment key={u._id}>
+                      <tr>
+                        <td>{u.name}</td>
+                        <td style={{ fontSize: '0.85rem' }}>{u.email}</td>
+                        <td>
+                          <select
+                            className="form-control form-select"
+                            style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
+                            value={u.tier}
+                            onChange={(e) => changePlan(u._id, e.target.value)}
+                            aria-label={`Plan for ${u.email}`}
+                          >
+                            <option value="free">free</option>
+                            <option value="members">members</option>
+                            <option value="pro">pro</option>
+                          </select>
+                        </td>
+                        <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
+                        <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
+                        <td>{u.averageGrade > 0 ? `${pointsToLetter(u.averageGrade)} (${u.averageGrade.toFixed(2)})` : '—'}</td>
+                        <td>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleEmailPanel(u._id)}>
+                            {emailPanelUserId === u._id ? 'Close' : 'Email'}
+                          </button>
+                        </td>
+                      </tr>
+                      {emailPanelUserId === u._id && (
+                        <tr>
+                          <td colSpan={7}>
+                            <div className="card" style={{ margin: '0.5rem 0', padding: '1rem' }}>
+                              <div className="form-group">
+                                <label className="form-label">Subject</label>
+                                <input
+                                  className="form-control"
+                                  value={emailForm.subject}
+                                  onChange={(e) => setEmailForm(prev => ({ ...prev, subject: e.target.value }))}
+                                  placeholder="Subject"
+                                />
+                              </div>
+                              <div className="form-group">
+                                <label className="form-label">Message</label>
+                                <textarea
+                                  className="form-control"
+                                  rows={5}
+                                  value={emailForm.message}
+                                  onChange={(e) => setEmailForm(prev => ({ ...prev, message: e.target.value }))}
+                                  placeholder={`Write a message to ${u.email}\u2026`}
+                                />
+                              </div>
+                              <button type="button" className="btn btn-primary btn-sm" disabled={sendingEmail} onClick={() => sendEmailToUser(u._id)}>
+                                {sendingEmail ? 'Sending\u2026' : 'Send Email'}
+                              </button>
+
+                              <h4 style={{ marginTop: '1rem', fontSize: '0.9rem' }}>Sent history</h4>
+                              {!emailHistory[u._id] || emailHistory[u._id].length === 0 ? (
+                                <p style={{ color: 'var(--color-muted)', fontSize: '0.85rem' }}>No emails sent yet.</p>
+                              ) : (
+                                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                                  {emailHistory[u._id].map((m) => (
+                                    <li key={m._id} style={{ borderTop: '1px solid var(--color-border)', padding: '0.5rem 0', fontSize: '0.85rem' }}>
+                                      <strong>{m.subject}</strong>{' '}
+                                      <span className={`badge badge-${m.status === 'sent' ? 'active' : 'danger'}`}>{m.status}</span>
+                                      <div style={{ color: 'var(--color-muted)' }}>{new Date(m.sentAt).toLocaleString()}</div>
+                                      <div style={{ whiteSpace: 'pre-wrap' }}>{m.message}</div>
+                                      {m.error && <div style={{ color: 'var(--color-danger, #c0392b)' }}>{m.error}</div>}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   ))}
                 </tbody>
               </table>

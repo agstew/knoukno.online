@@ -4,6 +4,8 @@ const User = require('../models/User');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const Business = require('../models/Business');
+const AdminMessage = require('../models/AdminMessage');
+const mailer = require('../utils/mailer');
 const { protect, adminOnly } = require('../middleware/auth');
 
 router.use(protect, adminOnly);
@@ -29,6 +31,45 @@ router.put('/users/:id/plan', async (req, res) => {
       .select('-password -resetPasswordToken -resetPasswordExpires');
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/admin/users/:id/messages
+router.get('/users/:id/messages', async (req, res) => {
+  try {
+    const messages = await AdminMessage.find({ userId: req.params.id }).sort({ sentAt: -1 });
+    res.json({ messages });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// POST /api/admin/users/:id/messages
+router.post('/users/:id/messages', async (req, res) => {
+  try {
+    const { subject, message } = req.body;
+    if (!subject?.trim() || !message?.trim()) {
+      return res.status(400).json({ message: 'Subject and message are required.' });
+    }
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    let status = 'sent';
+    let error;
+    try {
+      if (!mailer.isConfigured()) throw new Error('Email is not configured on the server.');
+      await mailer.sendMail({ to: user.email, subject, text: message });
+    } catch (sendErr) {
+      status = 'failed';
+      error = sendErr.message;
+    }
+
+    const record = await AdminMessage.create({ userId: user._id, toEmail: user.email, subject, message, status, error });
+
+    if (status === 'failed') return res.status(502).json({ message: error, record });
+    res.status(201).json({ message: 'Email sent', record });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
