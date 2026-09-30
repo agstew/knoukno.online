@@ -843,6 +843,22 @@ a:hover {
   border-color: var(--dodger-blue);
   box-shadow: 0 0 0 3px var(--dodger-blue-light);
 }
+.business-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px 20px;
+  padding: 24px;
+  border: 1px solid var(--gray-light);
+  border-radius: var(--radius);
+  margin-bottom: 28px;
+}
+.business-form .field {
+  margin-bottom: 0;
+}
+.business-form button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
 .business-list {
   display: flex;
   flex-direction: column;
@@ -865,6 +881,11 @@ a:hover {
 .business-item .biz-title {
   font-weight: 700;
   font-size: 16px;
+}
+.business-item .biz-meta {
+  color: var(--gray);
+  font-size: 13.5px;
+  margin-top: 4px;
 }
 .empty-state {
   text-align: center;

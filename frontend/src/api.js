@@ -23,7 +23,7 @@ export const api = {
   me: (token) => request("/auth/me", { token }),
 
   listBusinesses: (token) => request("/businesses", { token }),
-  createBusiness: (token, title) => request("/businesses", { method: "POST", body: { title }, token }),
+  createBusiness: (token, payload) => request("/businesses", { method: "POST", body: payload, token }),
   getBusiness: (token, id) => request(`/businesses/${id}`, { token }),
 
   listQuestions: (token, businessId, stage) =>

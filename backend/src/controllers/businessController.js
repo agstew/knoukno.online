@@ -11,11 +11,17 @@ export async function listBusinesses(req, res, next) {
 
 export async function createBusiness(req, res, next) {
   try {
-    const { title } = req.body;
+    const { title, industry, location, description } = req.body;
     if (!title || !title.trim()) {
       return res.status(400).json({ error: "Business title is required" });
     }
-    const business = await Business.create({ user: req.user._id, title: title.trim() });
+    const business = await Business.create({
+      user: req.user._id,
+      title: title.trim(),
+      industry: (industry || "").trim(),
+      location: (location || "").trim(),
+      description: (description || "").trim(),
+    });
     res.status(201).json({ business });
   } catch (err) {
     next(err);
