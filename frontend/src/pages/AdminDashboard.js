@@ -110,6 +110,22 @@ export default function AdminDashboard() {
     }
   };
 
+  const deleteUser = async (userId, email) => {
+    if (!window.confirm(`Delete ${email} and all their saved answers and businesses? This cannot be undone.`)) return;
+    try {
+      const res = await API(`/api/admin/users/${userId}`, token, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers(prev => prev.filter(u => u._id !== userId));
+        flash('User deleted.');
+      } else {
+        flash(data.message || 'Could not delete user.', 'danger');
+      }
+    } catch {
+      flash('Network error deleting user.', 'danger');
+    }
+  };
+
   const toggleEmailPanel = async (userId) => {
     if (emailPanelUserId === userId) {
       setEmailPanelUserId(null);
@@ -320,11 +336,12 @@ export default function AdminDashboard() {
                     <th>Joined</th>
                     <th>Avg Grade</th>
                     <th>Email Client</th>
+                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.length === 0 ? (
-                    <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
+                    <tr><td colSpan={8} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No users found.</td></tr>
                   ) : users.map(u => (
                     <tr key={u._id}>
                       <td>{u.name}</td>
@@ -347,6 +364,9 @@ export default function AdminDashboard() {
                       <td>{u.averageGrade > 0 ? `${pointsToLetter(u.averageGrade)} (${u.averageGrade.toFixed(2)})` : '—'}</td>
                       <td>
                         <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleEmailPanel(u._id)}>Email</button>
+                      </td>
+                      <td>
+                        <button type="button" className="btn btn-danger btn-sm" disabled={u._id === user?.id || u._id === user?._id} onClick={() => deleteUser(u._id, u.email)}>Delete</button>
                       </td>
                     </tr>
                   ))}

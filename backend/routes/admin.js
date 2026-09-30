@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Question = require('../models/Question');
 const Answer = require('../models/Answer');
 const Business = require('../models/Business');
+const UserBusiness = require('../models/UserBusiness');
 const AdminMessage = require('../models/AdminMessage');
 const mailer = require('../utils/mailer');
 const { protect, adminOnly } = require('../middleware/auth');
@@ -70,6 +71,27 @@ router.post('/users/:id/messages', async (req, res) => {
 
     if (status === 'failed') return res.status(502).json({ message: error, record });
     res.status(201).json({ message: 'Email sent', record });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// DELETE /api/admin/users/:id
+router.delete('/users/:id', async (req, res) => {
+  try {
+    if (req.params.id === req.user.id) {
+      return res.status(400).json({ message: 'You cannot delete your own account.' });
+    }
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    await Promise.all([
+      Answer.deleteMany({ userId: user._id }),
+      UserBusiness.deleteMany({ userId: user._id }),
+      User.findByIdAndDelete(user._id)
+    ]);
+
+    res.json({ message: 'User deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
