@@ -1149,6 +1149,13 @@ tbody tr:hover {
   align-self: end;
 }
 
+.pricing-action .btn {
+  white-space: normal;
+  font-size: 0.8rem;
+  line-height: 1.25;
+  padding: 0.55rem 0.7rem;
+}
+
 .pricing-features li {
   display: flex;
   align-items: center;
