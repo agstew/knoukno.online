@@ -92,7 +92,7 @@ export default function Home() {
       </section>
 
       {stages.map((stage, index) => (
-        <section className={`live-section live-stage${index % 2 ? ' live-stage-alt' : ''}`} key={stage.label}>
+        <section id={stage.slug} className={`live-section live-stage${index % 2 ? ' live-stage-alt' : ''}`} key={stage.label}>
           <div className="live-section-inner">
             <div className="live-section-copy">
               <p className="live-section-label">{stage.label}</p>
