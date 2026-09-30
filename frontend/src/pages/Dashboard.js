@@ -725,7 +725,11 @@ export default function Dashboard() {
   );
   const maxQ = isAdmin ? totalQ : ((tierLimits[activeTier] || 5) + bonusLimit);
   const hasAdvancedTools = isAdmin || activeTier === 'members' || activeTier === 'pro';
-  const divisorOptions = totalQ > 0 ? [totalQ] : [1];
+  const divisorOptions = activeTier === 'members'
+    ? [50, 150]
+    : activeTier === 'pro'
+      ? [75, 175]
+      : [5];
   const [selectedDivisor, setSelectedDivisor] = useState(divisorOptions[divisorOptions.length - 1]);
 
   useEffect(() => {
