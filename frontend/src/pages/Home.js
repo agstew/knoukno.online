@@ -7,6 +7,18 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const [content, setContent] = useState({});
 
+  // Browsers try to scroll to the URL hash before this SPA has rendered the target section, so do it manually once mounted.
+  useEffect(() => {
+    if (!window.location.hash) return;
+    const id = window.location.hash.slice(1);
+    const scrollToHash = () => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    const timer = setTimeout(scrollToHash, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
     apiFetch('/api/content/landing', { signal: controller.signal })
