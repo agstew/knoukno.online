@@ -19,7 +19,7 @@ const PLANS = [
     price: "$39.00",
     original: "$49.00",
     discount: "20% off (Save $10.00)",
-    detail: "50 questions \u2022 one-time access",
+    detail: "50 questions \u2022 billed monthly",
     features: [
       "50 questions",
       "Print page access",
@@ -38,7 +38,7 @@ const PLANS = [
     price: "$436.00",
     original: "$675.00",
     discount: "35% off (Save $235.00)",
-    detail: "75 questions \u2022 one-time access",
+    detail: "75 questions \u2022 billed yearly",
     features: [
       "75 questions",
       "Print page access",
@@ -53,7 +53,7 @@ const PLANS = [
 
 const COMPARE_ROWS = [
   ["Questions", "5", "50", "75"],
-  ["Access period", "3 days", "Lifetime", "Lifetime"],
+  ["Billing", "3-day trial", "Monthly", "Yearly"],
   ["Save answers", "\u2713", "\u2713", "\u2713"],
   ["Print", "\u2713", "\u2713", "\u2713"],
   ["Grade", "\u2014", "\u2713", "\u2713"],
@@ -65,7 +65,7 @@ const COMPARE_ROWS = [
 const FAQS = [
   {
     q: "Is this a subscription?",
-    a: "No. Kno U Kno uses one-time pricing. Pay once and access your questions forever.",
+    a: "Yes. Members bills $39 every month and Pro bills $436 every year. Cancel any time.",
   },
   {
     q: "What happens after the free trial?",
@@ -85,10 +85,10 @@ export default function Price() {
   return (
     <div>
       <section className="hero hero-light">
-        <h1>Simple, One-Time Pricing</h1>
-        <p>Pay once. Access forever. No subscriptions, no renewals.</p>
+        <h1>Simple, Straightforward Pricing</h1>
+        <p>Monthly or yearly billing. Cancel any time.</p>
         <div className="trust-row">
-          <span>&#128179; One-time payment</span>
+          <span>&#128179; Cancel any time</span>
           <span>&#8635; 7-day refund guarantee</span>
           <span>&#128737; Secure checkout</span>
         </div>
