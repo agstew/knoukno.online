@@ -297,10 +297,10 @@ export default function Price() {
       display: "$0",
       original: null,
       discount: "3 days",
-      questions: 6,
+      questions: 5,
       durationText: "3-day access",
       features: [
-        "6 questions",
+        "5 questions",
         "Save page access",
         "Print page access",
       ],
