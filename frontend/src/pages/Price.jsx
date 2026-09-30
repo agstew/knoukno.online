@@ -52,6 +52,23 @@ const PLANS = [
     ],
     cta: "Buy Pro Tier",
   },
+  {
+    key: "bonus",
+    icon: "\u{1F381}",
+    label: "Bonus",
+    price: "$100.00",
+    original: null,
+    discount: null,
+    detail: "+100 questions \u2022 one-time add-on",
+    features: [
+      "+100 questions",
+      "Stacks on Member or Pro",
+      "Never expires",
+      "Buy again any time",
+    ],
+    cta: "Add Bonus Questions",
+    addOn: true,
+  },
 ];
 
 const COMPARE_ROWS = [
@@ -134,7 +151,11 @@ export default function Price() {
                 <li key={f}>{f}</li>
               ))}
             </ul>
-            {p.key !== "free" && user && user.plan === p.key ? (
+            {p.addOn && token && user && user.plan === "free" ? (
+              <button className="btn btn-outline btn-block" disabled>
+                Upgrade to Member or Pro first
+              </button>
+            ) : p.key !== "free" && !p.addOn && user && user.plan === p.key ? (
               <button className="btn btn-outline btn-block" disabled>
                 Current plan
               </button>
