@@ -21,14 +21,20 @@ const API = (path, token, opts = {}) =>
     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...opts.headers }
   });
 
+// Answers are graded on a 0-100 point scale (A=100, B=85, C=70, D=55, F=0); thresholds are the midpoints between those values.
+const pointsToLetter = (points) => {
+  if (points >= 92.5) return 'A';
+  if (points >= 77.5) return 'B';
+  if (points >= 62.5) return 'C';
+  if (points >= 27.5) return 'D';
+  return 'F';
+};
+
 const gradeLabel = (grade) => {
   if (grade == null) return '—';
-  const numericGrade = Number(grade);
-  if (numericGrade >= 4) return 'A (4)';
-  if (numericGrade >= 3) return 'B (3)';
-  if (numericGrade >= 2) return 'C (2)';
-  if (numericGrade >= 1) return 'D (1)';
-  return 'F (0)';
+  const points = Number(grade);
+  if (!Number.isFinite(points)) return '—';
+  return `${pointsToLetter(points)} (${points})`;
 };
 
 export default function AdminDashboard() {
@@ -290,7 +296,7 @@ export default function AdminDashboard() {
                       </td>
                       <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
                       <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)' }}>{new Date(u.createdAt).toLocaleDateString()}</td>
-                      <td>{u.averageGrade > 0 ? `${u.averageGrade.toFixed(2)} / 4.00` : '—'}</td>
+                      <td>{u.averageGrade > 0 ? `${pointsToLetter(u.averageGrade)} (${u.averageGrade.toFixed(2)})` : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
