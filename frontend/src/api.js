@@ -38,4 +38,6 @@ export const api = {
   rankAnswer: (token, id, rank) => request(`/answers/${id}/rank`, { method: "PATCH", body: { rank }, token }),
 
   plans: () => request("/plans"),
+
+  upgradePlan: (token, plan) => request("/billing/upgrade", { method: "POST", body: { plan }, token }),
 };

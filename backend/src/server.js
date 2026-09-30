@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import answerRoutes from "./routes/answerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import billingRoutes from "./routes/billingRoutes.js";
 import businessRoutes from "./routes/businessRoutes.js";
 import priceRoutes from "./routes/priceRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
@@ -34,6 +35,7 @@ app.use("/api/businesses", businessRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/answers", answerRoutes);
 app.use("/api/plans", priceRoutes);
+app.use("/api/billing", billingRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

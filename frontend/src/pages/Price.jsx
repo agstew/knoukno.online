@@ -1,4 +1,7 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../api.js";
+import { useAuth } from "../AuthContext.jsx";
 
 const PLANS = [
   {
@@ -82,6 +85,25 @@ const FAQS = [
 ];
 
 export default function Price() {
+  const { token, user, setUser } = useAuth();
+  const navigate = useNavigate();
+  const [pendingKey, setPendingKey] = useState(null);
+  const [error, setError] = useState("");
+
+  async function handleBuy(planKey) {
+    setError("");
+    setPendingKey(planKey);
+    try {
+      const data = await api.upgradePlan(token, planKey);
+      setUser(data.user);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPendingKey(null);
+    }
+  }
+
   return (
     <div>
       <section className="hero hero-light">
@@ -92,6 +114,7 @@ export default function Price() {
           <span>&#8635; 7-day refund guarantee</span>
           <span>&#128737; Secure checkout</span>
         </div>
+        {error && <p className="error-text" style={{ maxWidth: 420, margin: "16px auto 0" }}>{error}</p>}
       </section>
 
       <div className="price-grid container">
@@ -111,12 +134,26 @@ export default function Price() {
                 <li key={f}>{f}</li>
               ))}
             </ul>
-            <Link
-              to="/register"
-              className={`btn ${p.featured ? "btn-primary" : "btn-outline"} btn-block`}
-            >
-              {p.cta}
-            </Link>
+            {p.key !== "free" && user && user.plan === p.key ? (
+              <button className="btn btn-outline btn-block" disabled>
+                Current plan
+              </button>
+            ) : p.key !== "free" && token ? (
+              <button
+                className={`btn ${p.featured ? "btn-primary" : "btn-outline"} btn-block`}
+                onClick={() => handleBuy(p.key)}
+                disabled={pendingKey === p.key}
+              >
+                {pendingKey === p.key ? "Processing..." : p.cta}
+              </button>
+            ) : (
+              <Link
+                to="/register"
+                className={`btn ${p.featured ? "btn-primary" : "btn-outline"} btn-block`}
+              >
+                {p.cta}
+              </Link>
+            )}
           </div>
         ))}
       </div>

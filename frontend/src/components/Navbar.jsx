@@ -21,9 +21,11 @@ export default function Navbar() {
   }
 
   function handleLogout() {
-    logout();
+    // Commit the route change before clearing the token so a ProtectedRoute
+    // on the current page can't race the navigate and redirect to /login instead.
+    navigate("/", { replace: true });
     closeMenu();
-    navigate("/");
+    setTimeout(() => logout(), 0);
   }
 
   return (
@@ -45,7 +47,7 @@ export default function Navbar() {
       {open && (
         <div className="nav-overlay">
           <div className="nav-overlay-links">
-            {LINKS.map((l) => (
+            {LINKS.filter((l) => l.to !== "/login" || !user).map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
