@@ -648,16 +648,22 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Application Message Viewer Modal */}
+      {/* Application Details Viewer Modal */}
       {viewingApplication && (
         <div className="modal-overlay" onClick={() => setViewingApplication(null)}>
           <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Message from {viewingApplication.name}</h3>
+              <h3>Application from {viewingApplication.name}</h3>
               <button type="button" className="modal-close" aria-label="Close" onClick={() => setViewingApplication(null)}>&times;</button>
             </div>
             <div className="modal-body">
-              <p style={{ whiteSpace: 'pre-wrap' }}>{viewingApplication.message}</p>
+              <p><strong>Email:</strong> {viewingApplication.email}</p>
+              <p><strong>Phone:</strong> {viewingApplication.phone || '—'}</p>
+              <p><strong>Position:</strong> {viewingApplication.position}</p>
+              <p><strong>Status:</strong> {viewingApplication.status}</p>
+              <p><strong>Submitted:</strong> {new Date(viewingApplication.submittedAt).toLocaleString()}</p>
+              <p><strong>Message:</strong></p>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{viewingApplication.message || <em>No message</em>}</p>
             </div>
           </div>
         </div>
@@ -854,22 +860,19 @@ export default function AdminDashboard() {
                       <th>Message</th>
                       <th>Status</th>
                       <th>Submitted</th>
+                      <th>View</th>
                     </tr>
                   </thead>
                   <tbody>
                     {applications.length === 0 ? (
-                      <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No applications found.</td></tr>
+                      <tr><td colSpan={8} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No applications found.</td></tr>
                     ) : applications.map(a => (
                       <tr key={a._id}>
                         <td>{a.name}</td>
                         <td style={{ fontSize: '0.85rem' }}>{a.email}</td>
                         <td style={{ fontSize: '0.85rem' }}>{a.phone || '—'}</td>
                         <td>{a.position}</td>
-                        <td
-                          style={{ fontSize: '0.82rem', color: 'var(--color-text-light)', maxWidth: '220px', cursor: a.message ? 'pointer' : 'default' }}
-                          onClick={() => a.message && setViewingApplication(a)}
-                          title={a.message ? 'Click to read full message' : ''}
-                        >
+                        <td style={{ fontSize: '0.82rem', color: 'var(--color-text-light)', maxWidth: '220px' }}>
                           {a.message ? a.message.substring(0, 80) + '…' : <em>No message</em>}
                         </td>
                         <td>
@@ -899,6 +902,9 @@ export default function AdminDashboard() {
                         </td>
                         <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)', whiteSpace: 'nowrap' }}>
                           {new Date(a.submittedAt).toLocaleDateString()}
+                        </td>
+                        <td>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => setViewingApplication(a)}>View</button>
                         </td>
                       </tr>
                     ))}
