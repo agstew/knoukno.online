@@ -70,7 +70,7 @@ export default function Home() {
             <Link to="/dashboard" className="live-button">Go to dashboard <span aria-hidden="true">↗</span></Link>
           ) : (
             <>
-              <Link to="/register" className="live-button">Start free — 5 questions <span aria-hidden="true">↗</span></Link>
+              <Link to="/register" className="live-button">Start free — 6 questions <span aria-hidden="true">↗</span></Link>
               <Link to="/price" className="live-button live-button-outline">See the price</Link>
             </>
           )}

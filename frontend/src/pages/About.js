@@ -74,9 +74,9 @@ export default function About() {
             <h2 className="card-title">Our Plans</h2>
           </div>
           <div style={{ lineHeight: 1.8, color: 'var(--color-text)' }}>
-            <p><strong>Free Trial (3 days):</strong> Access 5 foundational questions to experience the platform.</p>
-            <p style={{ marginTop: '0.5rem' }}><strong>Members ($39):</strong> Unlock 50 questions across all business categories. One-time payment.</p>
-            <p style={{ marginTop: '0.5rem' }}><strong>Pro ($436):</strong> Full access to all 75 questions — our complete business knowledge curriculum. One-time payment.</p>
+            <p><strong>Free Trial (3 days):</strong> Access 6 foundational questions to experience the platform.</p>
+            <p style={{ marginTop: '0.5rem' }}><strong>Members ($39):</strong> Unlock 16 questions across all business categories. One-time payment.</p>
+            <p style={{ marginTop: '0.5rem' }}><strong>Pro ($436):</strong> Full access to all 25 questions — our complete business knowledge curriculum. One-time payment.</p>
           </div>
         </div>
 
