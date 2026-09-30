@@ -7,6 +7,17 @@ const { protect } = require('../middleware/auth');
 
 const clientTitleFrom = (body) => typeof body.clientTitle === 'string' ? body.clientTitle.trim() : '';
 
+// Recomputes and persists averageGrade/averageRating on the User doc from their current answers.
+const refreshUserAverages = async (userId) => {
+  const answers = await Answer.find({ userId });
+  const gradesArr = answers.filter(a => a.grade != null).map(a => a.grade);
+  const ratingsArr = answers.filter(a => a.rating != null).map(a => a.rating);
+  const avgGrade = gradesArr.length ? gradesArr.reduce((s, g) => s + g, 0) / gradesArr.length : 0;
+  const avgRating = ratingsArr.length ? ratingsArr.reduce((s, r) => s + r, 0) / ratingsArr.length : 0;
+  await User.findByIdAndUpdate(userId, { averageGrade: avgGrade, averageRating: avgRating });
+  return { avgGrade, avgRating, totalAnswers: answers.length };
+};
+
 // POST /api/answers/save
 router.post('/save', protect, async (req, res) => {
   try {
@@ -60,6 +71,7 @@ router.post('/grade', protect, async (req, res) => {
         businessTitle: question ? question.businessTitle : ''
       });
     }
+    await refreshUserAverages(req.user.id);
     res.json({ message: 'Grade saved', answer });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -88,6 +100,7 @@ router.post('/rate', protect, async (req, res) => {
         businessTitle: question ? question.businessTitle : ''
       });
     }
+    await refreshUserAverages(req.user.id);
     res.json({ message: 'Rating saved', answer });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
@@ -109,13 +122,8 @@ router.get('/my', protect, async (req, res) => {
 // GET /api/answers/average
 router.get('/average', protect, async (req, res) => {
   try {
-    const answers = await Answer.find({ userId: req.user.id });
-    const gradesArr = answers.filter(a => a.grade != null).map(a => a.grade);
-    const ratingsArr = answers.filter(a => a.rating != null).map(a => a.rating);
-    const avgGrade = gradesArr.length ? gradesArr.reduce((s, g) => s + g, 0) / gradesArr.length : 0;
-    const avgRating = ratingsArr.length ? ratingsArr.reduce((s, r) => s + r, 0) / ratingsArr.length : 0;
-    await User.findByIdAndUpdate(req.user.id, { averageGrade: avgGrade, averageRating: avgRating });
-    res.json({ averageGrade: Math.round(avgGrade * 10) / 10, averageRating: Math.round(avgRating * 10) / 10, totalAnswers: answers.length });
+    const { avgGrade, avgRating, totalAnswers } = await refreshUserAverages(req.user.id);
+    res.json({ averageGrade: Math.round(avgGrade * 10) / 10, averageRating: Math.round(avgRating * 10) / 10, totalAnswers });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
