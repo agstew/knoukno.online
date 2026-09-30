@@ -164,7 +164,7 @@ export default function Price() {
       }
       return (
         <Link to="/register" className="btn btn-primary btn-block">
-          {plan.id === "bonus" ? "Buy Now" : `Buy ${plan.name} with PayPal`}
+          Buy Now
         </Link>
       );
     }
@@ -210,7 +210,7 @@ export default function Price() {
       >
         {checkoutLoading === plan.id
           ? "Redirecting…"
-          : checkoutAvailable ? `Buy ${plan.name} with PayPal` : "Purchases unavailable"}
+          : checkoutAvailable ? "Buy Now" : "Purchases unavailable"}
       </button>
     );
   };

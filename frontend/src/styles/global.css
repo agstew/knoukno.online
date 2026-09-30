@@ -1065,16 +1065,16 @@ tbody tr:hover {
 
 .pricing-badge {
   position: absolute;
-  top: -12px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
   background: var(--color-secondary);
   color: var(--color-white);
-  font-size: 0.72rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0.25rem 0.85rem;
+  letter-spacing: 0.4px;
+  padding: 0.2rem 0.65rem;
   border-radius: 20px;
 }
 
