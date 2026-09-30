@@ -98,6 +98,9 @@ export default function Home() {
               <p className="live-section-label">{stage.label}</p>
               <h2>{content[stage.slug]?.heading || stage.title}</h2>
               {(content[stage.slug]?.body ? [content[stage.slug].body] : stage.paragraphs).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              {stage.slug === 'hiring' && (
+                <Link className="live-button" to="/apply">Apply for a role <span aria-hidden="true">↗</span></Link>
+              )}
             </div>
             <figure className="live-figure"><img src={`/img/${stage.image}`} alt={stage.alt} loading="lazy" /></figure>
           </div>

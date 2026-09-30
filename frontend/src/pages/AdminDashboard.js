@@ -52,6 +52,9 @@ export default function AdminDashboard() {
   const [answers, setAnswers] = useState([]);
   const [aPage, setAPage] = useState(1);
   const [aTotalPages, setATotalPages] = useState(1);
+  const [applications, setApplications] = useState([]);
+  const [apPage, setAPPage] = useState(1);
+  const [apTotalPages, setAPTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [msgType, setMsgType] = useState('success');
@@ -83,6 +86,7 @@ export default function AdminDashboard() {
     if (tab === 'users') { fetchUsers(); fetchScheduledEmails(); }
     if (tab === 'questions') fetchQuestions(qPage);
     if (tab === 'answers') fetchAnswers(aPage);
+    if (tab === 'applications') fetchApplications(apPage);
   }, [tab]);
 
   const fetchStats = async () => {
@@ -274,6 +278,35 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
+  const fetchApplications = async (page = 1) => {
+    setLoading(true);
+    try {
+      const res = await API(`/api/admin/applications?page=${page}&limit=15`, token);
+      if (res.ok) {
+        const d = await res.json();
+        setApplications(d.applications);
+        setAPTotalPages(d.pages);
+        setAPPage(page);
+      }
+    } catch {}
+    setLoading(false);
+  };
+
+  const changeApplicationStatus = async (id, status) => {
+    try {
+      const res = await API(`/api/admin/applications/${id}/status`, token, { method: 'PUT', body: JSON.stringify({ status }) });
+      if (res.ok) {
+        const updated = await res.json();
+        setApplications(prev => prev.map(a => (a._id === updated._id ? updated : a)));
+      } else {
+        const data = await res.json();
+        flash(data.message || 'Could not update status.', 'danger');
+      }
+    } catch {
+      flash('Network error updating status.', 'danger');
+    }
+  };
+
   const handleQFormChange = (e) => {
     setQForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -343,7 +376,7 @@ export default function AdminDashboard() {
 
       {/* Tab Nav */}
       <div className="tab-nav">
-        {['stats', 'users', 'questions', 'answers'].map(t => (
+        {['stats', 'users', 'questions', 'answers', 'applications'].map(t => (
           <button
             key={t}
             className={`tab-btn${tab === t ? ' active' : ''}`}
@@ -773,6 +806,80 @@ export default function AdminDashboard() {
                   ))}
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchAnswers(aPage + 1)} disabled={aPage >= aTotalPages}>Next ›</button>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchAnswers(aTotalPages)} disabled={aPage >= aTotalPages} aria-label="Last page">›|</button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Applications Tab */}
+      {tab === 'applications' && (
+        <div>
+          {loading ? (
+            <div className="spinner-wrap"><div className="spinner"></div></div>
+          ) : (
+            <>
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Position</th>
+                      <th>Message</th>
+                      <th>Status</th>
+                      <th>Submitted</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {applications.length === 0 ? (
+                      <tr><td colSpan={7} style={{ textAlign: 'center', color: 'var(--color-muted)' }}>No applications found.</td></tr>
+                    ) : applications.map(a => (
+                      <tr key={a._id}>
+                        <td>{a.name}</td>
+                        <td style={{ fontSize: '0.85rem' }}>{a.email}</td>
+                        <td style={{ fontSize: '0.85rem' }}>{a.phone || '—'}</td>
+                        <td>{a.position}</td>
+                        <td style={{ fontSize: '0.82rem', color: 'var(--color-text-light)', maxWidth: '220px' }}>
+                          {a.message ? a.message.substring(0, 80) + '…' : <em>No message</em>}
+                        </td>
+                        <td>
+                          <select
+                            className="form-control form-select"
+                            style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
+                            value={a.status}
+                            onChange={(e) => changeApplicationStatus(a._id, e.target.value)}
+                            aria-label={`Status for ${a.email}`}
+                          >
+                            <option value="new">new</option>
+                            <option value="reviewed">reviewed</option>
+                            <option value="contacted">contacted</option>
+                            <option value="rejected">rejected</option>
+                            <option value="hired">hired</option>
+                          </select>
+                        </td>
+                        <td style={{ fontSize: '0.82rem', color: 'var(--color-muted)', whiteSpace: 'nowrap' }}>
+                          {new Date(a.submittedAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {apTotalPages > 1 && (
+                <div className="pagination">
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchApplications(1)} disabled={apPage <= 1} aria-label="First page">|‹</button>
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchApplications(apPage - 1)} disabled={apPage <= 1}>‹ Prev</button>
+                  {getPageRange(apPage, apTotalPages).map((value, idx) => (
+                    value === '...'
+                      ? <span key={`pe${idx}`} className="pagination-info">…</span>
+                      : <button key={value} type="button" className={`pagination-btn${value === apPage ? ' active' : ''}`} onClick={() => fetchApplications(value)}>{value}</button>
+                  ))}
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchApplications(apPage + 1)} disabled={apPage >= apTotalPages}>Next ›</button>
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => fetchApplications(apTotalPages)} disabled={apPage >= apTotalPages} aria-label="Last page">›|</button>
                 </div>
               )}
             </>

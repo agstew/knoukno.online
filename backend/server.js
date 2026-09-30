@@ -14,6 +14,7 @@ const adminRoutes = require('./routes/admin');
 const paymentRoutes = require('./routes/payment');
 const contentRoutes = require('./routes/content');
 const titleRoutes = require('./routes/titles');
+const hiringRoutes = require('./routes/hiring');
 const { seedContent } = require('./seed');
 const { processDueScheduledEmails } = require('./utils/scheduledEmailRunner');
 
@@ -55,6 +56,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/titles', titleRoutes);
+app.use('/api/hiring', hiringRoutes);
 
 app.get('/api/health', (req, res) => res.status(databaseReady ? 200 : 503).json({ status: databaseReady ? 'ok' : 'unavailable' }));
 

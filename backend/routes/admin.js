@@ -7,6 +7,7 @@ const Business = require('../models/Business');
 const UserBusiness = require('../models/UserBusiness');
 const AdminMessage = require('../models/AdminMessage');
 const ScheduledEmail = require('../models/ScheduledEmail');
+const JobApplication = require('../models/JobApplication');
 const mailer = require('../utils/mailer');
 const { protect, adminOnly } = require('../middleware/auth');
 
@@ -314,6 +315,37 @@ router.get('/stats', async (req, res) => {
     const membersUsers = await User.countDocuments({ tier: 'members' });
     const proUsers = await User.countDocuments({ tier: 'pro' });
     res.json({ totalUsers, totalAnswers, totalQuestions, byTier: { free: freeUsers, members: membersUsers, pro: proUsers } });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/admin/applications
+router.get('/applications', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const total = await JobApplication.countDocuments();
+    const applications = await JobApplication.find()
+      .sort({ submittedAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+    res.json({ applications, total, page, pages: Math.ceil(total / limit) });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PUT /api/admin/applications/:id/status
+router.put('/applications/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['new', 'reviewed', 'contacted', 'rejected', 'hired'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    const application = await JobApplication.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!application) return res.status(404).json({ message: 'Application not found' });
+    res.json(application);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

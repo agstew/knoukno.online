@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Price from './pages/Price';
+import Apply from './pages/Apply';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import TitleList from './pages/TitleList';
@@ -42,6 +43,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/price" element={<Price />} />
+          <Route path="/apply" element={<Apply />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/questions" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/title" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
