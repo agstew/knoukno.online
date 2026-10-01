@@ -105,7 +105,7 @@ router.post('/users/broadcast', async (req, res) => {
       return res.status(502).json({ message: 'Email is not configured on the server.' });
     }
 
-    const users = await User.find().select('_id email');
+    const users = await User.find({ emailOptOut: { $ne: true } }).select('_id email');
     let sent = 0;
     let failed = 0;
 

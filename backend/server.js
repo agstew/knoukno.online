@@ -15,6 +15,7 @@ const paymentRoutes = require('./routes/payment');
 const contentRoutes = require('./routes/content');
 const titleRoutes = require('./routes/titles');
 const hiringRoutes = require('./routes/hiring');
+const emailPreferencesRoutes = require('./routes/emailPreferences');
 const { seedContent } = require('./seed');
 const { processDueScheduledEmails } = require('./utils/scheduledEmailRunner');
 
@@ -57,6 +58,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/titles', titleRoutes);
 app.use('/api/hiring', hiringRoutes);
+app.use('/api/email-preferences', emailPreferencesRoutes);
 
 app.get('/api/health', (req, res) => res.status(databaseReady ? 200 : 503).json({ status: databaseReady ? 'ok' : 'unavailable' }));
 

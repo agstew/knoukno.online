@@ -30,7 +30,9 @@ const userSchema = new mongoose.Schema({
   averageRating: { type: Number, default: 0 },
   // SHA-256 of the emailed token; the raw token is never stored
   resetPasswordToken: { type: String, index: true },
-  resetPasswordExpires: { type: Date }
+  resetPasswordExpires: { type: Date },
+  emailOptOut: { type: Boolean, default: false },
+  emailPrefToken: { type: String, index: true }
 });
 
 userSchema.pre('save', async function (next) {

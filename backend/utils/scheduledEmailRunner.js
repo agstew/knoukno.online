@@ -1,9 +1,25 @@
+const crypto = require('crypto');
 const User = require('../models/User');
 const AdminMessage = require('../models/AdminMessage');
 const ScheduledEmail = require('../models/ScheduledEmail');
 const mailer = require('./mailer');
 
-// Finds due, pending scheduled emails and sends each to every user.
+const BASE_URL = process.env.PUBLIC_URL || 'https://www.knoukno.online';
+
+async function ensurePrefToken(user) {
+  if (user.emailPrefToken) return user.emailPrefToken;
+  user.emailPrefToken = crypto.randomBytes(24).toString('hex');
+  await User.updateOne({ _id: user._id }, { emailPrefToken: user.emailPrefToken });
+  return user.emailPrefToken;
+}
+
+function personalize(message, token) {
+  return message
+    .replace(/\{\{OPTOUT_LINK\}\}/g, `${BASE_URL}/api/email-preferences/${token}/optout`)
+    .replace(/\{\{OPTIN_LINK\}\}/g, `${BASE_URL}/api/email-preferences/${token}/optin`);
+}
+
+// Finds due, pending scheduled emails and sends each to every subscribed user.
 async function processDueScheduledEmails() {
   const due = await ScheduledEmail.find({ status: 'pending', sendAt: { $lte: new Date() } });
   if (due.length === 0) return;
@@ -11,7 +27,7 @@ async function processDueScheduledEmails() {
   for (const scheduled of due) {
     try {
       if (!mailer.isConfigured()) throw new Error('Email is not configured on the server.');
-      const users = await User.find().select('_id email');
+      const users = await User.find({ emailOptOut: { $ne: true } }).select('_id email emailPrefToken');
       let sent = 0;
       let failed = 0;
 
@@ -19,7 +35,9 @@ async function processDueScheduledEmails() {
         let status = 'sent';
         let error;
         try {
-          await mailer.sendMail({ to: user.email, subject: scheduled.subject, text: scheduled.message });
+          const token = await ensurePrefToken(user);
+          const personalizedMessage = personalize(scheduled.message, token);
+          await mailer.sendMail({ to: user.email, subject: scheduled.subject, text: personalizedMessage });
           sent += 1;
         } catch (sendErr) {
           status = 'failed';
