@@ -23,9 +23,13 @@ const isTrialExpired = (user) =>
   user.role !== 'admin' && user.tier === 'free' && Boolean(user.tierExpiry) && new Date() > new Date(user.tierExpiry);
 
 const accessibleTiers = (user) => {
-  if (user.role === 'admin' || user.tier === 'pro') return ['free', 'members', 'pro'];
-  if (user.tier === 'members') return ['free', 'members'];
-  return ['free'];
+  const base = user.role === 'admin' || user.tier === 'pro'
+    ? ['free', 'members', 'pro']
+    : user.tier === 'members'
+      ? ['free', 'members']
+      : ['free'];
+  const bonusUnlocked = user.role === 'admin' || ((user.tier === 'members' || user.tier === 'pro') && (user.bonusQuestions || 0) > 0);
+  return bonusUnlocked ? [...base, 'bonus'] : base;
 };
 
 const questionLimit = (user) =>

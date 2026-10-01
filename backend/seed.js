@@ -211,6 +211,806 @@ const questions = [
     category: 'manage',
     tierAccess: 'members',
     questionNumber: 25
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you decide which business name, domain, and trademark are actually available and defensible before you commit to branding, signage, and marketing spend? Walk through the search process across state business registries, the USPTO trademark database, domain registrars, and social handles, and explain what level of conflict should stop you versus what is an acceptable risk.',
+    example: 'A founder loves a name for a new bakery but a similarly named catering company already operates two counties over.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 76
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What insurance coverage does a new business actually need in its first year, and how do you decide the right balance between protection and premium cost? Cover general liability, professional liability, property, workers compensation, and cyber coverage, and explain the questions you would ask an insurance broker before signing anything.',
+    example: 'A one-person web design studio working from a home office is deciding whether professional liability insurance is worth the monthly premium.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 77
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you choose between renting commercial space, operating from home, or going fully remote for a new business, and what financial and operational tradeoffs does each option carry? Walk through lease terms, build-out costs, zoning restrictions, and how customer expectations in your industry affect the decision.',
+    example: 'A personal trainer is deciding between renting a small studio, using a shared gym space, or training clients exclusively at their homes.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 78
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What is the process for securing the permits and licenses specific to your trade before you can legally open, and how do you avoid the delays that catch new owners off guard? Describe how to find the right city, county, and state agencies, the typical timeline for approval, and what to do if an inspection fails.',
+    example: 'A new food truck owner has the vehicle and menu ready but has not yet looked into health department permits or the commissary kitchen requirement.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 79
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you build a basic financial model before launch that tells you whether the business can realistically become profitable, including your break-even point and the runway you need to get there? Explain which assumptions matter most, how to stress-test them, and what result should make you pause before investing further.',
+    example: 'A couple wants to open a small bookstore and needs to know how many books per day they must sell to cover rent and payroll.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 80
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'When two or more people start a business together, what should the founders agreement cover to prevent disputes later, including equity splits, vesting, decision rights, and what happens if someone wants to leave? Walk through the conversations that are uncomfortable but necessary before any money changes hands.',
+    example: 'Two friends who have never run a business before are splitting ownership 50/50 on a new landscaping company with no written agreement yet.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 81
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you select the right point-of-sale, scheduling, or booking software for a new business when every vendor claims to be the best fit? Describe the criteria for evaluating cost, integrations, support quality, and switching cost down the road, and how to run a real trial before committing.',
+    example: 'A new salon owner is comparing three booking platforms that each charge differently and integrate with different payment processors.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 82
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What should a new business owner know about hiring their first employee versus using contractors, including the legal distinction, the tax and compliance obligations, and the operational commitment each path creates? Explain the warning signs that a business is misclassifying workers and what that risk actually costs.',
+    example: 'A solo photographer books more weddings than they can shoot and is deciding whether to hire an assistant as an employee or a 1099 contractor.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 83
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you build an opening-week marketing plan on a limited budget that actually brings in the first wave of paying customers rather than just likes and views? Walk through the channels worth testing first, how to track what is working within days rather than months, and when to cut a channel that is not converting.',
+    example: 'A new coffee shop has $1,500 for marketing before opening day and is unsure whether to spend it on local ads, flyers, or an opening event.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 84
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What is the right way to set up business banking and separate personal and business finances from day one, and why does this matter for liability protection, taxes, and simply knowing if the business is profitable? Describe the accounts, cards, and habits to put in place before the first dollar comes in.',
+    example: 'A new LLC owner has been using their personal checking account for the first two months of business transactions.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 85
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you evaluate whether to buy an existing business, buy a franchise, or start completely from scratch, and what due diligence does each path require before signing anything? Compare the capital required, the risk profile, and the speed to revenue for each option.',
+    example: 'A former restaurant manager has savings to invest and is weighing a franchise sandwich shop against buying out a struggling independent diner.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 86
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What should go into a one-page business plan that is actually useful for decision-making, as opposed to a long document written mainly to look impressive to outsiders? Walk through the sections that matter for a founder running the business day to day and how often it should be revisited.',
+    example: 'A first-time founder has a 40-page business plan from a template but cannot answer what their plan is for the next 90 days.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 87
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you identify and vet your first suppliers or vendors when you have no track record to negotiate with and limited purchasing volume? Explain how to compare quality, reliability, and payment terms, and what red flags should make you walk away from a supplier relationship early.',
+    example: 'A new candle maker is choosing between three wax and fragrance suppliers with very different minimum order quantities and lead times.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 88
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What is the right amount of personal savings or runway to have in place before quitting a day job to run a new business full time, and how do you calculate it honestly? Walk through how to account for both business expenses and personal living costs during the ramp-up period.',
+    example: 'An employee with a stable salary wants to quit in three months to run their side business full time but has not calculated their true monthly burn rate.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 89
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How should a new business set its hours of operation, and what tradeoffs exist between maximizing availability for customers and protecting the owner from burnout in the first year? Describe how to test hours against real demand data rather than guessing.',
+    example: 'A new bakery is debating whether to open seven days a week from the start or launch with five days and expand based on demand.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 90
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What is the process for building a simple customer feedback loop in the first 90 days so that early problems get caught before they become patterns that damage the reputation of the business? Explain what questions to ask, how often, and how to act on what you learn without overreacting to a single complaint.',
+    example: 'A new cleaning service has completed 40 jobs but has no structured way of knowing if customers are satisfied beyond repeat bookings.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 91
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you decide on your initial product or service lineup when offering too much creates operational complexity but offering too little limits revenue? Walk through how to choose a focused starting menu or service list and the signals that tell you when it is time to expand it.',
+    example: 'A new food truck has twelve menu items planned but the owner has never run a commercial kitchen before.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 92
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What should a new business owner understand about sales tax collection and remittance across the jurisdictions where they sell, especially if they sell online as well as in person? Explain how to determine nexus, register correctly, and avoid the penalties that come from getting this wrong in the first year.',
+    example: 'A new online store based in one state is starting to ship products to customers in several other states.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 93
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'How do you build the first version of your brand identity, including logo, colors, and voice, without spending more than a new business can afford on design? Explain how to brief a designer effectively, what to test with real customers, and when a DIY approach is good enough versus when it hurts credibility.',
+    example: 'A new consulting firm has a logo made in an hour using a free tool and is unsure if it undermines their pitch to larger clients.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 94
+  },
+  {
+    businessTitle: 'Starting Your Business',
+    questionText: 'What is a realistic timeline from the decision to start a business to actually opening the doors or launching the website, and what are the steps most new owners underestimate? Walk through a sample 90-day launch plan including the dependencies that can stall progress if not sequenced correctly.',
+    example: 'A first-time founder wants to launch a new service business in six weeks but has not yet registered the business entity or opened a bank account.',
+    category: 'start',
+    tierAccess: 'bonus',
+    questionNumber: 95
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you design a standard operating procedure document for a recurring task so that any trained employee can perform it consistently, even if the person who normally does it is out? Describe the format, level of detail, and review cadence that keeps procedures useful instead of outdated and ignored.',
+    example: 'A restaurant has one cook who closes the kitchen a specific way every night, but no one else knows the full checklist.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 96
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What inventory management system should a small business use to avoid both stockouts that lose sales and overstock that ties up cash, and how do you set reorder points for each product? Walk through how to calculate lead time, safety stock, and how often counts should happen.',
+    example: 'A boutique retailer frequently runs out of their best-selling item while sitting on excess inventory of slower movers.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 97
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you set up a customer complaint handling process that resolves issues quickly, protects the relationship, and feeds lessons back into how the business operates? Describe how to triage complaints by severity, who should be empowered to resolve them, and how to track recurring issues over time.',
+    example: 'A home repair company receives occasional complaints about missed appointment windows but has no consistent way of tracking or resolving them.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 98
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the right approach to scheduling staff shifts so that labor costs match demand without leaving the business understaffed during peak hours? Walk through how to forecast demand by day and hour, build a schedule around it, and handle last-minute call-outs.',
+    example: 'A cafe is overstaffed on slow weekday mornings and understaffed during the weekend rush, driving both wasted payroll and lost sales.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 99
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you choose which parts of the business to automate first when budget for new software or equipment is limited? Explain how to calculate the time and error cost of a manual process versus the cost and setup time of automating it, and how to sequence automation investments.',
+    example: 'A small accounting firm manually enters data from client documents and is deciding whether to invest in document automation software.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 100
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What vendor management process keeps a business from being overly dependent on a single supplier, and how do you build backup options without doubling your costs? Walk through how to evaluate supplier risk, negotiate terms that protect you, and when it makes sense to qualify a second source.',
+    example: 'A manufacturer sources a key component from a single overseas supplier and had a two-week delay last year that stalled production.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 101
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you build a quality control process for a service business where the output is intangible, as opposed to a product business where defects are easier to spot? Describe what to measure, how to audit without micromanaging staff, and how to course-correct when quality slips.',
+    example: 'A marketing agency has noticed inconsistent quality across client deliverables depending on which account manager handles the work.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 102
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the right way to handle a major equipment failure or supply disruption that threatens to stop operations for days, and what contingency plans should be in place before it happens? Walk through the decisions to make in the first 24 hours and how to communicate with affected customers.',
+    example: 'A laundromat\u2019s main commercial washer breaks down with no backup machine and a two-week part delivery wait.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 103
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you decide which business functions to keep in-house versus outsource, such as bookkeeping, IT support, or customer service? Explain the cost, quality, and control tradeoffs of each option and how to structure an outsourcing relationship so accountability does not get lost.',
+    example: 'A ten-person company is deciding whether to hire an in-house bookkeeper or continue outsourcing to a part-time contractor.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 104
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What data should a small business track daily, weekly, and monthly to actually run operations well, as opposed to vanity metrics that look good but do not drive decisions? Walk through how to build a simple dashboard and the one or two numbers that would trigger an immediate response if they moved.',
+    example: 'A gym tracks total membership count but has no visibility into daily check-ins, class attendance, or cancellation trends.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 105
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you build a disaster recovery plan for a business that depends heavily on a physical location, covering scenarios like fire, flood, extended power outage, or a break-in? Describe what should be documented in advance, what insurance should cover, and how operations continue during the recovery period.',
+    example: 'A small bakery has never documented what to do if a fire or flood damaged the kitchen and forced a temporary closure.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 106
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the right process for evaluating and switching core business software, such as accounting or scheduling systems, without disrupting daily operations during the transition? Walk through how to plan data migration, staff retraining, and a cutover date that minimizes risk.',
+    example: 'A company has outgrown its spreadsheet-based scheduling system but is worried about the disruption of switching mid-season.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 107
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you set and enforce quality standards for recurring deliverables when the team doing the work has turnover and varying skill levels? Describe how to build checklists, training, and review steps that keep output consistent even as the people performing the work change.',
+    example: 'A cleaning company has had five different crew members in six months, and the quality customers receive varies noticeably by who shows up.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 108
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the best approach to managing multiple locations or service areas once a business expands beyond a single site, including how to maintain consistent quality and communication across them? Walk through what should be centralized versus what should be delegated to local managers.',
+    example: 'A pet grooming business that operated from one location for three years just opened a second location across town.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 109
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you build a process for handling returns, refunds, or service redos that is fair to customers without being exploited or creating a financial drain? Describe the policy you would write, how staff should apply it consistently, and how to track abuse patterns.',
+    example: 'An online store has seen a rise in return requests and is unsure whether its current no-questions-asked policy is too generous.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 110
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the right way to manage seasonal demand swings in a business where revenue is heavily concentrated in a few months of the year? Walk through staffing, cash flow, and inventory strategies that get the business through the slow season without crisis.',
+    example: 'A landscaping company earns 70% of its annual revenue between April and September and struggles every winter.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 111
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you set up a basic cybersecurity practice for a small business that handles customer data and payments, without the budget for a dedicated IT security team? Describe the minimum practices around passwords, backups, software updates, and staff training that meaningfully reduce risk.',
+    example: 'A small medical billing company stores sensitive client data on a shared office computer with no formal security policy.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 112
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the process for renegotiating a lease or vendor contract that no longer serves the business as terms or circumstances change? Walk through how to prepare, what leverage you actually have, and when it makes more sense to relocate or switch vendors instead of renegotiating.',
+    example: 'A retail store\u2019s lease is up for renewal and rent is being raised 25% in a location with declining foot traffic.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 113
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'How do you handle a situation where a long-time vendor or supplier suddenly raises prices significantly, and what options exist beyond simply absorbing the cost or passing it to customers? Walk through negotiation tactics, alternative sourcing, and how to communicate a price change to customers if needed.',
+    example: 'A bakery\u2019s main flour supplier just raised prices 18% with only two weeks notice before the next delivery.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 114
+  },
+  {
+    businessTitle: 'Managing Operations',
+    questionText: 'What is the right way to document institutional knowledge that currently exists only in the owner\u2019s head, so the business can function and be evaluated or sold without the owner present? Describe the process for capturing processes, vendor relationships, and client history systematically.',
+    example: 'A business owner realizes that if they were out for a month, almost no one else could answer a basic vendor or client question.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 115
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you set up a simple weekly cash flow forecast that tells you whether the business can meet payroll and major bills over the next 60 days? Walk through what inputs are needed, how often it should be updated, and what variance should trigger action.',
+    example: 'A business has enough cash today but has not projected whether a large vendor payment and payroll will overlap badly next month.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 116
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right way to price a service when customers have wildly different needs, and how do you decide between flat pricing, tiered packages, and fully custom quotes? Walk through how each pricing model affects sales conversations, margin, and the scalability of the business.',
+    example: 'A web design freelancer is quoting every project individually and finds each proposal takes hours to prepare.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 117
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you calculate the true profitability of each product or service line when shared costs like rent and admin staff are hard to allocate cleanly? Walk through a method for allocating overhead and the decisions that change once you see real line-level margins.',
+    example: 'A cafe sells coffee, pastries, and catering but has never calculated which category actually drives profit versus just revenue.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 118
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What should a business do when a major customer consistently pays late, and how do you balance maintaining the relationship against protecting your own cash flow? Walk through the collections process, what contract terms would prevent this, and when to require upfront deposits going forward.',
+    example: 'A contractor\u2019s largest client regularly pays invoices 45 days late despite 15-day terms in the contract.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 119
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you decide whether to lease or buy major equipment for the business, accounting for cash flow impact, tax treatment, maintenance responsibility, and how quickly the equipment becomes outdated? Walk through the full cost comparison over the expected useful life.',
+    example: 'A print shop needs a new large-format printer costing $40,000 and is comparing a lease against financing a purchase.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 120
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What retirement and benefits structure makes sense for a small business owner and their employees, balancing the cost to the business against the need to attract and retain good people? Walk through the options available at different company sizes and budgets.',
+    example: 'A ten-person company has never offered retirement benefits and is losing candidates to larger competitors that do.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 121
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you build a reserve fund policy that specifies how much cash to keep on hand, where to keep it, and under what conditions it can be spent, so the decision is not made emotionally during a crisis? Walk through how to size the reserve based on the business\u2019s actual expense volatility.',
+    example: 'A seasonal business has cash sitting in a regular checking account with no policy on how much to keep versus reinvest.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 122
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the process for preparing financial statements that a bank or investor will actually trust, and what common mistakes cause small business financials to get rejected in a lending decision? Walk through what level of bookkeeping rigor is needed before approaching outside capital.',
+    example: 'A business owner has only ever used a single spreadsheet for bookkeeping and now needs to apply for an SBA loan.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 123
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you decide when it is time to hire a part-time or full-time bookkeeper or accountant instead of handling the books yourself, and what should that role be responsible for versus what a tax preparer handles separately? Walk through the signs that DIY bookkeeping is costing more than it saves.',
+    example: 'A growing business owner spends six hours every week on bookkeeping and is behind on reconciling the last two months.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 124
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right approach to managing foreign currency risk for a business that buys from or sells to international suppliers or customers? Walk through how exchange rate movement affects margins and what tools exist to hedge against it at a small business scale.',
+    example: 'A furniture importer pays suppliers in a foreign currency that has moved 12% against the dollar in the last year.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 125
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you structure owner compensation in the early years of a business when cash is tight, balancing paying yourself fairly against reinvesting in growth? Walk through how to decide between a fixed salary, a percentage draw, or deferred compensation.',
+    example: 'A founder has not paid themselves consistently in 18 months and is unsure how to start without destabilizing cash flow.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 126
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right process for evaluating a business loan offer, including comparing interest rate, fees, repayment terms, and any personal guarantee required? Walk through the questions to ask a lender and the red flags in a loan agreement that should give a borrower pause.',
+    example: 'A business has been offered a merchant cash advance with daily repayments that seem faster than their typical loan options.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 127
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you calculate customer acquisition cost and customer lifetime value for a small business, and what should those two numbers tell you about how much to spend on marketing? Walk through the data needed and how to act once you know whether the ratio is healthy.',
+    example: 'A subscription box company spends on ads but has never calculated what each customer actually costs to acquire versus what they are worth over time.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 128
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What tax planning should a profitable small business do before year-end to legally minimize their tax bill, including entity structure, retirement contributions, equipment purchases, and timing of income and expenses? Walk through the conversation to have with a tax professional in the fourth quarter.',
+    example: 'A business is having its most profitable year yet and the owner has not spoken to their accountant since filing last year\u2019s taxes.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 129
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you decide the right level of accounts receivable terms to offer business customers, balancing competitiveness in winning their business against the cash flow strain of waiting to get paid? Walk through how to set terms by customer risk and how to enforce them consistently.',
+    example: 'A wholesale supplier offers the same 30-day terms to every customer regardless of order size or payment history.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 130
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right way to evaluate whether a discount or promotion actually drives profitable incremental business versus just giving away margin to customers who would have purchased anyway? Walk through how to structure a test and measure the real impact before rolling out a promotion broadly.',
+    example: 'A retailer runs a 20% off sale every month and has never measured whether it increases total profit or just shifts the timing of existing sales.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 131
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How do you build a capital expenditure plan for the next three years that sequences major purchases like equipment, vehicles, or renovations against expected cash flow? Walk through how to prioritize which investments to make first and how to decide between financing and paying cash.',
+    example: 'A growing landscaping company needs two new trucks, a storage building, and new mowing equipment but cannot afford all three this year.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 132
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right process for valuing a small business, whether for a potential sale, bringing in a partner, or an ownership buyout, and which valuation method applies best to a business with modest revenue? Walk through how earnings multiples, asset value, and goodwill factor into the number.',
+    example: 'Two co-owners are negotiating a buyout where one wants to leave and cash out their share of a profitable service business.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 133
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'How should a business decide between reinvesting profit into growth versus distributing it to owners, especially when growth opportunities exist but carry real execution risk? Walk through the framework for evaluating expected return on a growth investment against the certainty of a distribution.',
+    example: 'A profitable consulting firm has $150,000 in retained earnings and is debating whether to open a second office or distribute the profit to the two partners.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 134
+  },
+  {
+    businessTitle: 'Business Finances',
+    questionText: 'What is the right approach to managing credit card and merchant processing fees, which can quietly erode margin on every single transaction? Walk through how to compare processors, when surcharging or minimum purchase amounts are appropriate, and how to negotiate rates as volume grows.',
+    example: 'A retail shop has never renegotiated its credit card processing rate since opening five years ago despite significant growth in transaction volume.',
+    category: 'money',
+    tierAccess: 'bonus',
+    questionNumber: 135
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you write a job posting and structure an interview process that actually predicts whether a candidate will succeed in the role, rather than just who interviews well? Walk through the specific questions, work samples, or trial tasks that reveal real ability.',
+    example: 'A business has hired three customer service reps in a row who interviewed well but struggled once on the job.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 136
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right compensation structure for a sales role, balancing base salary, commission, and bonus so that incentives align with what the business actually needs, such as margin or long-term customer relationships rather than just volume? Walk through how to design and test a plan.',
+    example: 'A company\u2019s current commission-only sales structure is driving reps to discount heavily to close deals faster.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 137
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you handle a situation where a long-tenured, otherwise valuable employee is consistently underperforming in one specific area? Walk through the documentation, coaching conversations, and timeline you would follow before deciding whether a performance improvement plan or termination is appropriate.',
+    example: 'A five-year employee is excellent with customers but has repeatedly missed deadlines on administrative paperwork despite several verbal reminders.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 138
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right process for setting and communicating performance expectations so that employees know exactly what success looks like in their role? Walk through how to build simple, measurable goals and a review cadence that catches problems early rather than only at an annual review.',
+    example: 'A team of six has never had individual performance goals and reviews happen inconsistently, if at all.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 139
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you build a promotion and career path structure for a small business where there are only a few levels above entry roles, so good employees do not leave simply because they see no room to grow? Walk through options beyond a traditional title promotion.',
+    example: 'A strong employee has told their manager they are considering another job mainly because they feel stuck with no path forward.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 140
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What should an employee handbook actually include for a small business, and how do you keep it legally sound without it becoming a document no one reads or follows? Walk through the policies that matter most and how to roll out updates when laws or practices change.',
+    example: 'A ten-employee business has never had a written handbook and is unsure what policies are legally required versus optional.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 141
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you handle a conflict between two employees that is starting to affect team morale and productivity, without taking sides unfairly or ignoring a real problem? Walk through the mediation process and when the conflict requires a formal response versus informal coaching.',
+    example: 'Two senior staff members have an ongoing personal disagreement that is now affecting how the rest of the team communicates.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 142
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right approach to building a culture of accountability where employees take ownership of mistakes without being afraid to report problems early? Walk through how leadership behavior, incentive structure, and response to mistakes either build or destroy this kind of culture.',
+    example: 'A manager has noticed employees hiding small mistakes rather than reporting them, leading to bigger problems downstream.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 143
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you decide when a team has grown large enough to need a middle manager layer, and how do you select and train the first person to move into that role from within the team? Walk through the risks of promoting the wrong person and how to structure support for the new manager.',
+    example: 'A business has grown from 4 to 14 employees reporting directly to the owner, who no longer has time for one-on-ones with everyone.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 144
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right exit process when an employee resigns or is let go, covering knowledge transfer, client communication, access revocation, and final pay, so the transition does not damage operations or relationships? Walk through a checklist that covers both voluntary and involuntary departures.',
+    example: 'A key account manager just gave two weeks notice and holds relationships with several of the company\u2019s largest clients.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 145
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you build a fair and sustainable overtime and scheduling policy for hourly employees that complies with labor law while still meeting the operational needs of the business? Walk through how to track hours accurately and handle disputes over pay.',
+    example: 'A restaurant has had several disputes with staff over whether certain shift changes should count toward overtime.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 146
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right way to recognize and reward strong performance in a small business without a large budget for bonuses or raises? Walk through non-monetary and low-cost recognition strategies and how to make sure recognition feels genuine rather than token.',
+    example: 'A business owner wants to retain their best employee but cannot currently afford a meaningful raise.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 147
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you handle employee requests for remote or hybrid work arrangements in a business where the role has traditionally been performed in person? Walk through how to evaluate which roles can flex, how to set expectations, and how to keep the policy fair across the team.',
+    example: 'An administrative employee has asked to work from home two days a week after a strong first year of in-office performance.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 148
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What should a business do when it receives a complaint about harassment or discrimination, and what process ensures the investigation is fair, thorough, and legally compliant? Walk through the immediate steps to take and how to communicate with the parties involved during the investigation.',
+    example: 'An employee has filed a complaint about a coworker\u2019s comments, and the owner has never handled a formal complaint before.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 149
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you design a training program for a skill-based role where quality directly affects customer satisfaction, and how do you verify that training actually transferred into consistent on-the-job performance? Walk through how to measure skill retention over time.',
+    example: 'A spa has had inconsistent client satisfaction scores for a service that depends heavily on technician skill and training quality.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 150
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right way to manage a multigenerational workforce where employees have very different expectations around communication, feedback, and flexibility? Walk through how to build policies and a management style that work across those differences without favoring one group.',
+    example: 'A business with employees ranging from 19 to 62 years old has noticed friction over communication preferences and scheduling expectations.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 151
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you structure a probationary or introductory period for new hires that genuinely allows you to evaluate fit, while still being fair and legally sound? Walk through what should be evaluated during this period and how to handle the decision if it is not working out.',
+    example: 'A new hire is struggling in their first month, and the manager is unsure whether to extend support or end the employment relationship.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 152
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What should a business consider before implementing employee monitoring tools, such as time tracking or activity software, to balance accountability against trust and morale? Walk through how to introduce monitoring transparently and what level is appropriate for different roles.',
+    example: 'A remote team\u2019s manager is considering screen-monitoring software after noticing inconsistent output from a few employees.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 153
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'How do you build a succession plan for key roles in a small business so that the departure of one critical person, whether planned or sudden, does not put operations at serious risk? Walk through how to identify key-person risk and start cross-training before it becomes urgent.',
+    example: 'A business\u2019s entire client relationship history lives with one long-time employee who has not taken a vacation in two years.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 154
+  },
+  {
+    businessTitle: 'Employee Management',
+    questionText: 'What is the right way to handle a request from an employee for a significant raise outside the normal review cycle, especially if they have a competing job offer? Walk through how to evaluate the request fairly and the broader pay equity implications of saying yes or no.',
+    example: 'A valued employee has come to their manager with a competing offer 20% higher than their current pay and wants a decision within a week.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 155
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide when the business is actually ready to expand into a second location or market, as opposed to expanding too early based on excitement rather than evidence? Walk through the operational and financial signals that indicate real readiness.',
+    example: 'A single-location restaurant has had six consecutive months of record sales and the owner is eager to open a second location.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 156
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the process for evaluating a new product or service line extension to make sure it fits with the existing brand and operational capability rather than diluting focus? Walk through how to test demand before committing significant resources to the new offering.',
+    example: 'A skincare brand known for facial products is considering launching a body care line without testing demand first.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 157
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you build a referral or partnership program with complementary businesses that genuinely drives new customers rather than just creating goodwill with no measurable return? Walk through how to structure incentives and track which partnerships actually convert.',
+    example: 'A wedding photographer wants to build referral relationships with local venues and planners but has no system to track which ones send real business.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 158
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right approach to raising outside capital for growth, whether from friends and family, angel investors, or a small venture fund, and how do you decide how much to raise and what to give up? Walk through what terms matter most beyond the valuation number.',
+    example: 'A founder has an opportunity to raise $250,000 from a local investor group but has never negotiated an investment term sheet before.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 159
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide whether to pursue growth through organic customer acquisition, paid advertising, or acquiring a competitor, and what does each path require in terms of capital, risk, and management attention? Walk through the comparison framework for a business deciding its next growth lever.',
+    example: 'A regional service company is deciding between ramping up digital advertising spend or acquiring a smaller competitor in a neighboring market.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 160
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the process for entering a new geographic market when local regulations, competitive landscape, and customer expectations may differ significantly from your home market? Walk through the research and pilot approach you would take before fully committing.',
+    example: 'A home services company that has operated in one metro area for five years is considering expanding into a neighboring state.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 161
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide when to transition from a founder-led sales process to building a dedicated sales team, and how do you avoid a drop in close rates during that transition? Walk through how to document and transfer the founder\u2019s sales approach to new hires.',
+    example: 'A founder personally closes every deal and the business cannot grow past a certain revenue ceiling without changing that.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 162
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right way to evaluate a strategic partnership or joint venture opportunity, including how to structure the agreement so both parties are genuinely incentivized toward the same outcome? Walk through the warning signs that a partnership will create more friction than value.',
+    example: 'Two complementary businesses are discussing a joint venture to co-market a bundled service but have not discussed how revenue would be split.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 163
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you build a customer retention strategy that reduces churn as the business scales and the owner can no longer maintain a personal relationship with every customer? Walk through what systems and triggers take over for the owner\u2019s personal touch.',
+    example: 'A subscription service has grown from 50 to 2,000 customers and retention has started dropping now that the owner cannot call every customer personally.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 164
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right approach to building a brand that can scale beyond the founder\u2019s personal reputation, especially in a business where the founder has been the face of the company? Walk through how to transfer trust from the founder to the broader organization.',
+    example: 'A consulting business built entirely around the founder\u2019s personal brand is struggling to bring on associate consultants that clients trust equally.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 165
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide the right pace of hiring ahead of expected growth, balancing the risk of being understaffed when demand arrives against the cost of carrying payroll before revenue catches up? Walk through how to build a hiring plan tied to specific growth triggers.',
+    example: 'A business has landed a large new contract starting in 60 days and needs to decide how far ahead to start hiring and training.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 166
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the process for building a franchise or licensing model if a business wants to grow using other people\u2019s capital rather than its own? Walk through what needs to be standardized and documented before a business is actually franchisable.',
+    example: 'A successful three-location business keeps getting asked by customers if they offer franchises but has never formally explored it.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 167
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you evaluate whether an acquisition offer for your business is fair, and what should you negotiate beyond the headline purchase price, including earnouts, employee retention, and your own role post-sale? Walk through the due diligence you should do on the buyer as well.',
+    example: 'A founder has received an acquisition offer from a larger competitor that includes a two-year earnout tied to performance targets.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 168
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right way to build a content or thought leadership strategy that attracts customers over time without requiring a large ongoing budget? Walk through how to choose a format and topic focus that compounds in value and how to measure whether it is actually driving business results.',
+    example: 'A B2B service firm wants to build credibility through content but is unsure whether to focus on a blog, video, or a newsletter.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 169
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide whether international expansion makes sense for a business, and what operational, legal, and cultural factors most often derail businesses that expand too quickly across borders? Walk through a staged approach to testing a new country market.',
+    example: 'An e-commerce brand with strong domestic sales is considering fulfilling orders internationally for the first time.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 170
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right approach to building a competitive moat so that growth is not easily copied by competitors who see your success and enter the same market? Walk through which types of advantages are durable versus which are easily replicated.',
+    example: 'A business has grown quickly in a niche market and is already seeing new competitors copy their pricing and marketing approach.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 171
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you decide when it is time to bring in outside executives or a board of advisors as a business scales beyond what the founding team can manage alone? Walk through what to look for in an advisor, how much equity or compensation is appropriate, and how to actually use their input.',
+    example: 'A fast-growing company\u2019s founders have never run a business this large before and are making strategic decisions without outside input.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 172
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the process for building a long-term strategic plan that goes beyond the next 12 months, including how to set three to five year goals that are ambitious but still grounded in the business\u2019s actual capacity to execute? Walk through how often the plan should be revisited.',
+    example: 'A business has only ever planned one year at a time and the owner wants to think further ahead but is not sure how.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 173
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'How do you evaluate the risk of growing too fast, including the operational strain, quality decline, and cash flow stress that rapid growth can cause even when demand is strong? Walk through the warning signs that growth needs to be deliberately slowed.',
+    example: 'A business tripled its customer base in six months and is now seeing quality complaints and employee burnout rise sharply.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 174
+  },
+  {
+    businessTitle: 'Business Growth',
+    questionText: 'What is the right exit strategy to plan toward from the early days of a business, whether that is a sale, a family succession, an employee ownership transition, or running it indefinitely, and how does that choice shape decisions made years in advance? Walk through how to build optionality into the business regardless of which path is eventually chosen.',
+    example: 'A founder in their 40s has not decided whether they eventually want to sell the business, pass it to their children, or run it until retirement.',
+    category: 'manage',
+    tierAccess: 'bonus',
+    questionNumber: 175
   }
 ];
 
