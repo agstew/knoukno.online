@@ -1,5 +1,6 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { useAuth } from './context/AuthContext';
 import Nav from './components/Nav';
 import Footer from './components/Footer';
@@ -31,8 +32,26 @@ const AdminRoute = ({ children }) => {
 };
 
 function App() {
+  const [announcementVisible, setAnnouncementVisible] = useState(() => (
+    sessionStorage.getItem('kk-announcement-dismissed') !== 'true'
+  ));
+
+  const dismissAnnouncement = () => {
+    sessionStorage.setItem('kk-announcement-dismissed', 'true');
+    setAnnouncementVisible(false);
+  };
+
   return (
-    <div className="app">
+    <div className={`app${announcementVisible ? ' app-with-announcement' : ''}`}>
+      {announcementVisible && (
+        <aside className="announcement-banner" aria-label="Announcement">
+          <p>Start your business with Kno U Kno. Begin your free 3-day trial.</p>
+          <Link to="/register" className="announcement-link">Start free</Link>
+          <button type="button" className="announcement-dismiss" onClick={dismissAnnouncement} aria-label="Dismiss announcement">
+            <X size={18} aria-hidden="true" />
+          </button>
+        </aside>
+      )}
       <Nav />
       <main className="main-content">
         <Routes>

@@ -61,6 +61,28 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-family: var(--font-main);
 }
 .main-content { padding-top: 66px; }
+.announcement-banner {
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.45rem 3.5rem;
+  background: #1e90ff;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+.announcement-banner p { margin: 0; }
+.announcement-link { color: #fff; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.announcement-link:hover { color: #e8f3ff; }
+.announcement-dismiss { position: absolute; top: 50%; right: max(1rem, calc((100vw - 1110px) / 2)); display: grid; width: 32px; height: 32px; place-items: center; transform: translateY(-50%); border: 0; background: transparent; color: #fff; cursor: pointer; }
+.announcement-dismiss:hover { background: #ffffff20; }
+.app-with-announcement .nav { top: 44px; }
+.app-with-announcement .main-content { padding-top: 110px; }
 .nav-inner { max-width: 1140px; }
 .nav-brand { display: inline-flex; align-items: center; gap: 9px; color: #fff; font-size: 20px; letter-spacing: 0.5px; line-height: 1; font-weight: 900; }
 .nav-brand:hover { color: #fff; }
@@ -221,6 +243,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .site-home .live-section-inner { grid-template-columns: 1fr; gap: 25px; }
   .site-home .live-stage-alt .live-section-copy { order: 0; }
   .site-home .live-figure img { max-height: 400px; }
+}
+
+@media (max-width: 680px) {
+  .announcement-banner { min-height: 88px; flex-wrap: wrap; gap: 0.1rem 0.7rem; align-content: center; padding: 0.6rem 3.5rem 0.6rem 1rem; }
+  .announcement-banner p { flex-basis: 100%; }
+  .app-with-announcement .nav { top: 88px; }
+  .app-with-announcement .main-content { padding-top: 154px; }
 }
 
 @media (max-width: 480px) {
