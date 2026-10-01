@@ -6,6 +6,7 @@ import { apiFetch } from '../api/client';
 export default function Home() {
   const { isAuthenticated } = useAuth();
   const [content, setContent] = useState({});
+  const siteDomain = window.location.hostname.replace(/^www\./, '');
 
   // Browsers try to scroll to the URL hash before this SPA has rendered the target section, so do it manually once mounted.
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function Home() {
     <div className="site-home">
       <section className="live-hero">
         <div className="live-hero-inner">
-          <p className="live-eyebrow">knoukno.online</p>
+          <p className="live-eyebrow">{siteDomain}</p>
           <h1>Kno U Kno<br /><span>Know you know.</span></h1>
           <p className="live-hero-copy">
             We show you how to start a business — from the basics all the way to the finish.

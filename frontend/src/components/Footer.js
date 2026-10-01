@@ -2,13 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
+  const siteDomain = window.location.hostname.replace(/^www\./, '');
+
   return (
     <footer className="kk-footer no-print">
       <div className="kk-footer-inner">
         <section className="kk-footer-brand">
           <strong>Kno U <span>Kno</span></strong>
           <p>Know you know. The questions come from us — the answers come from you, and they are kept so you can use them later.</p>
-          <small>knoukno.online</small>
+          <small>{siteDomain}</small>
         </section>
         <section>
           <h2>Pages</h2>
