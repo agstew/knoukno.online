@@ -23,16 +23,16 @@ const isTrialExpired = (user) =>
   user.role !== 'admin' && user.tier === 'free' && Boolean(user.tierExpiry) && new Date() > new Date(user.tierExpiry);
 
 const accessibleTiers = (user) => {
-  const base = user.role === 'admin' || user.tier === 'pro'
+  const base = user.tier === 'pro'
     ? ['free', 'members', 'pro']
     : user.tier === 'members'
       ? ['free', 'members']
       : ['free'];
-  const bonusUnlocked = user.role === 'admin' || ((user.tier === 'members' || user.tier === 'pro') && (user.bonusQuestions || 0) > 0);
+  const bonusUnlocked = (user.tier === 'members' || user.tier === 'pro') && (user.bonusQuestions || 0) > 0;
   return bonusUnlocked ? [...base, 'bonus'] : base;
 };
 
 const questionLimit = (user) =>
-  user.role === 'admin' ? Infinity : (tierLimits[user.tier] || tierLimits.free) + (user.bonusQuestions || 0);
+  (tierLimits[user.tier] || tierLimits.free) + (user.bonusQuestions || 0);
 
 module.exports = { checkTier, tierLimits, isTrialExpired, accessibleTiers, questionLimit };
