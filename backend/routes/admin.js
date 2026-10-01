@@ -181,6 +181,9 @@ router.delete('/users/:id', async (req, res) => {
     }
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.role === 'admin') {
+      return res.status(400).json({ message: 'Admin accounts cannot be deleted.' });
+    }
 
     await Promise.all([
       Answer.deleteMany({ userId: user._id }),

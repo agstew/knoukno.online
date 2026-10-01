@@ -531,7 +531,7 @@ export default function AdminDashboard() {
                         <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleEmailPanel(u._id)}>Email</button>
                       </td>
                       <td>
-                        <button type="button" className="btn btn-danger btn-sm" disabled={u._id === user?.id || u._id === user?._id} onClick={() => deleteUser(u._id, u.email)}>Delete</button>
+                        <button type="button" className="btn btn-danger btn-sm" disabled={u._id === user?.id || u._id === user?._id || u.role === 'admin'} onClick={() => deleteUser(u._id, u.email)}>Delete</button>
                       </td>
                     </tr>
                   ))}
