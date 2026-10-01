@@ -75,8 +75,9 @@ export default function About() {
           </div>
           <div style={{ lineHeight: 1.8, color: 'var(--color-text)' }}>
             <p><strong>Free Trial (3 days):</strong> Access 5 foundational questions to experience the platform.</p>
-            <p style={{ marginTop: '0.5rem' }}><strong>Members ($39):</strong> Unlock 50 questions across all business categories. One-time payment.</p>
-            <p style={{ marginTop: '0.5rem' }}><strong>Pro ($436):</strong> Full access to all 75 questions — our complete business knowledge curriculum. One-time payment.</p>
+            <p style={{ marginTop: '0.5rem' }}><strong>Members ($39/month):</strong> Unlock 50 questions across all business categories. Billed monthly, cancel any time.</p>
+            <p style={{ marginTop: '0.5rem' }}><strong>Pro ($436/year):</strong> Full access to all 75 questions — our complete business knowledge curriculum. Billed yearly, cancel any time.</p>
+            <p style={{ marginTop: '0.5rem' }}><strong>Bonus (+100 questions, $100):</strong> A one-time add-on that stacks on Members or Pro and never expires.</p>
           </div>
         </div>
 
