@@ -47,7 +47,7 @@ export default function TitleList() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Could not save business title.');
       setForm(EMPTY);
-      await load();
+      open(data);
     } catch (err) {
       setError(err.message);
     } finally {
