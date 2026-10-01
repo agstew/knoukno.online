@@ -132,8 +132,12 @@ router.post('/users/broadcast', async (req, res) => {
 // GET /api/admin/scheduled-emails
 router.get('/scheduled-emails', async (req, res) => {
   try {
-    const scheduledEmails = await ScheduledEmail.find().sort({ sendAt: -1 });
-    res.json({ scheduledEmails });
+    const [pending, history, pendingCount] = await Promise.all([
+      ScheduledEmail.find({ status: 'pending' }).sort({ sendAt: 1 }).limit(10),
+      ScheduledEmail.find({ status: { $ne: 'pending' } }).sort({ processedAt: -1 }).limit(10),
+      ScheduledEmail.countDocuments({ status: 'pending' })
+    ]);
+    res.json({ scheduledEmails: [...pending, ...history], pendingCount });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }

@@ -73,6 +73,7 @@ export default function AdminDashboard() {
 
   // Scheduled emails
   const [scheduledEmails, setScheduledEmails] = useState([]);
+  const [pendingEmailCount, setPendingEmailCount] = useState(0);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({ subject: '', message: '', sendAt: '' });
   const [schedulingEmail, setSchedulingEmail] = useState(false);
@@ -206,6 +207,7 @@ export default function AdminDashboard() {
       if (res.ok) {
         const data = await res.json();
         setScheduledEmails(data.scheduledEmails || []);
+        setPendingEmailCount(data.pendingCount || 0);
       }
     } catch {}
   };
@@ -449,7 +451,10 @@ export default function AdminDashboard() {
 
           {scheduledEmails.length > 0 && (
             <div className="card" style={{ marginBottom: '1rem', padding: '1rem' }}>
-              <h4 style={{ marginTop: 0, fontSize: '0.9rem' }}>Scheduled Emails</h4>
+              <h4 style={{ marginTop: 0, fontSize: '0.9rem' }}>
+                Scheduled Emails
+                {pendingEmailCount > 0 && <span style={{ fontWeight: 400, color: 'var(--color-muted)' }}> &mdash; {pendingEmailCount} pending total, showing next 10 + recent history</span>}
+              </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {scheduledEmails.map((s) => (
                   <li key={s._id} style={{ borderTop: '1px solid var(--color-border)', padding: '0.5rem 0', fontSize: '0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
