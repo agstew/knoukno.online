@@ -11,6 +11,7 @@ const authLimiter = rateLimit({
   limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
+  message: { error: "Too many requests, please try again later." },
 });
 
 router.post("/register", authLimiter, register);
