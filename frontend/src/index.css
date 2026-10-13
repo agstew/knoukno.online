@@ -1030,6 +1030,24 @@ a:hover {
   color: #16a34a;
   font-weight: 600;
 }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gray-light);
+}
+.admin-table th {
+  color: var(--gray);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
 
 /* Footer */
 .footer {

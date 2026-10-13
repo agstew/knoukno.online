@@ -40,4 +40,9 @@ export const api = {
   plans: () => request("/plans"),
 
   upgradePlan: (token, plan) => request("/billing/upgrade", { method: "POST", body: { plan }, token }),
+
+  adminListUsers: (token) => request("/admin/users", { token }),
+  adminUpdateUserRole: (token, id, role) =>
+    request(`/admin/users/${id}/role`, { method: "PATCH", body: { role }, token }),
+  adminStats: (token) => request("/admin/stats", { token }),
 };

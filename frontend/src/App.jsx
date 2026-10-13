@@ -3,6 +3,7 @@ import Footer from "./components/Footer.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import About from "./pages/About.jsx";
+import Admin from "./pages/Admin.jsx";
 import BusinessStage from "./pages/BusinessStage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Home from "./pages/Home.jsx";
@@ -33,6 +34,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <BusinessStage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
             </ProtectedRoute>
           }
         />

@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"],
     },
     passwordHash: { type: String, required: true },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
     plan: { type: String, enum: ["free", "member", "pro"], default: "free" },
     questionsQuota: { type: Number, default: 5 },
     questionsUsed: { type: Number, default: 0 },

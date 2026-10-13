@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import answerRoutes from "./routes/answerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import billingRoutes from "./routes/billingRoutes.js";
@@ -42,6 +43,7 @@ app.use("/api/questions", questionRoutes);
 app.use("/api/answers", answerRoutes);
 app.use("/api/plans", priceRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Serve the built frontend when bundled alongside the API (combined single-service deploy)
 const publicDir = path.join(__dirname, "..", "public");

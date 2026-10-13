@@ -62,6 +62,11 @@ export default function Navbar() {
                 Dashboard
               </Link>
             )}
+            {user?.role === "admin" && (
+              <Link to="/admin" onClick={closeMenu} className={location.pathname === "/admin" ? "active" : ""}>
+                Admin
+              </Link>
+            )}
           </div>
           <div className="nav-overlay-secondary">
             {user ? (
