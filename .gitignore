@@ -9,3 +9,4 @@ build/
 coverage/
 .vscode/
 mongo-data/
+SECRET_SCRATCH_DELETE_ME.txt

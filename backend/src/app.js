@@ -17,6 +17,10 @@ import questionRoutes from "./routes/questionRoutes.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
+// Railway (and most PaaS hosts) sit behind a reverse proxy that sets X-Forwarded-For;
+// without this, express-rate-limit can't safely key by IP.
+app.set("trust proxy", 1);
+
 const allowedOrigins = (
   process.env.CLIENT_ORIGIN ||
   process.env.CLIENT_URL ||
