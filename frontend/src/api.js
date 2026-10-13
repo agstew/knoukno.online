@@ -21,6 +21,8 @@ export const api = {
   register: (payload) => request("/auth/register", { method: "POST", body: payload }),
   login: (payload) => request("/auth/login", { method: "POST", body: payload }),
   me: (token) => request("/auth/me", { token }),
+  forgotPassword: (email) => request("/auth/forgot-password", { method: "POST", body: { email } }),
+  resetPassword: (payload) => request("/auth/reset-password", { method: "POST", body: payload }),
 
   listBusinesses: (token) => request("/businesses", { token }),
   createBusiness: (token, payload) => request("/businesses", { method: "POST", body: payload, token }),

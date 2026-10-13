@@ -19,6 +19,8 @@ const userSchema = new mongoose.Schema(
     questionsUsed: { type: Number, default: 0 },
     trialEndsAt: { type: Date },
     planRenewsAt: { type: Date },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
   },
   { timestamps: true }
 );

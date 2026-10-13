@@ -6,10 +6,12 @@ import About from "./pages/About.jsx";
 import Admin from "./pages/Admin.jsx";
 import BusinessStage from "./pages/BusinessStage.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Price from "./pages/Price.jsx";
 import Register from "./pages/Register.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/price" element={<Price />} />
         <Route
           path="/dashboard"

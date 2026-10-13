@@ -51,6 +51,27 @@ export async function sendWelcomeEmail(to, name) {
   }
 }
 
+export async function sendPasswordResetEmail(to, name, resetUrl) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping password reset email");
+    return;
+  }
+  try {
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
+      to,
+      subject: "Reset your KnoUKno password",
+      html: emailLayout(`<p>Hi ${escapeHtml(name)},</p>
+             <p>We got a request to reset your KnoUKno password. This link expires in 1 hour:</p>
+             <p><a href="${resetUrl}" style="color:#1e90ff;">Reset your password</a></p>
+             <p>If you didn't ask for this, you can ignore this email.</p>
+             <p>Know you know.<br/>KnoUKno</p>`),
+    });
+  } catch (err) {
+    console.error("Failed to send password reset email:", err.message);
+  }
+}
+
 function escapeHtml(str = "") {
   return str.replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",
