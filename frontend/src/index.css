@@ -200,6 +200,7 @@ a:hover {
 .btn-primary:hover {
   background: var(--dodger-blue-dark);
   border-color: var(--dodger-blue-dark);
+  color: var(--white);
 }
 .btn-outline {
   background: var(--white);
@@ -207,6 +208,7 @@ a:hover {
 }
 .btn-outline:hover {
   background: var(--dodger-blue-light);
+  color: var(--dodger-blue);
 }
 .btn-outline-light {
   background: transparent;
@@ -216,6 +218,7 @@ a:hover {
 .btn-outline-light:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: var(--white);
+  color: var(--white);
 }
 .btn-dark {
   background: var(--black);
@@ -224,6 +227,7 @@ a:hover {
 }
 .btn-dark:hover {
   background: #1a1a1a;
+  color: var(--white);
 }
 .btn-lg {
   padding: 15px 30px;
@@ -236,7 +240,7 @@ a:hover {
 /* Hero */
 .hero {
   text-align: center;
-  padding: 100px 24px 80px;
+  padding: 64px 24px 56px;
   background: linear-gradient(135deg, #05070c 0%, #0c1a2c 55%, #123a63 100%);
   color: var(--white);
 }
@@ -257,18 +261,18 @@ a:hover {
   text-transform: uppercase;
   padding-bottom: 10px;
   border-bottom: 3px solid var(--dodger-blue);
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 .hero h1 {
   font-size: 50px;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
 }
 .hero .accent {
   color: var(--dodger-blue);
 }
 .hero p {
   max-width: 680px;
-  margin: 0 auto 30px;
+  margin: 0 auto 22px;
   color: #c7d2e0;
   font-size: 18px;
   line-height: 1.65;
