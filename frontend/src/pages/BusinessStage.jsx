@@ -185,8 +185,14 @@ export default function BusinessStage() {
               <div className="question-card" key={q._id}>
                 <span className="question-index">Question {i + 1}</span>
                 <p className="question-text">{q.text}</p>
+                {q.example && (
+                  <p className="question-example">
+                    <strong>Example:</strong> {q.example}
+                  </p>
+                )}
                 <textarea
-                  rows={4}
+                  className="answer-textarea"
+                  rows={8}
                   defaultValue={answer?.text || ""}
                   onChange={(e) => setDrafts((prev) => ({ ...prev, [q._id]: e.target.value }))}
                   placeholder="Write your answer in your own words"

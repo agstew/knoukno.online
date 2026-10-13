@@ -43,12 +43,13 @@ export async function nextQuestion(req, res, next) {
     }
 
     const existingCount = await Question.countDocuments({ business: business._id, stage });
-    const [text] = generateQuestions(stage, business.title, 1, existingCount);
+    const [{ text, example }] = generateQuestions(stage, business.title, 1, existingCount);
 
     const question = await Question.create({
       business: business._id,
       stage,
       text,
+      example,
       order: existingCount + 1,
     });
 
