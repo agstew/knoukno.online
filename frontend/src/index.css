@@ -1035,6 +1035,10 @@ a:hover {
   border-collapse: collapse;
   font-size: 14px;
 }
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
 .admin-table th,
 .admin-table td {
   text-align: left;
@@ -1047,6 +1051,12 @@ a:hover {
   text-transform: uppercase;
   font-size: 12px;
   letter-spacing: 0.03em;
+}
+.admin-table td:last-child {
+  white-space: nowrap;
+}
+.admin-table button {
+  white-space: nowrap;
 }
 
 /* Footer */

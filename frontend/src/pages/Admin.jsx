@@ -75,44 +75,46 @@ export default function Admin() {
           )}
 
           <h2>Users</h2>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Plan</th>
-                <th>Questions</th>
-                <th>Role</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u._id}>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.plan}</td>
-                  <td>
-                    {u.questionsUsed} / {u.questionsQuota}
-                  </td>
-                  <td>{u.role}</td>
-                  <td>
-                    <button
-                      className="btn btn-outline"
-                      disabled={pendingId === u._id || (u._id === me._id && u.role === "admin")}
-                      onClick={() => toggleRole(u)}
-                    >
-                      {pendingId === u._id
-                        ? "Saving..."
-                        : u.role === "admin"
-                          ? "Remove admin"
-                          : "Make admin"}
-                    </button>
-                  </td>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Plan</th>
+                  <th>Questions</th>
+                  <th>Role</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u._id}>
+                    <td>{u.name}</td>
+                    <td>{u.email}</td>
+                    <td>{u.plan}</td>
+                    <td>
+                      {u.questionsUsed} / {u.questionsQuota}
+                    </td>
+                    <td>{u.role}</td>
+                    <td>
+                      <button
+                        className="btn btn-outline"
+                        disabled={pendingId === u._id || (u._id === me._id && u.role === "admin")}
+                        onClick={() => toggleRole(u)}
+                      >
+                        {pendingId === u._id
+                          ? "Saving..."
+                          : u.role === "admin"
+                            ? "Remove admin"
+                            : "Make admin"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </div>
