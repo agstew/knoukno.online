@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { api } from "./api.js";
 import { useAuth } from "./AuthContext.jsx";
 
-const STORAGE_KEY = "knoukno_selected_title";
+export const SELECTED_TITLE_STORAGE_KEY = "knoukno_selected_title";
 
 // Shared across the Questions/Grade/Rate/Average pages: lets a user with
 // multiple business titles switch between them, remembering the last pick.
 export function useSelectedTitle() {
   const { token } = useAuth();
   const [titles, setTitles] = useState([]);
-  const [selectedId, setSelectedId] = useState(() => localStorage.getItem(STORAGE_KEY) || "");
+  const [selectedId, setSelectedId] = useState(() => localStorage.getItem(SELECTED_TITLE_STORAGE_KEY) || "");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -30,7 +30,7 @@ export function useSelectedTitle() {
 
   function selectTitle(id) {
     setSelectedId(id);
-    localStorage.setItem(STORAGE_KEY, id);
+    localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, id);
   }
 
   const selectedTitle = titles.find((t) => t._id === selectedId) || null;
