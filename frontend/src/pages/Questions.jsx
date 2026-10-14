@@ -130,7 +130,6 @@ export default function Questions() {
             ))}
           </div>
           <p className="stage-description">{currentStage?.description}</p>
-          <p className="muted no-print">Questions remaining on your plan: {quotaRemaining}</p>
           {error && <p className="error-text">{error}</p>}
 
           {loading ? (
