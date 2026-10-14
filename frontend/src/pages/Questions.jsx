@@ -107,7 +107,8 @@ export default function Questions() {
           <span className="section-eyebrow">Questions</span>
           <h1>{selectedTitle?.title || "Business plan"}</h1>
           <p className="muted">
-            {answeredCount} of {questions.length} questions answered in {currentStage?.label}
+            {answeredCount} of {questions.length} question{questions.length === 1 ? "" : "s"} answered in{" "}
+            {currentStage?.label}
           </p>
         </div>
         <button className="btn btn-outline no-print" onClick={() => window.print()}>
