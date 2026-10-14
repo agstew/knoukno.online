@@ -12,6 +12,7 @@ const router = Router();
 
 // Public: PayPal calls this directly, no user session attached.
 router.post("/paypal/webhook", paypalWebhook);
+router.all("/paypal/webhook", (_req, res) => res.status(405).json({ error: "Method not allowed" }));
 
 router.use(requireAuth);
 router.post("/paypal/bonus-order", createBonusOrder);
