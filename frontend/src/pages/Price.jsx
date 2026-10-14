@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
+import PaypalBonusButton from "../components/PaypalBonusButton.jsx";
+import PaypalSubscribeButton from "../components/PaypalSubscribeButton.jsx";
 
 const PLANS = [
   {
@@ -104,21 +106,37 @@ const FAQS = [
 export default function Price() {
   const { token, user, setUser } = useAuth();
   const navigate = useNavigate();
-  const [pendingKey, setPendingKey] = useState(null);
   const [error, setError] = useState("");
+  const [paypalPlanIds, setPaypalPlanIds] = useState({});
 
-  async function handleBuy(planKey) {
+  useEffect(() => {
+    api
+      .plans()
+      .then((data) => {
+        const ids = {};
+        data.plans.forEach((p) => {
+          if (p.paypalPlanId) ids[p.key] = p.paypalPlanId;
+        });
+        setPaypalPlanIds(ids);
+      })
+      .catch(() => {});
+  }, []);
+
+  async function handleSubscriptionApproved(planKey, subscriptionID) {
     setError("");
-    setPendingKey(planKey);
     try {
-      const data = await api.upgradePlan(token, planKey);
+      const data = await api.confirmSubscription(token, planKey, subscriptionID);
       setUser(data.user);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
-    } finally {
-      setPendingKey(null);
     }
+  }
+
+  function handleBonusCaptured(updatedUser) {
+    setError("");
+    setUser(updatedUser);
+    navigate("/dashboard");
   }
 
   return (
@@ -155,17 +173,20 @@ export default function Price() {
               <button className="btn btn-outline btn-block" disabled>
                 Upgrade to Member or Pro first
               </button>
+            ) : p.addOn && token ? (
+              <PaypalBonusButton token={token} onCapture={handleBonusCaptured} />
             ) : p.key !== "free" && !p.addOn && user && user.plan === p.key ? (
               <button className="btn btn-outline btn-block" disabled>
                 Current plan
               </button>
+            ) : p.key !== "free" && token && paypalPlanIds[p.key] ? (
+              <PaypalSubscribeButton
+                planId={paypalPlanIds[p.key]}
+                onApprove={(subscriptionID) => handleSubscriptionApproved(p.key, subscriptionID)}
+              />
             ) : p.key !== "free" && token ? (
-              <button
-                className={`btn ${p.featured ? "btn-primary" : "btn-outline"} btn-block`}
-                onClick={() => handleBuy(p.key)}
-                disabled={pendingKey === p.key}
-              >
-                {pendingKey === p.key ? "Processing..." : p.cta}
+              <button className="btn btn-outline btn-block" disabled>
+                Checkout unavailable
               </button>
             ) : (
               <Link

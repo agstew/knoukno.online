@@ -1,10 +1,22 @@
 import { Router } from "express";
-import { upgradePlan } from "../controllers/billingController.js";
+import {
+  cancelMySubscription,
+  captureBonusOrder,
+  confirmSubscription,
+  createBonusOrder,
+  paypalWebhook,
+} from "../controllers/billingController.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
+// Public: PayPal calls this directly, no user session attached.
+router.post("/paypal/webhook", paypalWebhook);
+
 router.use(requireAuth);
-router.post("/upgrade", upgradePlan);
+router.post("/paypal/bonus-order", createBonusOrder);
+router.post("/paypal/bonus-order/:orderId/capture", captureBonusOrder);
+router.post("/paypal/subscriptions/confirm", confirmSubscription);
+router.post("/paypal/subscriptions/cancel", cancelMySubscription);
 
 export default router;

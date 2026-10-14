@@ -52,7 +52,12 @@ export const api = {
 
   plans: () => request("/plans"),
 
-  upgradePlan: (token, plan) => request("/billing/upgrade", { method: "POST", body: { plan }, token }),
+  createBonusOrder: (token) => request("/billing/paypal/bonus-order", { method: "POST", token }),
+  captureBonusOrder: (token, orderId) =>
+    request(`/billing/paypal/bonus-order/${orderId}/capture`, { method: "POST", token }),
+  confirmSubscription: (token, plan, subscriptionID) =>
+    request("/billing/paypal/subscriptions/confirm", { method: "POST", body: { plan, subscriptionID }, token }),
+  cancelSubscription: (token) => request("/billing/paypal/subscriptions/cancel", { method: "POST", token }),
 
   adminListUsers: (token) => request("/admin/users", { token }),
   adminUpdateUserRole: (token, id, role) =>

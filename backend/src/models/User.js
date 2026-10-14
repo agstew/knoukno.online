@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     questionsUsed: { type: Number, default: 0 },
     trialEndsAt: { type: Date },
     planRenewsAt: { type: Date },
+    paypalSubscriptionId: { type: String },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
   },
