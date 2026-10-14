@@ -44,9 +44,10 @@ export default function Questions() {
     setLoading(true);
     setError("");
     try {
-      const [qData, aData] = await Promise.all([
+      const [qData, aData, meData] = await Promise.all([
         api.listQuestions(token, selectedId, stage),
         api.listAnswers(token, selectedId),
+        api.me(token),
       ]);
       setQuestions(qData.questions);
       const byQ = {};
@@ -54,12 +55,13 @@ export default function Questions() {
         byQ[a.question._id] = a;
       });
       setAnswersByQuestion(byQ);
+      setUser(meData.user);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [token, selectedId, stage]);
+  }, [token, selectedId, stage, setUser]);
 
   useEffect(() => {
     load();

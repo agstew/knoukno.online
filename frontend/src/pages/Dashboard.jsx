@@ -5,7 +5,7 @@ import { useAuth } from "../AuthContext.jsx";
 import { SELECTED_TITLE_STORAGE_KEY } from "../useSelectedTitle.js";
 
 export default function Dashboard() {
-  const { token, user } = useAuth();
+  const { token, user, setUser } = useAuth();
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -13,10 +13,13 @@ export default function Dashboard() {
   useEffect(() => {
     api
       .getDashboard(token)
-      .then(setData)
+      .then((result) => {
+        setData(result);
+        setUser(result.user);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, setUser]);
 
   const used = user?.questionsUsed ?? 0;
   const quota = user?.questionsQuota ?? 0;
