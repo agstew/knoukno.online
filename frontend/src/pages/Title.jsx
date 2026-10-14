@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
+import { SELECTED_TITLE_STORAGE_KEY } from "../useSelectedTitle.js";
 
 const EMPTY_FORM = { title: "", industry: "", location: "", description: "" };
 
@@ -112,6 +114,13 @@ export default function Title() {
                   <div className="biz-meta">{[t.industry, t.location].filter(Boolean).join(" \u2022 ")}</div>
                 )}
               </div>
+              <Link
+                to="/questions"
+                className="btn btn-outline"
+                onClick={() => localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, t._id)}
+              >
+                Open →
+              </Link>
             </div>
           ))}
         </div>
