@@ -3,38 +3,19 @@ import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 
-const EMPTY_FORM = { title: "", industry: "", location: "", description: "" };
-
 export default function Dashboard() {
   const { token, user } = useAuth();
-  const [businesses, setBusinesses] = useState([]);
-  const [form, setForm] = useState(EMPTY_FORM);
+  const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     api
-      .listBusinesses(token)
-      .then((data) => setBusinesses(data.businesses))
+      .getDashboard(token)
+      .then(setData)
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [token]);
-
-  function updateField(key) {
-    return (e) => setForm((prev) => ({ ...prev, [key]: e.target.value }));
-  }
-
-  async function handleCreate(e) {
-    e.preventDefault();
-    setError("");
-    if (!form.title.trim()) return;
-    try {
-      const data = await api.createBusiness(token, form);
-      setBusinesses([data.business, ...businesses]);
-      setForm(EMPTY_FORM);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
 
   const used = user?.questionsUsed ?? 0;
   const quota = user?.questionsQuota ?? 0;
@@ -44,12 +25,9 @@ export default function Dashboard() {
     <div className="dashboard container">
       <div className="dashboard-header">
         <div>
-          <span className="section-eyebrow">Title</span>
-          <h1>Name the business</h1>
-          <p className="muted">
-            Everything starts here. Add the title, trade, and location. Your questions and saved
-            answers stay under the business you choose.
-          </p>
+          <span className="section-eyebrow">Dashboard</span>
+          <h1>Welcome back</h1>
+          <p className="muted">A quick overview of your plan and business titles.</p>
         </div>
       </div>
 
@@ -74,78 +52,47 @@ export default function Dashboard() {
         </div>
       )}
 
-      <form onSubmit={handleCreate} className="business-form">
-        <div className="field">
-          <label htmlFor="biz-title">Business title</label>
-          <input
-            id="biz-title"
-            placeholder="Kno U Kno Coffee House"
-            value={form.title}
-            onChange={updateField("title")}
-            required
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="biz-industry">Industry</label>
-          <input
-            id="biz-industry"
-            placeholder="Food and drink"
-            value={form.industry}
-            onChange={updateField("industry")}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="biz-location">Location</label>
-          <input
-            id="biz-location"
-            placeholder="Atlanta, GA"
-            value={form.location}
-            onChange={updateField("location")}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="biz-description">What is the business?</label>
-          <input
-            id="biz-description"
-            placeholder="Two sentences on what you sell and who buys it."
-            value={form.description}
-            onChange={updateField("description")}
-          />
-        </div>
-        <button className="btn btn-dark" type="submit">
-          Save business title
-        </button>
-      </form>
       {error && <p className="error-text">{error}</p>}
 
-      <h2 style={{ marginTop: 40 }}>Your business titles</h2>
       {loading ? (
-        <p className="loading-text">Loading your businesses...</p>
-      ) : businesses.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📋</div>
-          <p>
-            <strong>No business title yet.</strong> Write one above and it will show up here.
-          </p>
-        </div>
+        <p className="loading-text">Loading your dashboard...</p>
       ) : (
-        <div className="business-list">
-          {businesses.map((b) => (
-            <div className="business-item" key={b._id}>
-              <div>
-                <span className="biz-title">{b.title}</span>
-                {(b.industry || b.location) && (
-                  <div className="biz-meta">
-                    {[b.industry, b.location].filter(Boolean).join(" \u2022 ")}
-                  </div>
-                )}
-              </div>
-              <Link to={`/business/${b._id}`} className="btn btn-outline">
-                Open →
-              </Link>
+        <>
+          <div className="plan-meter" style={{ display: "flex", gap: 32 }}>
+            <span>
+              Business titles: <strong>{data.titleCount}</strong>
+            </span>
+            <span>
+              Answers saved: <strong>{data.answeredCount}</strong>
+            </span>
+          </div>
+
+          <h2 style={{ marginTop: 40 }}>Your business titles</h2>
+          {data.titles.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">📋</div>
+              <p>
+                <strong>No business title yet.</strong> <Link to="/title">Create one to get started.</Link>
+              </p>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="business-list">
+              {data.titles.map((t) => (
+                <div className="business-item" key={t._id}>
+                  <div>
+                    <span className="biz-title">{t.title}</span>
+                    {(t.industry || t.location) && (
+                      <div className="biz-meta">{[t.industry, t.location].filter(Boolean).join(" \u2022 ")}</div>
+                    )}
+                  </div>
+                  <Link to="/questions" className="btn btn-outline">
+                    Open →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

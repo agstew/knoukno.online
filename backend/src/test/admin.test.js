@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 import app from "../app.js";
 import User from "../models/User.js";
-import { createBusiness, registerUser } from "./helpers.js";
+import { createTitle, registerUser } from "./helpers.js";
 
 async function makeAdmin(userId) {
   await User.findByIdAndUpdate(userId, { role: "admin" });
@@ -71,7 +71,7 @@ describe("Admin routes", () => {
   it("returns platform stats for an admin", async () => {
     const admin = await registerUser();
     await makeAdmin(admin.user._id);
-    await createBusiness(admin.token);
+    await createTitle(admin.token);
 
     const res = await request(app).get("/api/admin/stats").set("Authorization", `Bearer ${admin.token}`);
     expect(res.status).toBe(200);

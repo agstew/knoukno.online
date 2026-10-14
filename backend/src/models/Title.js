@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-const businessSchema = new mongoose.Schema(
+// Backed by the existing "businesses" collection so current data (titles users
+// already created) carries over without a migration.
+const titleSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     title: { type: String, required: true, trim: true, maxlength: 200 },
@@ -11,4 +13,4 @@ const businessSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Business", businessSchema);
+export default mongoose.model("Title", titleSchema, "businesses");

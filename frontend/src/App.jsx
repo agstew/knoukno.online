@@ -4,14 +4,18 @@ import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import About from "./pages/About.jsx";
 import Admin from "./pages/Admin.jsx";
-import BusinessStage from "./pages/BusinessStage.jsx";
+import Average from "./pages/Average.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
+import Grade from "./pages/Grade.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Price from "./pages/Price.jsx";
+import Questions from "./pages/Questions.jsx";
+import Rate from "./pages/Rate.jsx";
 import Register from "./pages/Register.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Title from "./pages/Title.jsx";
 
 export default function App() {
   return (
@@ -34,10 +38,42 @@ export default function App() {
           }
         />
         <Route
-          path="/business/:id"
+          path="/title"
           element={
             <ProtectedRoute>
-              <BusinessStage />
+              <Title />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/questions"
+          element={
+            <ProtectedRoute>
+              <Questions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grade"
+          element={
+            <ProtectedRoute>
+              <Grade />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rate"
+          element={
+            <ProtectedRoute>
+              <Rate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/average"
+          element={
+            <ProtectedRoute>
+              <Average />
             </ProtectedRoute>
           }
         />

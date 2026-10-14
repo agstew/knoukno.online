@@ -13,8 +13,8 @@ export async function registerUser(overrides = {}) {
   return { res, payload, token: res.body.token, user: res.body.user };
 }
 
-export async function createBusiness(token, overrides = {}) {
+export async function createTitle(token, overrides = {}) {
   const payload = { title: "Test Biz", industry: "Retail", location: "NYC", ...overrides };
-  const res = await request(app).post("/api/businesses").set("Authorization", `Bearer ${token}`).send(payload);
+  const res = await request(app).post("/api/titles").set("Authorization", `Bearer ${token}`).send(payload);
   return res;
 }

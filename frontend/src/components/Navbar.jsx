@@ -62,6 +62,31 @@ export default function Navbar() {
                 Dashboard
               </Link>
             )}
+            {user && (
+              <Link to="/title" onClick={closeMenu} className={location.pathname === "/title" ? "active" : ""}>
+                Title
+              </Link>
+            )}
+            {user && (
+              <Link to="/questions" onClick={closeMenu} className={location.pathname === "/questions" ? "active" : ""}>
+                Questions
+              </Link>
+            )}
+            {user && (
+              <Link to="/grade" onClick={closeMenu} className={location.pathname === "/grade" ? "active" : ""}>
+                Grade
+              </Link>
+            )}
+            {user && (
+              <Link to="/rate" onClick={closeMenu} className={location.pathname === "/rate" ? "active" : ""}>
+                Rate
+              </Link>
+            )}
+            {user && (
+              <Link to="/average" onClick={closeMenu} className={location.pathname === "/average" ? "active" : ""}>
+                Average
+              </Link>
+            )}
             {user?.role === "admin" && (
               <Link to="/admin" onClick={closeMenu} className={location.pathname === "/admin" ? "active" : ""}>
                 Admin

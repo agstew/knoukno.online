@@ -24,9 +24,9 @@ export const api = {
   forgotPassword: (email) => request("/auth/forgot-password", { method: "POST", body: { email } }),
   resetPassword: (payload) => request("/auth/reset-password", { method: "POST", body: payload }),
 
-  listBusinesses: (token) => request("/businesses", { token }),
-  createBusiness: (token, payload) => request("/businesses", { method: "POST", body: payload, token }),
-  getBusiness: (token, id) => request(`/businesses/${id}`, { token }),
+  listTitles: (token) => request("/titles", { token }),
+  createTitle: (token, payload) => request("/titles", { method: "POST", body: payload, token }),
+  getTitle: (token, id) => request(`/titles/${id}`, { token }),
 
   listQuestions: (token, businessId, stage) =>
     request(`/questions?businessId=${businessId}&stage=${stage}`, { token }),
@@ -36,8 +36,18 @@ export const api = {
   listAnswers: (token, businessId) => request(`/answers?businessId=${businessId}`, { token }),
   saveAnswer: (token, questionId, text) =>
     request("/answers", { method: "POST", body: { questionId, text }, token }),
-  gradeAnswer: (token, id, grade) => request(`/answers/${id}/grade`, { method: "PATCH", body: { grade }, token }),
-  rankAnswer: (token, id, rank) => request(`/answers/${id}/rank`, { method: "PATCH", body: { rank }, token }),
+
+  listGrades: (token, businessId) => request(`/grades?businessId=${businessId}`, { token }),
+  saveGrade: (token, answerId, grade) =>
+    request("/grades", { method: "POST", body: { answerId, grade }, token }),
+
+  listRates: (token, businessId) => request(`/rates?businessId=${businessId}`, { token }),
+  saveRate: (token, answerId, rate) =>
+    request("/rates", { method: "POST", body: { answerId, rate }, token }),
+
+  getAverage: (token, businessId) => request(`/averages?businessId=${businessId}`, { token }),
+
+  getDashboard: (token) => request("/dashboard", { token }),
 
   plans: () => request("/plans"),
 

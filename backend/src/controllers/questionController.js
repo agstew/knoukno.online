@@ -1,10 +1,10 @@
-import Business from "../models/Business.js";
 import Question from "../models/Question.js";
+import Title from "../models/Title.js";
 import User from "../models/User.js";
 import { generateQuestions, STAGE_LIST } from "../utils/questionBank.js";
 
 async function ownedBusiness(businessId, userId) {
-  return Business.findOne({ _id: businessId, user: userId });
+  return Title.findOne({ _id: businessId, user: userId });
 }
 
 export async function listQuestions(req, res, next) {

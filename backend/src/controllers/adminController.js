@@ -1,5 +1,5 @@
 import Answer from "../models/Answer.js";
-import Business from "../models/Business.js";
+import Title from "../models/Title.js";
 import User from "../models/User.js";
 
 export async function listUsers(_req, res, next) {
@@ -34,7 +34,7 @@ export async function getStats(_req, res, next) {
   try {
     const [userCount, businessCount, answerCount] = await Promise.all([
       User.countDocuments(),
-      Business.countDocuments(),
+      Title.countDocuments(),
       Answer.countDocuments(),
     ]);
     res.json({ userCount, businessCount, answerCount });
