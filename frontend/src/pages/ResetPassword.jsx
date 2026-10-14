@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import PasswordField from "../components/PasswordField.jsx";
 import { api } from "../api.js";
 
 export default function ResetPassword() {
@@ -57,17 +58,13 @@ export default function ResetPassword() {
           <p className="save-indicator">Password updated. Taking you to login...</p>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="password">New password</label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <p className="hint">At least 8 characters.</p>
-            </div>
+            <PasswordField
+              id="password"
+              label="New password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              hint="At least 8 characters."
+            />
             {error && <p className="error-text">{error}</p>}
             <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={submitting}>
               {submitting ? "Saving..." : "Set new password"}

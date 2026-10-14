@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PasswordField from "../components/PasswordField.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 
@@ -44,16 +45,12 @@ export default function Login() {
             <label htmlFor="email">Email</label>
             <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+          <PasswordField
+            id="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <p style={{ margin: "0 0 18px", textAlign: "right" }}>
             <Link to="/forgot-password" style={{ fontSize: 13.5 }}>
               Forgot password?

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PasswordField from "../components/PasswordField.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 
@@ -52,18 +53,14 @@ export default function Register() {
             <label htmlFor="email">Email</label>
             <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="hint">At least 8 characters.</div>
-          </div>
+          <PasswordField
+            id="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            minLength={8}
+            hint="At least 8 characters."
+          />
           {error && <p className="error-text">{error}</p>}
           <button className="btn btn-primary btn-block btn-lg" type="submit" disabled={submitting}>
             {submitting ? "Creating account..." : "Register free"}
