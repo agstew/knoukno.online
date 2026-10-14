@@ -913,6 +913,21 @@ a:hover {
   font-size: 13.5px;
   margin-top: 4px;
 }
+.business-item-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.btn-danger {
+  border-color: #d9534f;
+  color: #d9534f;
+}
+.btn-danger:hover {
+  background: #d9534f;
+  border-color: #d9534f;
+  color: #fff;
+}
 .empty-state {
   text-align: center;
   padding: 60px 24px;

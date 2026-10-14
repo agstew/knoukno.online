@@ -37,6 +37,22 @@ export default function Title() {
     }
   }
 
+  async function handleDelete(t) {
+    if (!window.confirm(`Delete "${t.title}"? This also deletes its questions, answers, grades, and rates.`)) {
+      return;
+    }
+    setError("");
+    try {
+      await api.deleteTitle(token, t._id);
+      setTitles((prev) => prev.filter((item) => item._id !== t._id));
+      if (localStorage.getItem(SELECTED_TITLE_STORAGE_KEY) === t._id) {
+        localStorage.removeItem(SELECTED_TITLE_STORAGE_KEY);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <div className="dashboard container">
       <div className="dashboard-header">
@@ -114,13 +130,18 @@ export default function Title() {
                   <div className="biz-meta">{[t.industry, t.location].filter(Boolean).join(" \u2022 ")}</div>
                 )}
               </div>
-              <Link
-                to="/questions"
-                className="btn btn-outline"
-                onClick={() => localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, t._id)}
-              >
-                Open →
-              </Link>
+              <div className="business-item-actions">
+                <Link
+                  to="/questions"
+                  className="btn btn-outline"
+                  onClick={() => localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, t._id)}
+                >
+                  Open →
+                </Link>
+                <button type="button" className="btn btn-outline btn-danger" onClick={() => handleDelete(t)}>
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

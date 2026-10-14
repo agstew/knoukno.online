@@ -27,6 +27,7 @@ export const api = {
   listTitles: (token) => request("/titles", { token }),
   createTitle: (token, payload) => request("/titles", { method: "POST", body: payload, token }),
   getTitle: (token, id) => request(`/titles/${id}`, { token }),
+  deleteTitle: (token, id) => request(`/titles/${id}`, { method: "DELETE", token }),
 
   listQuestions: (token, businessId, stage) =>
     request(`/questions?businessId=${businessId}&stage=${stage}`, { token }),

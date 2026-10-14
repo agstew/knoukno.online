@@ -1,6 +1,8 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import app from "../app.js";
+import Question from "../models/Question.js";
+import User from "../models/User.js";
 import { createTitle, registerUser } from "./helpers.js";
 
 describe("POST /api/titles", () => {
@@ -78,5 +80,52 @@ describe("GET /api/titles/:id", () => {
       .get("/api/titles/507f1f77bcf86cd799439011")
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(404);
+  });
+});
+
+describe("DELETE /api/titles/:id", () => {
+  it("requires authentication", async () => {
+    const { token } = await registerUser();
+    const created = await createTitle(token, { title: "Mine" });
+    const res = await request(app).delete(`/api/titles/${created.body.title._id}`);
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 404 for a title owned by someone else", async () => {
+    const owner = await registerUser();
+    const created = await createTitle(owner.token, { title: "Owner Biz" });
+
+    const other = await registerUser();
+    const res = await request(app)
+      .delete(`/api/titles/${created.body.title._id}`)
+      .set("Authorization", `Bearer ${other.token}`);
+    expect(res.status).toBe(404);
+  });
+
+  it("deletes the title, cascades its questions, and syncs questionsUsed", async () => {
+    const { token, user } = await registerUser();
+    const created = await createTitle(token, { title: "Doomed Biz" });
+    const businessId = created.body.title._id;
+
+    await request(app)
+      .post("/api/questions/next")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ businessId, stage: "law" });
+
+    const res = await request(app)
+      .delete(`/api/titles/${businessId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+
+    const getRes = await request(app)
+      .get(`/api/titles/${businessId}`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(getRes.status).toBe(404);
+
+    const remainingQuestions = await Question.find({ business: businessId });
+    expect(remainingQuestions).toHaveLength(0);
+
+    const updated = await User.findById(user._id);
+    expect(updated.questionsUsed).toBe(0);
   });
 });
