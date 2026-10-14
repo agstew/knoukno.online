@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import TitleSwitcher from "../components/TitleSwitcher.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 import { useSelectedTitle } from "../useSelectedTitle.js";
 
 export default function Rate() {
   const { token } = useAuth();
-  const { titles, selectedId, selectTitle, loading: titlesLoading } = useSelectedTitle();
+  const { selectedId } = useSelectedTitle();
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,6 @@ export default function Rate() {
         </div>
       </div>
 
-      {!titlesLoading && <TitleSwitcher titles={titles} selectedId={selectedId} onSelect={selectTitle} />}
       {error && <p className="error-text">{error}</p>}
 
       {selectedId && (

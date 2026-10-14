@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import TitleSwitcher from "../components/TitleSwitcher.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 import { useSelectedTitle } from "../useSelectedTitle.js";
 
 export default function Average() {
   const { token } = useAuth();
-  const { titles, selectedId, selectTitle, loading: titlesLoading } = useSelectedTitle();
+  const { selectedId } = useSelectedTitle();
   const [average, setAverage] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -39,7 +38,6 @@ export default function Average() {
         </div>
       </div>
 
-      {!titlesLoading && <TitleSwitcher titles={titles} selectedId={selectedId} onSelect={selectTitle} />}
       {error && <p className="error-text">{error}</p>}
 
       {selectedId && (

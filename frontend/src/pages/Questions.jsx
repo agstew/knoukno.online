@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import TitleSwitcher from "../components/TitleSwitcher.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 import { useSelectedTitle } from "../useSelectedTitle.js";
@@ -29,7 +28,7 @@ const STAGES = [
 
 export default function Questions() {
   const { token, user, setUser } = useAuth();
-  const { titles, selectedId, selectTitle, selectedTitle, loading: titlesLoading } = useSelectedTitle();
+  const { selectedId, selectedTitle } = useSelectedTitle();
   const [stage, setStage] = useState("law");
   const [questions, setQuestions] = useState([]);
   const [answersByQuestion, setAnswersByQuestion] = useState({});
@@ -115,8 +114,6 @@ export default function Questions() {
           🖨 Print plan
         </button>
       </div>
-
-      {!titlesLoading && <TitleSwitcher titles={titles} selectedId={selectedId} onSelect={selectTitle} />}
 
       {selectedId && (
         <>

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import TitleSwitcher from "../components/TitleSwitcher.jsx";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
 import { useSelectedTitle } from "../useSelectedTitle.js";
@@ -8,7 +7,7 @@ const GRADES = ["A", "B", "C", "D", "F"];
 
 export default function Grade() {
   const { token } = useAuth();
-  const { titles, selectedId, selectTitle, loading: titlesLoading } = useSelectedTitle();
+  const { selectedId } = useSelectedTitle();
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -53,7 +52,6 @@ export default function Grade() {
         </div>
       </div>
 
-      {!titlesLoading && <TitleSwitcher titles={titles} selectedId={selectedId} onSelect={selectTitle} />}
       {error && <p className="error-text">{error}</p>}
 
       {selectedId && (
