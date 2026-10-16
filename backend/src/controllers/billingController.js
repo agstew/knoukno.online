@@ -68,6 +68,7 @@ export async function confirmSubscription(req, res, next) {
     user.trialEndsAt = null;
     user.paypalSubscriptionId = subscriptionID;
     user.planRenewsAt = subscription.billing_info?.next_billing_time || null;
+    user.cancelAtPeriodEnd = false;
     await user.save();
 
     res.json({ user });
@@ -85,11 +86,9 @@ export async function cancelMySubscription(req, res, next) {
 
     await cancelSubscription(user.paypalSubscriptionId);
 
-    user.plan = "free";
-    user.questionsQuota = PLANS.free.questionQuota;
-    user.questionsUsed = 0;
-    user.paypalSubscriptionId = null;
-    user.planRenewsAt = null;
+    // Stops future billing in PayPal, but keep access until the current
+    // paid period ends (enforced lazily in the requireAuth middleware).
+    user.cancelAtPeriodEnd = true;
     await user.save();
 
     res.json({ user });
@@ -123,19 +122,35 @@ export async function paypalWebhook(req, res, next) {
         }
         break;
       }
-      case "BILLING.SUBSCRIPTION.CANCELLED":
+      case "BILLING.SUBSCRIPTION.CANCELLED": {
+        // User (or PayPal) cancelled future billing - access continues until
+        // planRenewsAt passes, enforced lazily in the requireAuth middleware.
+        const user = await User.findOne({ paypalSubscriptionId: subscriptionId });
+        if (user) {
+          user.cancelAtPeriodEnd = true;
+          await user.save();
+        }
+        break;
+      }
       case "BILLING.SUBSCRIPTION.EXPIRED":
       case "BILLING.SUBSCRIPTION.SUSPENDED": {
+        // The subscription is no longer active (final cycle reached, or
+        // suspended after repeated failed payments) - downgrade now.
         const user = await User.findOne({ paypalSubscriptionId: subscriptionId });
         if (user) {
           user.plan = "free";
           user.questionsQuota = PLANS.free.questionQuota;
           user.paypalSubscriptionId = null;
           user.planRenewsAt = null;
+          user.cancelAtPeriodEnd = false;
           await user.save();
         }
         break;
       }
+      case "BILLING.SUBSCRIPTION.PAYMENT.FAILED":
+        // PayPal retries automatically; a single failure doesn't revoke
+        // access. Repeated failures eventually surface as SUSPENDED above.
+        break;
       default:
         break;
     }

@@ -123,16 +123,21 @@ describe("POST /api/billing/paypal/subscriptions/confirm", () => {
 });
 
 describe("POST /api/billing/paypal/subscriptions/cancel", () => {
-  it("downgrades to free and cancels in PayPal", async () => {
+  it("stops future billing but keeps access until the period ends", async () => {
     const { token, user } = await registerUser();
-    await User.updateOne({ _id: user._id }, { paypalSubscriptionId: "SUB-1", plan: "member" });
+    const future = new Date(Date.now() + 1000 * 60 * 60 * 24 * 10);
+    await User.updateOne(
+      { _id: user._id },
+      { paypalSubscriptionId: "SUB-1", plan: "member", planRenewsAt: future }
+    );
     cancelSubscription.mockResolvedValue();
 
     const res = await request(app)
       .post("/api/billing/paypal/subscriptions/cancel")
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.user.plan).toBe("free");
+    expect(res.body.user.plan).toBe("member");
+    expect(res.body.user.cancelAtPeriodEnd).toBe(true);
     expect(cancelSubscription).toHaveBeenCalledWith("SUB-1");
   });
 
@@ -142,6 +147,35 @@ describe("POST /api/billing/paypal/subscriptions/cancel", () => {
       .post("/api/billing/paypal/subscriptions/cancel")
       .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(400);
+  });
+});
+
+describe("Lazy downgrade after a cancelled subscription's period ends", () => {
+  it("downgrades to free once planRenewsAt has passed", async () => {
+    const { token, user } = await registerUser();
+    const past = new Date(Date.now() - 1000 * 60 * 60);
+    await User.updateOne(
+      { _id: user._id },
+      { plan: "member", questionsQuota: 50, cancelAtPeriodEnd: true, planRenewsAt: past, paypalSubscriptionId: "SUB-1" }
+    );
+
+    const res = await request(app).get("/api/auth/me").set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.user.plan).toBe("free");
+    expect(res.body.user.cancelAtPeriodEnd).toBe(false);
+  });
+
+  it("keeps access while the period hasn't ended yet", async () => {
+    const { token, user } = await registerUser();
+    const future = new Date(Date.now() + 1000 * 60 * 60);
+    await User.updateOne(
+      { _id: user._id },
+      { plan: "member", questionsQuota: 50, cancelAtPeriodEnd: true, planRenewsAt: future, paypalSubscriptionId: "SUB-1" }
+    );
+
+    const res = await request(app).get("/api/auth/me").set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.user.plan).toBe("member");
   });
 });
 
@@ -171,7 +205,7 @@ describe("POST /api/billing/paypal/webhook", () => {
     expect(updated.questionsUsed).toBe(0);
   });
 
-  it("downgrades to free when a subscription is cancelled", async () => {
+  it("marks cancelAtPeriodEnd without changing plan immediately on cancellation", async () => {
     const { user } = await registerUser();
     await User.updateOne({ _id: user._id }, { paypalSubscriptionId: "SUB-1", plan: "pro" });
     verifyWebhookSignature.mockResolvedValue(true);
@@ -179,6 +213,21 @@ describe("POST /api/billing/paypal/webhook", () => {
     const res = await request(app)
       .post("/api/billing/paypal/webhook")
       .send({ event_type: "BILLING.SUBSCRIPTION.CANCELLED", resource: { id: "SUB-1" } });
+    expect(res.status).toBe(200);
+
+    const updated = await User.findById(user._id);
+    expect(updated.plan).toBe("pro");
+    expect(updated.cancelAtPeriodEnd).toBe(true);
+  });
+
+  it("downgrades to free immediately when a subscription is suspended", async () => {
+    const { user } = await registerUser();
+    await User.updateOne({ _id: user._id }, { paypalSubscriptionId: "SUB-1", plan: "pro" });
+    verifyWebhookSignature.mockResolvedValue(true);
+
+    const res = await request(app)
+      .post("/api/billing/paypal/webhook")
+      .send({ event_type: "BILLING.SUBSCRIPTION.SUSPENDED", resource: { id: "SUB-1" } });
     expect(res.status).toBe(200);
 
     const updated = await User.findById(user._id);
