@@ -33,7 +33,19 @@ const allowedOrigins = (
   .split(",")
   .map((o) => o.trim());
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "script-src": ["'self'", "https://www.paypal.com", "https://www.paypalobjects.com"],
+        "connect-src": ["'self'", "https://www.paypal.com", "https://www.paypalobjects.com"],
+        "frame-src": ["https://www.paypal.com", "https://www.sandbox.paypal.com"],
+        "img-src": ["'self'", "data:", "https://www.paypalobjects.com"],
+      },
+    },
+  })
+);
 app.use(
   cors({
     origin: allowedOrigins,
