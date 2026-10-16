@@ -68,6 +68,11 @@ export async function getSubscription(subscriptionId) {
   return ppFetch(`/v1/billing/subscriptions/${subscriptionId}`);
 }
 
+export async function getSubscriptionTransactions(subscriptionId, startTime, endTime) {
+  const params = new URLSearchParams({ start_time: startTime, end_time: endTime });
+  return ppFetch(`/v1/billing/subscriptions/${subscriptionId}/transactions?${params.toString()}`);
+}
+
 export async function cancelSubscription(subscriptionId, reason = "User requested cancellation") {
   const token = await getAccessToken();
   const res = await fetch(`${apiBase()}/v1/billing/subscriptions/${subscriptionId}/cancel`, {

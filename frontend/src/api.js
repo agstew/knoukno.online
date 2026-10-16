@@ -58,6 +58,7 @@ export const api = {
   confirmSubscription: (token, plan, subscriptionID) =>
     request("/billing/paypal/subscriptions/confirm", { method: "POST", body: { plan, subscriptionID }, token }),
   cancelSubscription: (token) => request("/billing/paypal/subscriptions/cancel", { method: "POST", token }),
+  getPaymentSchedule: (token) => request("/billing/paypal/schedule", { token }),
 
   adminListUsers: (token) => request("/admin/users", { token }),
   adminUpdateUserRole: (token, id, role) =>

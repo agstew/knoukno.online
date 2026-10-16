@@ -5,6 +5,7 @@ import {
   captureOrder,
   createOrder,
   getSubscription,
+  getSubscriptionTransactions,
   verifyWebhookSignature,
 } from "../utils/paypal.js";
 
@@ -92,6 +93,46 @@ export async function cancelMySubscription(req, res, next) {
     await user.save();
 
     res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getPaymentSchedule(req, res, next) {
+  try {
+    const user = req.user;
+    if (!user.paypalSubscriptionId) {
+      return res.json({ subscription: null, transactions: [] });
+    }
+
+    const subscription = await getSubscription(user.paypalSubscriptionId);
+
+    const startTime = subscription.create_time || new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+    const endTime = new Date().toISOString();
+    let transactions = [];
+    try {
+      const txData = await getSubscriptionTransactions(user.paypalSubscriptionId, startTime, endTime);
+      transactions = (txData.transactions || []).map((t) => ({
+        id: t.id,
+        status: t.status,
+        amount: t.amount_with_breakdown?.gross_amount || null,
+        time: t.time,
+      }));
+    } catch {
+      // Transaction history is best-effort - still return the subscription summary if it fails.
+    }
+
+    res.json({
+      subscription: {
+        plan: user.plan,
+        status: subscription.status,
+        cancelAtPeriodEnd: user.cancelAtPeriodEnd,
+        nextBillingTime: subscription.billing_info?.next_billing_time || null,
+        lastPaymentAmount: subscription.billing_info?.last_payment?.amount || null,
+        lastPaymentTime: subscription.billing_info?.last_payment?.time || null,
+      },
+      transactions,
+    });
   } catch (err) {
     next(err);
   }

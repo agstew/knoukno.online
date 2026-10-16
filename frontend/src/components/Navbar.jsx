@@ -87,6 +87,11 @@ export default function Navbar() {
                 Average
               </Link>
             )}
+            {user && (
+              <Link to="/payments" onClick={closeMenu} className={location.pathname === "/payments" ? "active" : ""}>
+                Payments
+              </Link>
+            )}
             {user?.role === "admin" && (
               <Link to="/admin" onClick={closeMenu} className={location.pathname === "/admin" ? "active" : ""}>
                 Admin

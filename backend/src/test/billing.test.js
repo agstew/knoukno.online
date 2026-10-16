@@ -8,6 +8,7 @@ vi.mock("../utils/paypal.js", () => ({
   createOrder: vi.fn(),
   captureOrder: vi.fn(),
   getSubscription: vi.fn(),
+  getSubscriptionTransactions: vi.fn(),
   cancelSubscription: vi.fn(),
   verifyWebhookSignature: vi.fn(),
 }));
@@ -17,6 +18,7 @@ import {
   captureOrder,
   createOrder,
   getSubscription,
+  getSubscriptionTransactions,
   verifyWebhookSignature,
 } from "../utils/paypal.js";
 
@@ -233,5 +235,69 @@ describe("POST /api/billing/paypal/webhook", () => {
     const updated = await User.findById(user._id);
     expect(updated.plan).toBe("free");
     expect(updated.paypalSubscriptionId).toBeFalsy();
+  });
+});
+
+describe("GET /api/billing/paypal/schedule", () => {
+  it("returns no subscription for a user without one", async () => {
+    const { token } = await registerUser();
+    const res = await request(app)
+      .get("/api/billing/paypal/schedule")
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.subscription).toBeNull();
+    expect(res.body.transactions).toEqual([]);
+  });
+
+  it("returns subscription summary and transaction history", async () => {
+    const { token, user } = await registerUser();
+    await User.updateOne({ _id: user._id }, { paypalSubscriptionId: "SUB-1", plan: "member" });
+    getSubscription.mockResolvedValue({
+      status: "ACTIVE",
+      create_time: "2026-01-01T00:00:00Z",
+      billing_info: {
+        next_billing_time: "2026-11-13T00:00:00Z",
+        last_payment: { amount: { value: "39.00", currency_code: "USD" }, time: "2026-10-13T00:00:00Z" },
+      },
+    });
+    getSubscriptionTransactions.mockResolvedValue({
+      transactions: [
+        {
+          id: "TXN-1",
+          status: "COMPLETED",
+          amount_with_breakdown: { gross_amount: { value: "39.00", currency_code: "USD" } },
+          time: "2026-10-13T00:00:00Z",
+        },
+      ],
+    });
+
+    const res = await request(app)
+      .get("/api/billing/paypal/schedule")
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.subscription.plan).toBe("member");
+    expect(res.body.subscription.status).toBe("ACTIVE");
+    expect(res.body.subscription.nextBillingTime).toBe("2026-11-13T00:00:00Z");
+    expect(res.body.transactions).toHaveLength(1);
+    expect(res.body.transactions[0].id).toBe("TXN-1");
+  });
+
+  it("still returns the subscription summary if transaction history fails", async () => {
+    const { token, user } = await registerUser();
+    await User.updateOne({ _id: user._id }, { paypalSubscriptionId: "SUB-1", plan: "pro" });
+    getSubscription.mockResolvedValue({ status: "ACTIVE", billing_info: {} });
+    getSubscriptionTransactions.mockRejectedValue(new Error("boom"));
+
+    const res = await request(app)
+      .get("/api/billing/paypal/schedule")
+      .set("Authorization", `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.subscription.status).toBe("ACTIVE");
+    expect(res.body.transactions).toEqual([]);
+  });
+
+  it("requires authentication", async () => {
+    const res = await request(app).get("/api/billing/paypal/schedule");
+    expect(res.status).toBe(401);
   });
 });

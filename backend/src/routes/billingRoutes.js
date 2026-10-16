@@ -4,6 +4,7 @@ import {
   captureBonusOrder,
   confirmSubscription,
   createBonusOrder,
+  getPaymentSchedule,
   paypalWebhook,
 } from "../controllers/billingController.js";
 import { requireAuth } from "../middleware/auth.js";
@@ -19,5 +20,6 @@ router.post("/paypal/bonus-order", createBonusOrder);
 router.post("/paypal/bonus-order/:orderId/capture", captureBonusOrder);
 router.post("/paypal/subscriptions/confirm", confirmSubscription);
 router.post("/paypal/subscriptions/cancel", cancelMySubscription);
+router.get("/paypal/schedule", getPaymentSchedule);
 
 export default router;

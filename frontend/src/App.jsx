@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Grade from "./pages/Grade.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
+import PaymentSchedule from "./pages/PaymentSchedule.jsx";
 import Price from "./pages/Price.jsx";
 import Questions from "./pages/Questions.jsx";
 import Rate from "./pages/Rate.jsx";
@@ -82,6 +83,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Admin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRoute>
+              <PaymentSchedule />
             </ProtectedRoute>
           }
         />
