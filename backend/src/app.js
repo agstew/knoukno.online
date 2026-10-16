@@ -38,7 +38,14 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "script-src": ["'self'", "https://www.paypal.com", "https://www.paypalobjects.com"],
+        // The PayPal SDK requires one known inline bootstrap script - allow it by
+        // hash (not 'unsafe-inline', which would permit any inline script to run).
+        "script-src": [
+          "'self'",
+          "https://www.paypal.com",
+          "https://www.paypalobjects.com",
+          "'sha256-n8SeBQJ44hfg74TlDOKj4U2ORkgMfIj5ms8CC25yEBk='",
+        ],
         "connect-src": ["'self'", "https://www.paypal.com", "https://www.paypalobjects.com"],
         "frame-src": ["https://www.paypal.com", "https://www.sandbox.paypal.com"],
         "img-src": ["'self'", "data:", "https://www.paypalobjects.com"],
