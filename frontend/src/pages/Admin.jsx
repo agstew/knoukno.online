@@ -148,48 +148,91 @@ export default function Admin() {
             </table>
           </div>
 
-          <h2 style={{ marginTop: 40 }}>Email all opted-in users</h2>
-          <p className="muted" style={{ marginTop: -8, marginBottom: 16 }}>
-            Sends immediately to {optedInCount} of {users.length} user{users.length === 1 ? "" : "s"} who
-            {optedInCount === 1 ? " has" : " have"} not opted out of email.
-          </p>
-          <form onSubmit={handleBroadcast} className="business-form">
-            <div className="field">
-              <label htmlFor="broadcast-subject">Subject</label>
-              <input
-                id="broadcast-subject"
-                placeholder="A quick update from KnoUKno"
-                value={broadcastForm.subject}
-                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, subject: e.target.value }))}
-                required
-              />
-              <div className="hint">{broadcastForm.subject.length} characters</div>
+          <div className="email-broadcast">
+            <div className="email-broadcast-header">
+              <div>
+                <h2>Email all opted-in users</h2>
+                <p className="muted" style={{ margin: "4px 0 0" }}>
+                  Sends immediately. Opted-out users are always skipped.
+                </p>
+              </div>
+              <span className="email-broadcast-badge">
+                ✉ {optedInCount} of {users.length} opted in
+              </span>
             </div>
-            <div className="field">
-              <label htmlFor="broadcast-message">Message</label>
-              <textarea
-                id="broadcast-message"
-                rows={6}
-                placeholder="Write your update here. Line breaks are kept as paragraphs."
-                value={broadcastForm.message}
-                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, message: e.target.value }))}
-                required
-              />
-              <div className="hint">{broadcastForm.message.length} characters</div>
+
+            <div className="email-broadcast-grid">
+              <form onSubmit={handleBroadcast} className="email-broadcast-form">
+                <div className="field">
+                  <label htmlFor="broadcast-subject">Subject</label>
+                  <input
+                    id="broadcast-subject"
+                    placeholder="A quick update from KnoUKno"
+                    value={broadcastForm.subject}
+                    onChange={(e) => setBroadcastForm((prev) => ({ ...prev, subject: e.target.value }))}
+                    required
+                  />
+                  <div className="hint">{broadcastForm.subject.length} characters</div>
+                </div>
+                <div className="field">
+                  <label htmlFor="broadcast-message">Message</label>
+                  <textarea
+                    id="broadcast-message"
+                    rows={8}
+                    placeholder="Write your update here. Line breaks are kept as paragraphs."
+                    value={broadcastForm.message}
+                    onChange={(e) => setBroadcastForm((prev) => ({ ...prev, message: e.target.value }))}
+                    required
+                  />
+                  <div className="hint">{broadcastForm.message.length} characters</div>
+                </div>
+                <button
+                  className="btn btn-dark"
+                  type="submit"
+                  disabled={broadcastSending || !broadcastForm.subject.trim() || !broadcastForm.message.trim()}
+                >
+                  {broadcastSending
+                    ? "Sending..."
+                    : `Send to ${optedInCount} opted-in user${optedInCount === 1 ? "" : "s"}`}
+                </button>
+                {broadcastResult && (
+                  <p className={broadcastResult.type === "success" ? "success-text" : "error-text"}>
+                    {broadcastResult.text}
+                  </p>
+                )}
+              </form>
+
+              <div>
+                <div className="email-preview-label">Live preview</div>
+                <div className="email-preview">
+                  <div className="email-preview-topbar">
+                    <span className="logo-dot">K</span>
+                    <span className="wordmark">
+                      Kno U <span>Kno</span>
+                    </span>
+                  </div>
+                  <div className="email-preview-body">
+                    <p className="email-preview-subject">
+                      {broadcastForm.subject.trim() || (
+                        <span className="email-preview-placeholder">Subject line will appear here</span>
+                      )}
+                    </p>
+                    <p>Hi there,</p>
+                    {broadcastForm.message.trim() ? (
+                      <p className="email-preview-message">{broadcastForm.message}</p>
+                    ) : (
+                      <p className="email-preview-placeholder">Your message will appear here as you type.</p>
+                    )}
+                    <p>
+                      Know you know.
+                      <br />
+                      KnoUKno
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <button
-              className="btn btn-dark"
-              type="submit"
-              disabled={broadcastSending || !broadcastForm.subject.trim() || !broadcastForm.message.trim()}
-            >
-              {broadcastSending ? "Sending..." : `Send to ${optedInCount} opted-in user${optedInCount === 1 ? "" : "s"}`}
-            </button>
-          </form>
-          {broadcastResult && (
-            <p className={broadcastResult.type === "success" ? "success-text" : "error-text"}>
-              {broadcastResult.text}
-            </p>
-          )}
+          </div>
         </>
       )}
     </div>
