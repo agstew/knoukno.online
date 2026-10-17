@@ -72,6 +72,21 @@ export async function sendPasswordResetEmail(to, name, resetUrl) {
   }
 }
 
+export async function sendBroadcastEmail(to, name, subject, message) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping broadcast email");
+    return;
+  }
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
+    to,
+    subject,
+    html: emailLayout(`<p>Hi ${escapeHtml(name)},</p>
+           <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
+           <p>Know you know.<br/>KnoUKno</p>`),
+  });
+}
+
 function escapeHtml(str = "") {
   return str.replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",

@@ -10,6 +10,9 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [pendingId, setPendingId] = useState(null);
+  const [broadcastForm, setBroadcastForm] = useState({ subject: "", message: "" });
+  const [broadcastStatus, setBroadcastStatus] = useState("");
+  const [broadcastSending, setBroadcastSending] = useState(false);
 
   function load() {
     setLoading(true);
@@ -41,6 +44,21 @@ export default function Admin() {
       setError(err.message);
     } finally {
       setPendingId(null);
+    }
+  }
+
+  async function handleBroadcast(e) {
+    e.preventDefault();
+    setBroadcastStatus("");
+    setBroadcastSending(true);
+    try {
+      const data = await api.adminSendBroadcast(token, broadcastForm.subject, broadcastForm.message);
+      setBroadcastStatus(`Sent to ${data.sent} of ${data.recipientCount} opted-in users.`);
+      setBroadcastForm({ subject: "", message: "" });
+    } catch (err) {
+      setBroadcastStatus(err.message);
+    } finally {
+      setBroadcastSending(false);
     }
   }
 
@@ -115,6 +133,33 @@ export default function Admin() {
               </tbody>
             </table>
           </div>
+
+          <h2 style={{ marginTop: 40 }}>Email all opted-in users</h2>
+          <form onSubmit={handleBroadcast} className="business-form">
+            <div className="field">
+              <label htmlFor="broadcast-subject">Subject</label>
+              <input
+                id="broadcast-subject"
+                value={broadcastForm.subject}
+                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, subject: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="broadcast-message">Message</label>
+              <textarea
+                id="broadcast-message"
+                rows={5}
+                value={broadcastForm.message}
+                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, message: e.target.value }))}
+                required
+              />
+            </div>
+            <button className="btn btn-dark" type="submit" disabled={broadcastSending}>
+              {broadcastSending ? "Sending..." : "Send to all opted-in users"}
+            </button>
+          </form>
+          {broadcastStatus && <p className="muted">{broadcastStatus}</p>}
         </>
       )}
     </div>

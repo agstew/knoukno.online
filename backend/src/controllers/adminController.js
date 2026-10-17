@@ -1,6 +1,7 @@
 import Answer from "../models/Answer.js";
 import Title from "../models/Title.js";
 import User from "../models/User.js";
+import { sendBroadcastEmail } from "../utils/email.js";
 
 export async function listUsers(_req, res, next) {
   try {
@@ -38,6 +39,27 @@ export async function getStats(_req, res, next) {
       Answer.countDocuments(),
     ]);
     res.json({ userCount, businessCount, answerCount });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function sendBroadcast(req, res, next) {
+  try {
+    const { subject, message } = req.body;
+    if (!subject || !subject.trim() || !message || !message.trim()) {
+      return res.status(400).json({ error: "Subject and message are required" });
+    }
+
+    const recipients = await User.find({ emailOptIn: { $ne: false } }, "name email");
+
+    const results = await Promise.allSettled(
+      recipients.map((r) => sendBroadcastEmail(r.email, r.name, subject.trim(), message.trim()))
+    );
+    const sent = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.length - sent;
+
+    res.json({ recipientCount: recipients.length, sent, failed });
   } catch (err) {
     next(err);
   }

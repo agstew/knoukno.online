@@ -64,4 +64,6 @@ export const api = {
   adminUpdateUserRole: (token, id, role) =>
     request(`/admin/users/${id}/role`, { method: "PATCH", body: { role }, token }),
   adminStats: (token) => request("/admin/stats", { token }),
+  adminSendBroadcast: (token, subject, message) =>
+    request("/admin/broadcast", { method: "POST", body: { subject, message }, token }),
 };

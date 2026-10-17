@@ -1,8 +1,15 @@
 import request from "supertest";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import app from "../app.js";
 import User from "../models/User.js";
+import { sendBroadcastEmail } from "../utils/email.js";
 import { createTitle, registerUser } from "./helpers.js";
+
+vi.mock("../utils/email.js", () => ({
+  sendWelcomeEmail: vi.fn(),
+  sendPasswordResetEmail: vi.fn(),
+  sendBroadcastEmail: vi.fn(),
+}));
 
 async function makeAdmin(userId) {
   await User.findByIdAndUpdate(userId, { role: "admin" });
@@ -82,5 +89,62 @@ describe("Admin routes", () => {
   it("registers new users with role 'user' by default", async () => {
     const { user } = await registerUser();
     expect(user.role).toBe("user");
+  });
+});
+
+describe("POST /api/admin/broadcast", () => {
+  it("blocks a non-admin user", async () => {
+    const { token } = await registerUser();
+    const res = await request(app)
+      .post("/api/admin/broadcast")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ subject: "Hi", message: "Hello" });
+    expect(res.status).toBe(403);
+  });
+
+  it("rejects a missing subject or message", async () => {
+    const admin = await registerUser();
+    await makeAdmin(admin.user._id);
+
+    const res = await request(app)
+      .post("/api/admin/broadcast")
+      .set("Authorization", `Bearer ${admin.token}`)
+      .send({ subject: "", message: "Hello" });
+    expect(res.status).toBe(400);
+  });
+
+  it("sends to every opted-in user and skips opted-out users", async () => {
+    const admin = await registerUser();
+    await makeAdmin(admin.user._id);
+    await registerUser();
+    const optedOut = await registerUser();
+    await User.updateOne({ _id: optedOut.user._id }, { emailOptIn: false });
+    sendBroadcastEmail.mockResolvedValue();
+
+    const res = await request(app)
+      .post("/api/admin/broadcast")
+      .set("Authorization", `Bearer ${admin.token}`)
+      .send({ subject: "Big news", message: "We shipped a new feature" });
+    expect(res.status).toBe(200);
+    expect(res.body.recipientCount).toBe(2);
+    expect(res.body.sent).toBe(2);
+    expect(res.body.failed).toBe(0);
+    expect(sendBroadcastEmail).toHaveBeenCalledTimes(2);
+    expect(sendBroadcastEmail).not.toHaveBeenCalledWith(optedOut.user.email, expect.anything(), expect.anything(), expect.anything());
+  });
+
+  it("counts failures without failing the whole request", async () => {
+    const admin = await registerUser();
+    await makeAdmin(admin.user._id);
+    await registerUser();
+    sendBroadcastEmail.mockRejectedValue(new Error("send failed"));
+
+    const res = await request(app)
+      .post("/api/admin/broadcast")
+      .set("Authorization", `Bearer ${admin.token}`)
+      .send({ subject: "Big news", message: "We shipped a new feature" });
+    expect(res.status).toBe(200);
+    expect(res.body.failed).toBeGreaterThanOrEqual(1);
+    expect(res.body.sent).toBe(0);
   });
 });
