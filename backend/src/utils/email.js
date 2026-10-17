@@ -87,6 +87,47 @@ export async function sendBroadcastEmail(to, name, subject, message) {
   });
 }
 
+// Sent automatically once, 730 days (2 years) after a user registers.
+export async function send730DayEmail(to, name) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping 730-day milestone email");
+    return;
+  }
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
+    to,
+    subject: "Two years in business - look how far you've come",
+    html: emailLayout(`<p>Hi ${escapeHtml(name)},</p>
+           <p>Today marks exactly two years - 730 days - since you first sat down and named your
+           business on KnoUKno. That is worth stopping to notice, because most ideas never make it
+           this far.</p>
+           <p>Two years ago, you were staring at a blank page, answering the first hard question about
+           law: what entity to register as, and why. Then came location - the rent, the zoning, the
+           foot traffic, the backup plan if the first choice fell through. Then hiring - deciding what
+           your first employee needed to cover, what you could actually pay, and what success looked
+           like in the first thirty days. Then the people - who your customers really are, what problem
+           brings them through the door, and what makes them come back.</p>
+           <p>None of those questions were easy. None of them had a single right answer. But you wrote
+           your own answers down anyway, in your own words, and you kept going. That is the whole idea
+           behind KnoUKno: the question is ours, the answer is yours, and the answer only matters if you
+           actually use it. Two years later, you have.</p>
+           <p>Being in business for two years means you have made payroll, or paid yourself, more times
+           than you can count. It means you have dealt with a slow month and figured out how to get
+           through it. It means a customer came back a second time, and a third, because something you
+           built actually worked for them. It means the plan you wrote on day one is not the plan you are
+           running today - and that is exactly how it should be. A business that has not changed in two
+           years is not learning from its customers.</p>
+           <p>However big or small things look right now, two years of staying in business is a real,
+           measurable result. Most new businesses do not make it this far. Yours did, because you did the
+           work, one honest answer at a time.</p>
+           <p>Go back into your business title whenever you want to see where you started, re-grade your
+           answers, or add new ones as the business keeps changing. We kept every one of them for exactly
+           this reason.</p>
+           <p>Congratulations on two years. Here is to the next two.</p>
+           <p>Know you know.<br/>KnoUKno</p>`),
+  });
+}
+
 function escapeHtml(str = "") {
   return str.replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",

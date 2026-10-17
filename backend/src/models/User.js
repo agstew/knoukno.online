@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
     paypalSubscriptionId: { type: String },
     cancelAtPeriodEnd: { type: Boolean, default: false },
     emailOptIn: { type: Boolean, default: true },
+    milestone730EmailSentAt: { type: Date },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
   },
