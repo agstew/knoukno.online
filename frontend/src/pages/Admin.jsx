@@ -11,7 +11,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [pendingId, setPendingId] = useState(null);
   const [broadcastForm, setBroadcastForm] = useState({ subject: "", message: "" });
-  const [broadcastStatus, setBroadcastStatus] = useState("");
+  const [broadcastStatus, setBroadcastStatus] = useState(null);
   const [broadcastSending, setBroadcastSending] = useState(false);
 
   function load() {
@@ -49,14 +49,28 @@ export default function Admin() {
 
   async function handleBroadcast(e) {
     e.preventDefault();
-    setBroadcastStatus("");
+    const recipientCount = users.filter((u) => u.emailOptIn !== false).length;
+    if (
+      !window.confirm(
+        `Send this email to ${recipientCount} opted-in user${recipientCount === 1 ? "" : "s"}? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    setBroadcastStatus(null);
     setBroadcastSending(true);
     try {
       const data = await api.adminSendBroadcast(token, broadcastForm.subject, broadcastForm.message);
-      setBroadcastStatus(`Sent to ${data.sent} of ${data.recipientCount} opted-in users.`);
+      setBroadcastStatus({
+        type: "success",
+        text:
+          data.failed > 0
+            ? `Sent to ${data.sent} of ${data.recipientCount} opted-in users (${data.failed} failed - try again later).`
+            : `Sent to all ${data.sent} opted-in users.`,
+      });
       setBroadcastForm({ subject: "", message: "" });
     } catch (err) {
-      setBroadcastStatus(err.message);
+      setBroadcastStatus({ type: "error", text: err.message });
     } finally {
       setBroadcastSending(false);
     }
@@ -134,32 +148,52 @@ export default function Admin() {
             </table>
           </div>
 
-          <h2 style={{ marginTop: 40 }}>Email all opted-in users</h2>
-          <form onSubmit={handleBroadcast} className="business-form">
-            <div className="field">
-              <label htmlFor="broadcast-subject">Subject</label>
-              <input
-                id="broadcast-subject"
-                value={broadcastForm.subject}
-                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, subject: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="broadcast-message">Message</label>
-              <textarea
-                id="broadcast-message"
-                rows={5}
-                value={broadcastForm.message}
-                onChange={(e) => setBroadcastForm((prev) => ({ ...prev, message: e.target.value }))}
-                required
-              />
-            </div>
-            <button className="btn btn-dark" type="submit" disabled={broadcastSending}>
-              {broadcastSending ? "Sending..." : "Send to all opted-in users"}
-            </button>
-          </form>
-          {broadcastStatus && <p className="muted">{broadcastStatus}</p>}
+          <div className="broadcast-card">
+            <h2 style={{ marginTop: 0 }}>Email all opted-in users</h2>
+            <p className="muted">
+              This sends an email right away to every user who hasn't opted out ({" "}
+              <strong>{users.filter((u) => u.emailOptIn !== false).length}</strong> of {users.length} users).
+              Use it for announcements, outages, or anything every customer should see.
+            </p>
+            <form onSubmit={handleBroadcast} className="business-form">
+              <div className="field">
+                <label htmlFor="broadcast-subject">Subject line</label>
+                <input
+                  id="broadcast-subject"
+                  placeholder="e.g. New feature: Payment schedule"
+                  value={broadcastForm.subject}
+                  onChange={(e) => setBroadcastForm((prev) => ({ ...prev, subject: e.target.value }))}
+                  maxLength={150}
+                  required
+                />
+              </div>
+              <div className="field">
+                <label htmlFor="broadcast-message">Message</label>
+                <textarea
+                  id="broadcast-message"
+                  placeholder="Write the email body in plain text - line breaks are kept."
+                  rows={6}
+                  value={broadcastForm.message}
+                  onChange={(e) => setBroadcastForm((prev) => ({ ...prev, message: e.target.value }))}
+                  maxLength={5000}
+                  required
+                />
+                <span className="hint">{broadcastForm.message.length} / 5000 characters</span>
+              </div>
+              <button
+                className="btn btn-dark"
+                type="submit"
+                disabled={broadcastSending || !broadcastForm.subject.trim() || !broadcastForm.message.trim()}
+              >
+                {broadcastSending ? "Sending..." : "Send to all opted-in users"}
+              </button>
+            </form>
+            {broadcastStatus && (
+              <p className={broadcastStatus.type === "error" ? "error-text" : "success-text"}>
+                {broadcastStatus.text}
+              </p>
+            )}
+          </div>
         </>
       )}
     </div>
