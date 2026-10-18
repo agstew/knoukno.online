@@ -14,12 +14,13 @@ export async function sendWelcomeEmail(to, name) {
     return;
   }
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
       to,
       subject: "Welcome to KnoUKno",
       html: await render(React.createElement(WelcomeEmail, { name })),
     });
+    if (error) console.error("Failed to send welcome email:", error.message);
   } catch (err) {
     console.error("Failed to send welcome email:", err.message);
   }
@@ -31,12 +32,13 @@ export async function sendPasswordResetEmail(to, name, resetUrl) {
     return;
   }
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
       to,
       subject: "Reset your KnoUKno password",
       html: await render(React.createElement(PasswordResetEmail, { name, resetUrl })),
     });
+    if (error) console.error("Failed to send password reset email:", error.message);
   } catch (err) {
     console.error("Failed to send password reset email:", err.message);
   }
@@ -47,24 +49,27 @@ export async function sendBroadcastEmail(to, name, subject, message) {
     console.warn("RESEND_API_KEY not set - skipping broadcast email");
     return;
   }
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
     to,
     subject,
     html: await render(React.createElement(BroadcastEmail, { name, message })),
   });
+  if (error) throw new Error(error.message);
 }
 
 // Sent automatically once, 730 days (2 years) after a user registers.
+// Always sends from hello@knoukno.online regardless of EMAIL_FROM.
 export async function send730DayEmail(to, name) {
   if (!resend) {
     console.warn("RESEND_API_KEY not set - skipping 730-day milestone email");
     return;
   }
-  await resend.emails.send({
-    from: process.env.EMAIL_FROM || "KnoUKno <hello@knoukno.online>",
+  const { error } = await resend.emails.send({
+    from: "KnoUKno <hello@knoukno.online>",
     to,
     subject: "Two years in business - look how far you've come",
     html: await render(React.createElement(MilestoneEmail730, { name })),
   });
+  if (error) throw new Error(error.message);
 }
