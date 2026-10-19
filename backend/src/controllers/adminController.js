@@ -1,4 +1,8 @@
 import Answer from "../models/Answer.js";
+import Average from "../models/Average.js";
+import Grade from "../models/Grade.js";
+import Question from "../models/Question.js";
+import Rate from "../models/Rate.js";
 import Title from "../models/Title.js";
 import User from "../models/User.js";
 import { sendBroadcastEmail } from "../utils/email.js";
@@ -27,6 +31,35 @@ export async function updateUserRole(req, res, next) {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteUser(req, res, next) {
+  try {
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(400).json({ error: "You cannot delete your own account" });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const titleIds = await Title.find({ user: user._id }).distinct("_id");
+    if (titleIds.length > 0) {
+      await Promise.all([
+        Answer.deleteMany({ business: { $in: titleIds } }),
+        Grade.deleteMany({ business: { $in: titleIds } }),
+        Rate.deleteMany({ business: { $in: titleIds } }),
+        Average.deleteMany({ business: { $in: titleIds } }),
+        Question.deleteMany({ business: { $in: titleIds } }),
+      ]);
+      await Title.deleteMany({ user: user._id });
+    }
+
+    await user.deleteOne();
+
+    res.json({ ok: true });
   } catch (err) {
     next(err);
   }

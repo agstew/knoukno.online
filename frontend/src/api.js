@@ -63,6 +63,7 @@ export const api = {
   adminListUsers: (token) => request("/admin/users", { token }),
   adminUpdateUserRole: (token, id, role) =>
     request(`/admin/users/${id}/role`, { method: "PATCH", body: { role }, token }),
+  adminDeleteUser: (token, id) => request(`/admin/users/${id}`, { method: "DELETE", token }),
   adminStats: (token) => request("/admin/stats", { token }),
   adminSendBroadcast: (token, subject, message) =>
     request("/admin/broadcast", { method: "POST", body: { subject, message }, token }),

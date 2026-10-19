@@ -47,6 +47,26 @@ export default function Admin() {
     }
   }
 
+  async function deleteUser(targetUser) {
+    if (
+      !window.confirm(
+        `Delete ${targetUser.name} (${targetUser.email})? This permanently removes their account, business titles, and saved answers. This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    setPendingId(targetUser._id);
+    setError("");
+    try {
+      await api.adminDeleteUser(token, targetUser._id);
+      setUsers((prev) => prev.filter((u) => u._id !== targetUser._id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPendingId(null);
+    }
+  }
+
   async function handleBroadcast(e) {
     e.preventDefault();
     if (
@@ -157,6 +177,13 @@ export default function Admin() {
                           : u.role === "admin"
                             ? "Remove admin"
                             : "Make admin"}
+                      </button>{" "}
+                      <button
+                        className="btn btn-outline"
+                        disabled={pendingId === u._id || u._id === me._id}
+                        onClick={() => deleteUser(u)}
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
