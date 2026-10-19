@@ -24,6 +24,8 @@ export const api = {
   forgotPassword: (email) => request("/auth/forgot-password", { method: "POST", body: { email } }),
   resetPassword: (payload) => request("/auth/reset-password", { method: "POST", body: payload }),
 
+  submitContact: (payload) => request("/contact", { method: "POST", body: payload }),
+
   listTitles: (token) => request("/titles", { token }),
   createTitle: (token, payload) => request("/titles", { method: "POST", body: payload, token }),
   getTitle: (token, id) => request(`/titles/${id}`, { token }),

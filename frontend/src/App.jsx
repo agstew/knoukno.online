@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import About from "./pages/About.jsx";
 import Admin from "./pages/Admin.jsx";
 import Average from "./pages/Average.jsx";
+import Contact from "./pages/Contact.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Grade from "./pages/Grade.jsx";
@@ -25,6 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

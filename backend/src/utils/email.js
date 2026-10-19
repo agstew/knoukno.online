@@ -5,6 +5,7 @@ import WelcomeEmail from "../emails/WelcomeEmail.js";
 import PasswordResetEmail from "../emails/PasswordResetEmail.js";
 import BroadcastEmail from "../emails/BroadcastEmail.js";
 import MilestoneEmail730 from "../emails/MilestoneEmail730.js";
+import ContactEmail from "../emails/ContactEmail.js";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -42,6 +43,22 @@ export async function sendPasswordResetEmail(to, name, resetUrl) {
   } catch (err) {
     console.error("Failed to send password reset email:", err.message);
   }
+}
+
+// Sent to the site's own inbox whenever someone submits the public contact form.
+export async function sendContactEmail(name, email, message) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping contact form email");
+    return;
+  }
+  const { error } = await resend.emails.send({
+    from: "KnoUKno <hello@knoukno.online>",
+    to: "hello@knoukno.online",
+    reply_to: email,
+    subject: `New contact form message from ${name}`,
+    html: await render(React.createElement(ContactEmail, { name, email, message })),
+  });
+  if (error) throw new Error(error.message);
 }
 
 export async function sendBroadcastEmail(to, name, subject, message) {
