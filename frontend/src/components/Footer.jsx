@@ -49,7 +49,7 @@ export default function Footer() {
               <a href="/#location">Location</a>
             </li>
             <li>
-              <a href="/#hiring">Hiring</a>
+              <a href="/#hiring">Staffing</a>
             </li>
             <li>
               <a href="/#people">People</a>
