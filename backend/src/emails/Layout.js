@@ -32,7 +32,7 @@ export default function Layout({ children }) {
           h(
             Row,
             null,
-            h(Column, { style: { verticalAlign: "middle", width: 44 } }, h(Img, { src: LOGO_URL, width: 32, height: 32, alt: "KnoUKno", style: { display: "block", borderRadius: 8 } })),
+            h(Column, { style: { verticalAlign: "middle", width: 44 } }, h(Img, { src: LOGO_URL, width: 32, height: 32, alt: "Kno U Kno", style: { display: "block", borderRadius: 8 } })),
             h(
               Column,
               { style: { verticalAlign: "middle" } },

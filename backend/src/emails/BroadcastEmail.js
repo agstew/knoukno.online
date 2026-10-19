@@ -16,6 +16,6 @@ export default function BroadcastEmail({ name, message }) {
     null,
     h(Text, null, `Hi ${name},`),
     h(Text, null, ...withLineBreaks(message)),
-    h(Text, null, "Know you know.", h("br"), "KnoUKno"),
+    h(Text, null, "Know you know.", h("br"), "Kno U Kno"),
   );
 }

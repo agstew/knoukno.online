@@ -12,7 +12,7 @@ export default function MilestoneEmail730({ name }) {
     h(
       Text,
       null,
-      "Today marks exactly 730 days since you named your business on KnoUKno, and we wanted to take a moment to say: look how far you've come. That is genuinely worth celebrating, because most ideas never make it this far, and yours did.",
+      "Today marks exactly 730 days since you named your business on Kno U Kno, and we wanted to take a moment to say: look how far you've come. That is genuinely worth celebrating, because most ideas never make it this far, and yours did.",
     ),
     h(
       Text,
@@ -22,7 +22,7 @@ export default function MilestoneEmail730({ name }) {
     h(
       Text,
       null,
-      "None of that was easy, and none of it had one single right answer. But you wrote your own answers down anyway, in your own words, and you kept showing up. That is the whole idea behind KnoUKno: the question is ours, the answer is yours, and it only matters once you actually use it. Two years later, you have - and that is something to feel genuinely good about.",
+      "None of that was easy, and none of it had one single right answer. But you wrote your own answers down anyway, in your own words, and you kept showing up. That is the whole idea behind Kno U Kno: the question is ours, the answer is yours, and it only matters once you actually use it. Two years later, you have - and that is something to feel genuinely good about.",
     ),
     h(
       Text,
@@ -35,6 +35,6 @@ export default function MilestoneEmail730({ name }) {
       "So take a minute today to just feel happy about it. However big or small things look right now, two years in business is a real, measurable, hard-won result - and it is yours. Go back into your business title whenever you want to see where you started, re-grade your answers, or add new ones as things keep changing. We kept every one of them for exactly this reason.",
     ),
     h(Text, null, "Congratulations on two years. Here is to the next two, and to enjoying every bit of it."),
-    h(Text, null, "Know you know.", h("br"), "KnoUKno"),
+    h(Text, null, "Know you know.", h("br"), "Kno U Kno"),
   );
 }

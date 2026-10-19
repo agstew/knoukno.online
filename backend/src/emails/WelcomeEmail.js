@@ -12,8 +12,8 @@ export default function WelcomeEmail({ name }) {
     h(
       Text,
       null,
-      "Your KnoUKno account is ready. Name your business and answer your first question - your free trial includes 5 questions for 3 days.",
+      "Your Kno U Kno account is ready. Name your business and answer your first question - your free trial includes 5 questions for 3 days.",
     ),
-    h(Text, null, "Know you know.", h("br"), "KnoUKno"),
+    h(Text, null, "Know you know.", h("br"), "Kno U Kno"),
   );
 }

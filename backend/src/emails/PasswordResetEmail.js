@@ -9,9 +9,9 @@ export default function PasswordResetEmail({ name, resetUrl }) {
     Layout,
     null,
     h(Text, null, `Hi ${name},`),
-    h(Text, null, "We got a request to reset your KnoUKno password. This link expires in 1 hour:"),
+    h(Text, null, "We got a request to reset your Kno U Kno password. This link expires in 1 hour:"),
     h(Text, null, h(Link, { href: resetUrl, style: { color: "#1e90ff" } }, "Reset your password")),
     h(Text, null, "If you didn't ask for this, you can ignore this email."),
-    h(Text, null, "Know you know.", h("br"), "KnoUKno"),
+    h(Text, null, "Know you know.", h("br"), "Kno U Kno"),
   );
 }
