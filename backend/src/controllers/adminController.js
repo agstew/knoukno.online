@@ -2,6 +2,7 @@ import Answer from "../models/Answer.js";
 import Title from "../models/Title.js";
 import User from "../models/User.js";
 import { sendBroadcastEmail } from "../utils/email.js";
+import { PLANS } from "../utils/plans.js";
 
 export async function listUsers(_req, res, next) {
   try {
@@ -33,12 +34,21 @@ export async function updateUserRole(req, res, next) {
 
 export async function getStats(_req, res, next) {
   try {
-    const [userCount, businessCount, answerCount] = await Promise.all([
+    const [userCount, businessCount, answerCount, memberCount, proCount] = await Promise.all([
       User.countDocuments(),
       Title.countDocuments(),
       Answer.countDocuments(),
+      User.countDocuments({ plan: "member", cancelAtPeriodEnd: { $ne: true } }),
+      User.countDocuments({ plan: "pro", cancelAtPeriodEnd: { $ne: true } }),
     ]);
-    res.json({ userCount, businessCount, answerCount });
+    // Pro is billed yearly - normalize to a monthly figure for a comparable MRR estimate.
+    const mrr = memberCount * PLANS.member.price + proCount * (PLANS.pro.price / 12);
+    res.json({
+      userCount,
+      businessCount,
+      answerCount,
+      revenue: { memberCount, proCount, mrr: Math.round(mrr * 100) / 100 },
+    });
   } catch (err) {
     next(err);
   }

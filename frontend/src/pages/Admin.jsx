@@ -106,6 +106,23 @@ export default function Admin() {
             </div>
           )}
 
+          {stats?.revenue && (
+            <div className="plan-meter" style={{ display: "flex", gap: 32 }}>
+              <span>
+                Est. MRR:{" "}
+                <strong>
+                  ${stats.revenue.mrr.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </strong>
+              </span>
+              <span>
+                Members: <strong>{stats.revenue.memberCount}</strong>
+              </span>
+              <span>
+                Pro: <strong>{stats.revenue.proCount}</strong>
+              </span>
+            </div>
+          )}
+
           <h2>Users</h2>
           <div className="admin-table-wrap">
             <table className="admin-table">
