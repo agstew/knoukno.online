@@ -6,6 +6,7 @@ import PasswordResetEmail from "../emails/PasswordResetEmail.js";
 import BroadcastEmail from "../emails/BroadcastEmail.js";
 import MilestoneEmail730 from "../emails/MilestoneEmail730.js";
 import ContactEmail from "../emails/ContactEmail.js";
+import HiringEmail from "../emails/HiringEmail.js";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -57,6 +58,23 @@ export async function sendContactEmail(name, email, message) {
     reply_to: email,
     subject: `New contact form message from ${name}`,
     html: await render(React.createElement(ContactEmail, { name, email, message })),
+  });
+  if (error) throw new Error(error.message);
+}
+
+// Sent to the site's own inbox whenever someone submits the public hiring/careers form.
+// Routed to hello@ (not hire@) until hire@knoukno.online's mailbox is provisioned.
+export async function sendHiringEmail(name, email, role, message) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set - skipping hiring form email");
+    return;
+  }
+  const { error } = await resend.emails.send({
+    from: "KnoUKno <hello@knoukno.online>",
+    to: "hello@knoukno.online",
+    reply_to: email,
+    subject: `New hiring form message from ${name}`,
+    html: await render(React.createElement(HiringEmail, { name, email, role, message })),
   });
   if (error) throw new Error(error.message);
 }

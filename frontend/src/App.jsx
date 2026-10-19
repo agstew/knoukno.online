@@ -9,6 +9,7 @@ import Contact from "./pages/Contact.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Grade from "./pages/Grade.jsx";
+import Hiring from "./pages/Hiring.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import PaymentSchedule from "./pages/PaymentSchedule.jsx";
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/careers" element={<Hiring />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -14,6 +14,7 @@ import billingRoutes from "./routes/billingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import gradeRoutes from "./routes/gradeRoutes.js";
+import hiringRoutes from "./routes/hiringRoutes.js";
 import priceRoutes from "./routes/priceRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
 import rateRoutes from "./routes/rateRoutes.js";
@@ -77,6 +78,7 @@ app.use("/api/plans", priceRoutes);
 app.use("/api/billing", billingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/hiring", hiringRoutes);
 
 // Serve the built frontend when bundled alongside the API (combined single-service deploy)
 const publicDir = path.join(__dirname, "..", "public");
