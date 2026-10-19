@@ -65,7 +65,7 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <span>&copy; {new Date().getFullYear()} Kno U Kno. All rights reserved.</span>
-        <a href="mailto:knoukno006@gmail.com">knoukno006@gmail.com</a>
+        <a href="mailto:hello@knoukno.online">hello@knoukno.online</a>
       </div>
     </footer>
   );
