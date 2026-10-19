@@ -25,6 +25,26 @@ export default function Dashboard() {
   const quota = user?.questionsQuota ?? 0;
   const percentUsed = quota > 0 ? Math.min((used / quota) * 100, 100) : 0;
 
+  async function handleDelete(t) {
+    if (!window.confirm(`Delete "${t.title}"? This also deletes its questions, answers, grades, and rates.`)) {
+      return;
+    }
+    setError("");
+    try {
+      await api.deleteTitle(token, t._id);
+      setData((prev) => ({
+        ...prev,
+        titles: prev.titles.filter((item) => item._id !== t._id),
+        titleCount: prev.titleCount - 1,
+      }));
+      if (localStorage.getItem(SELECTED_TITLE_STORAGE_KEY) === t._id) {
+        localStorage.removeItem(SELECTED_TITLE_STORAGE_KEY);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <div className="dashboard container">
       <div className="dashboard-header">
@@ -89,13 +109,18 @@ export default function Dashboard() {
                       <div className="biz-meta">{[t.industry, t.location].filter(Boolean).join(" \u2022 ")}</div>
                     )}
                   </div>
-                  <Link
-                    to="/questions"
-                    className="btn btn-outline"
-                    onClick={() => localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, t._id)}
-                  >
-                    Open →
-                  </Link>
+                  <div className="business-item-actions">
+                    <Link
+                      to="/questions"
+                      className="btn btn-outline"
+                      onClick={() => localStorage.setItem(SELECTED_TITLE_STORAGE_KEY, t._id)}
+                    >
+                      Open →
+                    </Link>
+                    <button type="button" className="btn btn-outline btn-danger" onClick={() => handleDelete(t)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
