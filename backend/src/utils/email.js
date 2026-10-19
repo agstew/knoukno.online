@@ -53,7 +53,7 @@ export async function sendContactEmail(name, email, message) {
   }
   const { error } = await resend.emails.send({
     from: "KnoUKno <hello@knoukno.online>",
-    to: "hello@knoukno.online",
+    to: "contact@knoukno.online",
     reply_to: email,
     subject: `New contact form message from ${name}`,
     html: await render(React.createElement(ContactEmail, { name, email, message })),
