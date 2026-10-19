@@ -12,7 +12,7 @@ export default function MilestoneEmail730({ name }) {
     h(
       Text,
       null,
-      "Two years ago today, you named your business on KnoUKno. Today marks exactly 730 days since then, and we wanted to take a moment to say: look how far you've come. That is genuinely worth celebrating, because most ideas never make it this far, and yours did.",
+      "Today marks exactly 730 days since you named your business on KnoUKno, and we wanted to take a moment to say: look how far you've come. That is genuinely worth celebrating, because most ideas never make it this far, and yours did.",
     ),
     h(
       Text,
