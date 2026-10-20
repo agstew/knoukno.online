@@ -33,15 +33,21 @@ export default function Rate() {
   async function handleRate(answerId, rawValue) {
     setError("");
     const rate = Number(rawValue);
-    const inUseBy = rows.find((row) => row.answer._id !== answerId && row.rate === rate);
-    if (inUseBy) {
-      setError(
-        `${rate} is already used for another answer. Each answer needs its own number - move that one first.`
-      );
-      setDrafts((prev) => ({ ...prev, [answerId]: "" }));
-      return;
-    }
+    const current = rows.find((row) => row.answer._id === answerId);
+    const conflict = rows.find((row) => row.answer._id !== answerId && row.rate === rate);
+
     try {
+      if (conflict) {
+        // Bumping into a number someone else already has - move that one out of the way
+        // automatically: give it the number this answer is leaving behind, or send it to
+        // the end of the list if this answer didn't have a number yet.
+        const maxRate = rows.reduce((max, row) => Math.max(max, row.rate || 0), 0);
+        const vacatedRate = current?.rate ?? maxRate + 1;
+        const conflictData = await api.saveRate(token, conflict.answer._id, vacatedRate);
+        setRows((prev) =>
+          prev.map((row) => (row.answer._id === conflict.answer._id ? { ...row, rate: conflictData.rate.rate } : row))
+        );
+      }
       const data = await api.saveRate(token, answerId, rate);
       setRows((prev) => prev.map((row) => (row.answer._id === answerId ? { ...row, rate: data.rate.rate } : row)));
       setDrafts((prev) => ({ ...prev, [answerId]: undefined }));
@@ -67,7 +73,10 @@ export default function Rate() {
         <div>
           <span className="section-eyebrow">Rate</span>
           <h1>Rate your answers</h1>
-          <p className="muted">Give each saved answer its own rank number - no two answers can share one.</p>
+          <p className="muted">
+            Rank each saved answer with its own number. If you give one a number another answer
+            already has, that one automatically moves to make room.
+          </p>
         </div>
       </div>
 
