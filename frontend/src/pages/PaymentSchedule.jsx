@@ -15,7 +15,7 @@ function formatAmount(amount) {
 }
 
 export default function PaymentSchedule() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [schedule, setSchedule] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -56,10 +56,18 @@ export default function PaymentSchedule() {
       ) : !subscription ? (
         <div className="empty-state">
           <div className="empty-icon">📅</div>
-          <p>
-            <strong>No recurring payments scheduled.</strong> You're on the free plan, or your subscription
-            hasn't been set up yet.
-          </p>
+          {user?.plan && user.plan !== "free" ? (
+            <p>
+              <strong>No recurring PayPal subscription on file.</strong> You're on the{" "}
+              {PLAN_LABELS[user.plan] || user.plan} plan, but it wasn't set up through a PayPal
+              subscription, so there's no billing schedule to show here.
+            </p>
+          ) : (
+            <p>
+              <strong>No recurring payments scheduled.</strong> You're on the free plan, or your subscription
+              hasn't been set up yet.
+            </p>
+          )}
         </div>
       ) : (
         <>
