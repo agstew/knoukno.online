@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../AuthContext.jsx";
@@ -13,6 +13,7 @@ export default function Admin() {
   const [broadcastForm, setBroadcastForm] = useState({ subject: "", message: "" });
   const [broadcastResult, setBroadcastResult] = useState(null);
   const [broadcastSending, setBroadcastSending] = useState(false);
+  const [search, setSearch] = useState("");
 
   function load() {
     setLoading(true);
@@ -96,6 +97,21 @@ export default function Admin() {
 
   const optedInCount = users.filter((u) => u.emailOptIn !== false).length;
 
+  const filteredUsers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return users;
+    return users.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+  }, [users, search]);
+
+  function initials(name) {
+    return name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0].toUpperCase())
+      .join("");
+  }
+
   return (
     <div className="dashboard container">
       <div className="dashboard-header">
@@ -113,85 +129,138 @@ export default function Admin() {
       ) : (
         <>
           {stats && (
-            <div className="plan-meter" style={{ display: "flex", gap: 32 }}>
-              <span>
-                Users: <strong>{stats.userCount}</strong>
-              </span>
-              <span>
-                Businesses: <strong>{stats.businessCount}</strong>
-              </span>
-              <span>
-                Answers: <strong>{stats.answerCount}</strong>
-              </span>
+            <div className="admin-stats-grid">
+              <div className="stat-card">
+                <div className="stat-card-icon">👥</div>
+                <div>
+                  <p className="stat-card-label">Users</p>
+                  <p className="stat-card-value">{stats.userCount}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-card-icon">🏢</div>
+                <div>
+                  <p className="stat-card-label">Businesses</p>
+                  <p className="stat-card-value">{stats.businessCount}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-card-icon">📝</div>
+                <div>
+                  <p className="stat-card-label">Answers</p>
+                  <p className="stat-card-value">{stats.answerCount}</p>
+                </div>
+              </div>
+              {stats.revenue && (
+                <>
+                  <div className="stat-card">
+                    <div className="stat-card-icon">💰</div>
+                    <div>
+                      <p className="stat-card-label">Est. MRR</p>
+                      <p className="stat-card-value">
+                        $
+                        {stats.revenue.mrr.toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-card-icon">⭐</div>
+                    <div>
+                      <p className="stat-card-label">Members</p>
+                      <p className="stat-card-value">{stats.revenue.memberCount}</p>
+                    </div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-card-icon">🚀</div>
+                    <div>
+                      <p className="stat-card-label">Pro</p>
+                      <p className="stat-card-value">{stats.revenue.proCount}</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {stats?.revenue && (
-            <div className="plan-meter" style={{ display: "flex", gap: 32 }}>
-              <span>
-                Est. MRR:{" "}
-                <strong>
-                  ${stats.revenue.mrr.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </strong>
-              </span>
-              <span>
-                Members: <strong>{stats.revenue.memberCount}</strong>
-              </span>
-              <span>
-                Pro: <strong>{stats.revenue.proCount}</strong>
-              </span>
+          <div className="admin-section">
+            <div className="admin-section-header">
+              <div>
+                <h2>Users</h2>
+                <p className="muted" style={{ margin: "4px 0 0" }}>
+                  {filteredUsers.length} of {users.length} shown
+                </p>
+              </div>
+              <input
+                type="search"
+                className="admin-search"
+                placeholder="Search by name or email..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-          )}
-
-          <h2>Users</h2>
-          <div className="admin-table-wrap">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Plan</th>
-                  <th>Questions</th>
-                  <th>Role</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u._id}>
-                    <td>{u.name}</td>
-                    <td>{u.email}</td>
-                    <td>{u.plan}</td>
-                    <td>
-                      {u.questionsUsed} / {u.questionsQuota}
-                    </td>
-                    <td>{u.role}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline"
-                        disabled={pendingId === u._id || (u._id === me._id && u.role === "admin")}
-                        onClick={() => toggleRole(u)}
-                      >
-                        {pendingId === u._id
-                          ? "Saving..."
-                          : u.role === "admin"
-                            ? "Remove admin"
-                            : "Make admin"}
-                      </button>{" "}
-                      <button
-                        className="btn btn-outline"
-                        disabled={pendingId === u._id || u._id === me._id}
-                        onClick={() => deleteUser(u)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Questions</th>
+                    <th>Role</th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((u) => (
+                    <tr key={u._id}>
+                      <td>
+                        <div className="admin-name-cell">
+                          <span className="admin-avatar">{initials(u.name)}</span>
+                          {u.name}
+                        </div>
+                      </td>
+                      <td>{u.email}</td>
+                      <td>
+                        <span className={`pill pill-plan-${u.plan}`}>{u.plan}</span>
+                      </td>
+                      <td>
+                        {u.questionsUsed} / {u.questionsQuota}
+                      </td>
+                      <td>
+                        <span className={`pill pill-role-${u.role}`}>{u.role}</span>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-outline"
+                          disabled={pendingId === u._id || (u._id === me._id && u.role === "admin")}
+                          onClick={() => toggleRole(u)}
+                        >
+                          {pendingId === u._id
+                            ? "Saving..."
+                            : u.role === "admin"
+                              ? "Remove admin"
+                              : "Make admin"}
+                        </button>{" "}
+                        <button
+                          className="btn btn-outline"
+                          disabled={pendingId === u._id || u._id === me._id}
+                          onClick={() => deleteUser(u)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {filteredUsers.length === 0 && <p className="admin-empty">No users match "{search}".</p>}
+            </div>
           </div>
 
+          <div className="admin-section">
           <div className="email-broadcast">
             <div className="email-broadcast-header">
               <div>
@@ -270,12 +339,13 @@ export default function Admin() {
                     <p>
                       Know you know.
                       <br />
-                      KnoUKno
+                      Kno U Kno
                     </p>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
           </div>
         </>
       )}
