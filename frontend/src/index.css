@@ -1447,7 +1447,10 @@ a:hover {
 @media print {
   .navbar,
   .footer,
-  .no-print {
+  .no-print,
+  .question-index,
+  .question-text,
+  .question-example {
     display: none !important;
   }
 }
