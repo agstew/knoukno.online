@@ -1084,6 +1084,50 @@ a:hover {
 .grade-badge.F {
   background: #dc2626;
 }
+.grade-buttons {
+  display: inline-flex;
+  gap: 8px;
+}
+.grade-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-border);
+  background: var(--white);
+  color: var(--gray-dark);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.grade-btn:hover {
+  border-color: var(--dodger-blue);
+}
+.grade-btn.active.A {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: var(--white);
+}
+.grade-btn.active.B {
+  background: #1e90ff;
+  border-color: #1e90ff;
+  color: var(--white);
+}
+.grade-btn.active.C {
+  background: #d97706;
+  border-color: #d97706;
+  color: var(--white);
+}
+.grade-btn.active.D {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: var(--white);
+}
+.grade-btn.active.F {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: var(--white);
+}
 .save-indicator {
   font-size: 13px;
   color: #16a34a;

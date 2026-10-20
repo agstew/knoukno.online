@@ -71,19 +71,18 @@ export default function Grade() {
                 <p className="question-text">{answer.question.text}</p>
                 <p className="muted">{answer.text}</p>
                 <div className="answer-meta">
-                  <select
-                    className="grade-select"
-                    value={grade || ""}
-                    onChange={(e) => handleGrade(answer._id, e.target.value)}
-                  >
-                    <option value="">Grade</option>
+                  <div className="grade-buttons">
                     {GRADES.map((g) => (
-                      <option value={g} key={g}>
+                      <button
+                        type="button"
+                        key={g}
+                        className={`grade-btn ${grade === g ? `active ${g}` : ""}`}
+                        onClick={() => handleGrade(answer._id, g)}
+                      >
                         {g}
-                      </option>
+                      </button>
                     ))}
-                  </select>
-                  {grade && <span className={`grade-badge ${grade}`}>{grade}</span>}
+                  </div>
                 </div>
               </div>
             ))
