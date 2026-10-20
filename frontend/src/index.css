@@ -858,6 +858,18 @@ a:hover {
   color: var(--black);
   text-transform: capitalize;
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0;
+}
+.pagination-status {
+  font-size: 14px;
+  color: var(--gray);
+}
 .progress-bar {
   height: 8px;
   background: #dbe6f3;

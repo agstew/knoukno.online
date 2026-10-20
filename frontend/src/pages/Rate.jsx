@@ -10,6 +10,8 @@ export default function Rate() {
   const [drafts, setDrafts] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   const load = useCallback(async () => {
     if (!selectedId) return;
@@ -67,6 +69,17 @@ export default function Rate() {
     [rows]
   );
 
+  const pageCount = Math.max(1, Math.ceil(sortedRows.length / PAGE_SIZE));
+
+  useEffect(() => {
+    if (page > pageCount) setPage(pageCount);
+  }, [page, pageCount]);
+
+  const pagedRows = useMemo(
+    () => sortedRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [sortedRows, page]
+  );
+
   return (
     <div className="dashboard container">
       <div className="dashboard-header">
@@ -94,24 +107,49 @@ export default function Rate() {
               </p>
             </div>
           ) : (
-            sortedRows.map(({ answer, rate }) => (
-              <div className="question-card" key={answer._id}>
-                <p className="question-text">{answer.question.text}</p>
-                <p className="muted">{answer.text}</p>
-                <div className="answer-meta">
-                  <input
-                    className="rank-input"
-                    type="number"
-                    min={1}
-                    placeholder="Rate"
-                    value={drafts[answer._id] ?? rate ?? ""}
-                    onChange={(e) => setDrafts((prev) => ({ ...prev, [answer._id]: e.target.value }))}
-                    onBlur={(e) => e.target.value && handleRate(answer._id, e.target.value)}
-                    style={{ width: 80 }}
-                  />
+            <>
+              {pagedRows.map(({ answer, rate }) => (
+                <div className="question-card" key={answer._id}>
+                  <p className="question-text">{answer.question.text}</p>
+                  <p className="muted">{answer.text}</p>
+                  <div className="answer-meta">
+                    <input
+                      className="rank-input"
+                      type="number"
+                      min={1}
+                      placeholder="Rate"
+                      value={drafts[answer._id] ?? rate ?? ""}
+                      onChange={(e) => setDrafts((prev) => ({ ...prev, [answer._id]: e.target.value }))}
+                      onBlur={(e) => e.target.value && handleRate(answer._id, e.target.value)}
+                      style={{ width: 80 }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {pageCount > 1 && (
+                <div className="pagination">
+                  <button
+                    type="button"
+                    className="btn-outline"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    ← Prev
+                  </button>
+                  <span className="pagination-status">
+                    Page {page} of {pageCount}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn-outline"
+                    disabled={page >= pageCount}
+                    onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
