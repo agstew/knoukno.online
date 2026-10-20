@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import imgAnswers from "../assets/stages/section-answers.svg";
 import imgHiring from "../assets/stages/section-hiring.svg";
@@ -69,6 +70,8 @@ const FEATURE_ROWS = [
 ];
 
 export default function Home() {
+  const [tryAnswer, setTryAnswer] = useState("");
+
   return (
     <div>
       <section className="hero">
@@ -85,10 +88,47 @@ export default function Home() {
         </p>
         <div className="hero-actions">
           <Link to="/register" className="btn btn-primary btn-lg">
-            Start free - 5 questions <span aria-hidden="true">&#8599;</span>
+            Start your free 3-day trial <span aria-hidden="true">&#8599;</span>
           </Link>
           <Link to="/price" className="btn btn-outline-light btn-lg">
             See the price
+          </Link>
+        </div>
+      </section>
+
+      <section className="container" style={{ padding: "56px 0" }}>
+        <div className="section-header" style={{ textAlign: "left", marginBottom: 24 }}>
+          <span className="section-eyebrow">Try it yourself</span>
+          <h2>Here's the actual first question</h2>
+          <p className="muted">No account needed to try it. Write a real answer below - it just won't be saved until you register.</p>
+        </div>
+        <div className="question-card">
+          <span className="question-index">Question 1 &middot; Law</span>
+          <p className="question-text">
+            For your business, which legal entity are you registering as, and why is that the right structure?
+          </p>
+          <p className="question-example">
+            <strong>Example:</strong> Rivertown Coffee Co. is registering as a single-member LLC. It keeps my
+            personal assets separate from the business, costs little to maintain in my state, and still lets
+            me file taxes as a sole proprietor until the business is big enough to need a different structure.
+          </p>
+          <textarea
+            rows={4}
+            placeholder="Write your answer in your own words..."
+            value={tryAnswer}
+            onChange={(e) => setTryAnswer(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "11px 14px",
+              border: "1.5px solid var(--gray-border)",
+              borderRadius: "var(--radius-sm)",
+              fontSize: 15,
+              fontFamily: "inherit",
+              marginTop: 12,
+            }}
+          />
+          <Link to="/register" className="btn btn-primary" style={{ marginTop: 14, display: "inline-block" }}>
+            {tryAnswer.trim() ? "Create an account to save this answer" : "Register free to answer for real"}
           </Link>
         </div>
       </section>
@@ -116,14 +156,14 @@ export default function Home() {
         <span className="section-eyebrow" style={{ color: "var(--dodger-blue)" }}>
           Everyone starts somewhere
         </span>
-        <h2>Name your business and answer the first question</h2>
+        <h2>Stop guessing. Start writing down the answers.</h2>
         <p>
-          Register and start with five questions, free for three days. No card required until you
-          decide to keep going.
+          Five real questions, free for three days, no card required. Name your business today and
+          find out exactly what you don't know yet - before it costs you.
         </p>
         <div className="hero-actions">
           <Link to="/register" className="btn btn-primary btn-lg">
-            Register free
+            Start free now
           </Link>
           <Link to="/price" className="btn btn-outline-light btn-lg">
             See the price
