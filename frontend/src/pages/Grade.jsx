@@ -50,6 +50,9 @@ export default function Grade() {
           <h1>Grade your answers</h1>
           <p className="muted">Assign a letter grade (A-F) to each saved answer.</p>
         </div>
+        <button className="btn btn-outline no-print" onClick={() => window.print()}>
+          🖨 Print grades
+        </button>
       </div>
 
       {error && <p className="error-text">{error}</p>}
