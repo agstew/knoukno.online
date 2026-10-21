@@ -71,6 +71,8 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <span>&copy; {new Date().getFullYear()} Kno U Kno. All rights reserved.</span>
+        <Link to="/privacy">Privacy Policy</Link>
+        <Link to="/cookies">Cookie Policy</Link>
         <Link to="/contact">hello@knoukno.online</Link>
       </div>
     </footer>

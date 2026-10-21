@@ -6,6 +6,7 @@ import About from "./pages/About.jsx";
 import Admin from "./pages/Admin.jsx";
 import Average from "./pages/Average.jsx";
 import Contact from "./pages/Contact.jsx";
+import CookiePolicy from "./pages/CookiePolicy.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Grade from "./pages/Grade.jsx";
@@ -14,6 +15,7 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import PaymentSchedule from "./pages/PaymentSchedule.jsx";
 import Price from "./pages/Price.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import Questions from "./pages/Questions.jsx";
 import Rate from "./pages/Rate.jsx";
 import Register from "./pages/Register.jsx";
@@ -36,6 +38,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/price" element={<Price />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/cookies" element={<CookiePolicy />} />
         <Route
           path="/dashboard"
           element={
