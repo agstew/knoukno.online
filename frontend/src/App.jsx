@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import CookieBanner from "./components/CookieBanner.jsx";
 import Footer from "./components/Footer.jsx";
 import Navbar from "./components/Navbar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -20,6 +21,7 @@ import Questions from "./pages/Questions.jsx";
 import Rate from "./pages/Rate.jsx";
 import Register from "./pages/Register.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import TermsOfService from "./pages/TermsOfService.jsx";
 import Title from "./pages/Title.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
@@ -40,6 +42,7 @@ export default function App() {
         <Route path="/price" element={<Price />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/cookies" element={<CookiePolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route
           path="/dashboard"
           element={
@@ -106,6 +109,7 @@ export default function App() {
         />
       </Routes>
       <Footer />
+      <CookieBanner />
     </>
   );
 }

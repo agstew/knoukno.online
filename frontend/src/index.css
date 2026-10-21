@@ -13,7 +13,40 @@
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
   --transition: all 0.18s ease;
+
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.cookie-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: var(--black);
+  color: var(--white);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cookie-banner p {
+  margin: 0;
+  font-size: 14px;
+  max-width: 720px;
+}
+
+.cookie-banner a {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+.cookie-banner .btn {
+  flex-shrink: 0;
 }
 
 * {
