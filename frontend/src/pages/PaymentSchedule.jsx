@@ -19,6 +19,7 @@ export default function PaymentSchedule() {
   const [schedule, setSchedule] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [cancelling, setCancelling] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -36,6 +37,22 @@ export default function PaymentSchedule() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function handleCancel() {
+    if (!window.confirm("Cancel your subscription? You'll keep access until the end of the period you already paid for.")) {
+      return;
+    }
+    setCancelling(true);
+    setError("");
+    try {
+      await api.cancelSubscription(token);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCancelling(false);
+    }
+  }
 
   const subscription = schedule?.subscription;
 
@@ -94,6 +111,18 @@ export default function PaymentSchedule() {
               </span>
             )}
           </div>
+
+          {!subscription.cancelAtPeriodEnd && (
+            <button
+              type="button"
+              className="btn btn-outline-light"
+              style={{ marginTop: -16, marginBottom: 32 }}
+              onClick={handleCancel}
+              disabled={cancelling}
+            >
+              {cancelling ? "Cancelling..." : "Cancel subscription"}
+            </button>
+          )}
 
           <h2 style={{ marginTop: 0 }}>Payment history</h2>
           {schedule.transactions.length === 0 ? (
