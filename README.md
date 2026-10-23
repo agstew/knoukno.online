@@ -18,7 +18,7 @@ Modeled after the knoukno.net product flow, rebuilt end-to-end for **knoukno.onl
 | Email      | Resend (welcome email on signup)                    |
 | Auth       | JWT + bcrypt                                        |
 | Containers | Docker + docker-compose                             |
-| Hosting    | Railway (backend + frontend services)               |
+| Hosting    | Railway (single combined service, root `Dockerfile`) |
 | Domain DNS | GoDaddy                                             |
 
 ## Project structure
@@ -79,7 +79,7 @@ git push -u origin main
 ## 3. MongoDB
 
 - Local dev uses the `mongo` service in `docker-compose.yml`.
-- For production, create a free/paid cluster at [MongoDB Atlas](https://www.mongodb.com/atlas), whitelist Railway's egress (or `0.0.0.0/0` for simplicity with a strong password), and set `MONGO_URI` on the Railway backend service to the Atlas connection string.
+- Production uses a MongoDB instance hosted as its own service in the same Railway project (not Atlas) - set `MONGO_URI` on the app's Railway service to that instance's connection string.
 
 ## 4. Resend (transactional email)
 
@@ -89,22 +89,17 @@ git push -u origin main
 
 ## 5. Docker
 
-- `backend/Dockerfile` - Node 20 Alpine, installs prod deps, runs `node src/server.js`.
-- `frontend/Dockerfile` - multi-stage: builds the Vite app, then serves `dist/` via Nginx (`frontend/nginx.conf`), with SPA fallback routing.
-- `docker-compose.yml` wires both plus a local Mongo instance for development/testing.
+- Root `Dockerfile` - what Railway actually builds for production. Multi-stage: builds the Vite frontend, then copies its `dist/` into the Express backend's `public/` folder and serves both the API and the SPA (with a catch-all fallback) from one Node process on port 5000.
+- `backend/Dockerfile` / `frontend/Dockerfile` - used only by `docker-compose.yml` for local development (separate Mongo + API + Nginx-served frontend containers). Not used in production.
+- `docker-compose.yml` wires those plus a local Mongo instance for development/testing.
 
 ## 6. Railway deployment
 
-Create **two services** from this repo (monorepo - set each service's root directory):
+Railway runs this app as a **single service** built from the root `Dockerfile` (see root `railway.toml`, builder `DOCKERFILE`, healthcheck `/api/health`). There is no separate frontend service and no `api.` subdomain - one container serves everything.
 
-1. **Backend service** → root directory `backend/`
-   - Uses `backend/railway.toml` (Dockerfile builder, healthcheck `/api/health`)
-   - Environment variables: `MONGO_URI` (Atlas), `JWT_SECRET`, `JWT_EXPIRES_IN`, `CLIENT_ORIGIN` (your frontend URL), `RESEND_API_KEY`, `EMAIL_FROM`
-2. **Frontend service** → root directory `frontend/`
-   - Uses `frontend/railway.toml` (Dockerfile builder, healthcheck `/health`)
-   - Build arg / env var: `VITE_API_URL` = your backend's public Railway URL + `/api`
+Environment variables set on that one service: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `RESEND_API_KEY`, `EMAIL_FROM`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_MODE`, `PAYPAL_MEMBER_PLAN_ID`, `PAYPAL_PRO_PLAN_ID`, `PAYPAL_WEBHOOK_ID`.
 
-After both deploy, copy each service's public Railway domain (or attach your custom domain, see below) and update `CLIENT_ORIGIN` / `VITE_API_URL` accordingly, then redeploy.
+Pushing to the connected branch on GitHub triggers an automatic rebuild + redeploy of this one service.
 
 ## 7. GoDaddy DNS → Railway + Resend
 
@@ -112,11 +107,10 @@ In GoDaddy's DNS management for `knoukno.online`:
 
 | Type  | Name              | Value                                  | Purpose                     |
 |-------|-------------------|------------------------------------------|------------------------------|
-| CNAME | `www`             | `<frontend-service>.up.railway.app`       | Frontend on Railway          |
-| CNAME | `api`             | `<backend-service>.up.railway.app`        | Backend API on Railway       |
+| CNAME | `www`             | `<railway-service>.up.railway.app`        | Website + API (single service) |
 | CNAME/TXT | (per Resend)  | values shown in Resend's domain setup     | Verify sending domain        |
 
-Then in Railway, attach the custom domains (`www.knoukno.online`, `api.knoukno.online`) to the matching services under **Settings → Domains**, and set `CLIENT_ORIGIN=https://www.knoukno.online` on the backend and `VITE_API_URL=https://api.knoukno.online/api` on the frontend build.
+Then in Railway, attach the custom domain (`www.knoukno.online`) to the single service under **Settings → Domains**.
 
 ## Logo
 
