@@ -501,6 +501,8 @@ export default function AdminDashboard() {
                       <td style={{ fontSize: '0.85rem' }}>{u.email}</td>
                       <td>
                         <select
+                          id={`plan-${u._id}`}
+                          name="plan"
                           className="form-control form-select"
                           style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
                           value={u.tier}
@@ -514,6 +516,8 @@ export default function AdminDashboard() {
                       </td>
                       <td>
                         <input
+                          id={`bonus-questions-${u._id}`}
+                          name="bonusQuestions"
                           type="number"
                           min="0"
                           className="form-control"
@@ -560,8 +564,10 @@ export default function AdminDashboard() {
               </div>
               <div className="modal-body">
                 <div className="form-group">
-                  <label className="form-label">Subject</label>
+                  <label className="form-label" htmlFor="email-modal-subject">Subject</label>
                   <input
+                    id="email-modal-subject"
+                    name="subject"
                     className="form-control"
                     value={emailForm.subject}
                     onChange={(e) => setEmailForm(prev => ({ ...prev, subject: e.target.value }))}
@@ -569,8 +575,10 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Message</label>
+                  <label className="form-label" htmlFor="email-modal-message">Message</label>
                   <textarea
+                    id="email-modal-message"
+                    name="message"
                     className="form-control"
                     rows={5}
                     value={emailForm.message}
@@ -618,8 +626,10 @@ export default function AdminDashboard() {
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label className="form-label">Subject</label>
+                <label className="form-label" htmlFor="schedule-modal-subject">Subject</label>
                 <input
+                  id="schedule-modal-subject"
+                  name="subject"
                   className="form-control"
                   value={scheduleForm.subject}
                   onChange={(e) => setScheduleForm(prev => ({ ...prev, subject: e.target.value }))}
@@ -627,8 +637,10 @@ export default function AdminDashboard() {
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Message</label>
+                <label className="form-label" htmlFor="schedule-modal-message">Message</label>
                 <textarea
+                  id="schedule-modal-message"
+                  name="message"
                   className="form-control"
                   rows={5}
                   value={scheduleForm.message}
@@ -637,8 +649,10 @@ export default function AdminDashboard() {
                 />
               </div>
               <div className="form-group">
-                <label className="form-label">Send at</label>
+                <label className="form-label" htmlFor="schedule-modal-send-at">Send at</label>
                 <input
+                  id="schedule-modal-send-at"
+                  name="sendAt"
                   type="datetime-local"
                   className="form-control"
                   value={scheduleForm.sendAt}
@@ -883,6 +897,8 @@ export default function AdminDashboard() {
                         <td>
                           <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                             <select
+                              id={`application-status-${a._id}`}
+                              name="status"
                               className="form-control form-select"
                               style={{ minWidth: '7.5rem', padding: '0.3rem 0.5rem' }}
                               value={statusDrafts[a._id] ?? a.status}
