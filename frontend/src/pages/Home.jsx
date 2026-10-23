@@ -11,11 +11,11 @@ const FEATURE_ROWS = [
   {
     id: "start",
     eyebrow: "Know you know",
-    title: "Start a business from the very first step",
+    title: "Start a business from the very first step - no guesswork",
     paragraphs: [
-      "Kno U Kno shows you how to start a business from the basics all the way to the finish. You get the questions in the order a real business needs them answered, and you write the answers yourself.",
-      "Start with law. Then find your place, work out who to hire, and get to know the people who will come to your business.",
-      "Your answers stay with you. Return to grade, rank, and print them whenever you need to make your next decision.",
+      "Most businesses don't fail from a lack of ambition. They fail from the questions nobody thought to ask. Kno U Kno hands you the real checklist - in the exact order a real business needs it answered - and makes you write the answer yourself.",
+      "Start with the law. Then lock in your location, decide who to hire first, and learn who your customers really are.",
+      "Every answer you write stays with you - graded, ranked, and ready to print the moment you need to make your next move.",
     ],
     image: imgStart,
     alt: "A founder writing the first plan for a new business",
@@ -23,9 +23,9 @@ const FEATURE_ROWS = [
   {
     id: "law",
     eyebrow: "Stage one",
-    title: "Law first, so the business is real",
+    title: "Get the law right before you spend a dollar",
     paragraphs: [
-      "Choose the entity, register the name, get the tax ID, and find out which licences and permits your trade and your city require.",
+      "Pick the right entity, register your name, lock down your tax ID, and find every licence and permit your trade and city actually require - before a mistake here costs you later.",
     ],
     image: imgLaw,
     alt: "Business formation paperwork on a desk",
@@ -33,17 +33,17 @@ const FEATURE_ROWS = [
   {
     id: "location",
     eyebrow: "Stage two",
-    title: "The best place to put a business",
-    paragraphs: ["Location decides who finds you. Work through rent, zoning, traffic, and your second choice before you commit."],
+    title: "The address that makes or breaks you",
+    paragraphs: ["Your location decides who walks in the door. Work through rent, zoning, foot traffic, and your backup plan before you sign a lease you can't undo."],
     image: imgLocation,
     alt: "A storefront on a busy street",
   },
   {
     id: "hiring",
     eyebrow: "Stage three",
-    title: "What type of person to hire",
+    title: "Your first hire sets the bar for every hire after",
     paragraphs: [
-      "The first hire sets the standard for everyone who comes after. Define the role, the person, what you can pay, and what success looks like.",
+      "Define the role, the person, the pay, and what success actually looks like - before you hand someone the keys to your business.",
     ],
     image: imgHiring,
     alt: "A small team working together",
@@ -51,18 +51,18 @@ const FEATURE_ROWS = [
   {
     id: "people",
     eyebrow: "Stage four",
-    title: "The people who come to your business",
-    paragraphs: ["Who are your customers, what brings them to you, how do they find you, and what makes them come back?"],
+    title: "Know your customer before they ever walk in",
+    paragraphs: ["Who are they, why do they choose you, how do they find you, and what brings them back? Answer this now - not after you've already spent your marketing budget guessing."],
     image: imgPeople,
     alt: "Customers being served at a counter",
   },
   {
     id: "answers",
     eyebrow: "How it works",
-    title: "The question is ours. The answer is yours.",
+    title: "We ask the hard question. You own the answer.",
     paragraphs: [
-      "Your answers are kept under your business title so you can grade, rank, print, and return to them as your business grows.",
-      "The result is not a certificate. It is your own thinking, written down and ready to share with a partner, lender, or first employee.",
+      "Every answer is saved under your business, graded, ranked, and printable - a living plan, not a one-time quiz.",
+      "It's not a certificate. It's proof you've already thought through what most founders only find out the hard way.",
     ],
     image: imgAnswers,
     alt: "Handwritten answers in a workbook",
@@ -82,9 +82,9 @@ export default function Home() {
           <span className="accent">Know you know.</span>
         </h1>
         <p>
-          We show you how to start a business - from the basics all the way to the finish. Law,
-          location, hiring, and the people who come to your business. We ask the questions. You
-          write the answers, and we keep every one of them.
+          Every founder has the same blind spots - the questions nobody hands you until it's too late.
+          Kno U Kno puts them in front of you first: Law, Location, Hiring, and the People who come to
+          your business. We ask the real questions. You write the real answers. We keep every one of them.
         </p>
         <div className="hero-actions">
           <Link to="/register" className="btn btn-primary btn-lg">
@@ -99,7 +99,7 @@ export default function Home() {
       <section className="container" style={{ padding: "56px 0" }}>
         <div className="section-header" style={{ textAlign: "left", marginBottom: 24 }}>
           <span className="section-eyebrow">Try it yourself</span>
-          <h2>Here's the actual first question</h2>
+          <h2>See exactly what you'd be asked - right now</h2>
           <p className="muted">No account needed to try it. Write a real answer below - it just won't be saved until you register.</p>
         </div>
         <div className="question-card">
@@ -156,10 +156,10 @@ export default function Home() {
         <span className="section-eyebrow" style={{ color: "var(--dodger-blue)" }}>
           Everyone starts somewhere
         </span>
-        <h2>Stop guessing. Start writing down the answers.</h2>
+        <h2>Stop guessing. Start writing the answers that matter.</h2>
         <p>
           Five real questions, free for three days, no card required. Name your business today and
-          find out exactly what you don't know yet - before it costs you.
+          find out exactly what you don't know yet - before it costs you real money.
         </p>
         <div className="hero-actions">
           <Link to="/register" className="btn btn-primary btn-lg">
