@@ -188,6 +188,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .site-home .live-button:hover { background: white; border-color: var(--live-yellow); color: var(--live-yellow); }
 .site-home .live-button-outline { background: transparent; color: white; border-color: white; }
 
+.site-home .live-pitch { padding: 76px 24px 84px; background: #fff; border-bottom: 1px solid #0b0b0b14; }
+.site-home .live-pitch-inner { max-width: 1090px; margin: 0 auto; }
+.site-home .live-pitch h2 { max-width: 840px; font-size: clamp(28px, 3.4vw, 42px); line-height: 1.2; margin-bottom: 36px; }
+.site-home .live-pitch-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(32px, 5vw, 70px); align-items: start; margin-bottom: 36px; }
+.site-home .live-pitch-copy p { font-size: 17px; line-height: 1.8; color: #414141; margin: 0 0 18px; }
+.site-home .live-pitch-list { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.site-home .live-pitch-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; line-height: 1.55; color: #1a1d21; font-weight: 600; }
+.site-home .live-pitch-check { flex-shrink: 0; margin-top: 2px; color: var(--live-yellow); }
+
 .site-home h1, .site-home h2 { font-family: 'Manrope', sans-serif; }
 .site-home .live-section { padding: 80px 24px; background: #f6f8fb; }
 .site-home .live-section:nth-of-type(2n + 1) { background: #fff; }
@@ -243,6 +252,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .site-home .live-section-inner { grid-template-columns: 1fr; gap: 25px; }
   .site-home .live-stage-alt .live-section-copy { order: 0; }
   .site-home .live-figure img { max-height: 400px; }
+  .site-home .live-pitch { padding: 56px 24px 60px; }
+  .site-home .live-pitch-grid { grid-template-columns: 1fr; gap: 24px; }
 }
 
 @media (max-width: 680px) {

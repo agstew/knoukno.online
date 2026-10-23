@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../api/client';
 
@@ -87,6 +88,35 @@ export default function Home() {
               <Link to="/price" className="live-button live-button-outline">See the price</Link>
             </>
           )}
+          </div>
+        </div>
+      </section>
+
+      <section className="live-pitch">
+        <div className="live-pitch-inner">
+          <p className="live-section-label">Why founders choose Kno U Kno</p>
+          <h2>Most businesses don't fail because the idea was bad. They fail because nobody asked the right questions first.</h2>
+          <div className="live-pitch-grid">
+            <div className="live-pitch-copy">
+              <p>You can read a hundred articles on "how to start a business" and still not know what to do on Monday morning. LLC or sole proprietor first? Storefront or online? Who do you hire, and who are you even selling to? Guessing at the order costs you time, money, and sometimes the whole business.</p>
+              <p>Kno U Kno gives you the questions in the order a real business needs them answered — law, location, hiring, and the people who come through your door — and lets you write and keep every answer under your own business title. No template. No one else's plan. Yours.</p>
+            </div>
+            <ul className="live-pitch-list">
+              <li><Check size={18} className="live-pitch-check" /> No generic templates — your answers, in your words, saved under your business</li>
+              <li><Check size={18} className="live-pitch-check" /> Grade, rank, and print your plan any time you need to make a decision</li>
+              <li><Check size={18} className="live-pitch-check" /> Start free with 5 questions for 3 days — no card required</li>
+              <li><Check size={18} className="live-pitch-check" /> Not ready to commit? 7-day money-back guarantee on every paid plan</li>
+            </ul>
+          </div>
+          <div className="live-actions">
+            {isAuthenticated ? (
+              <Link to="/dashboard" className="live-button">Go to dashboard <span aria-hidden="true">↗</span></Link>
+            ) : (
+              <>
+                <Link to="/register" className="live-button">Start free — 5 questions <span aria-hidden="true">↗</span></Link>
+                <Link to="/price" className="live-button live-button-outline">See the price</Link>
+              </>
+            )}
           </div>
         </div>
       </section>
